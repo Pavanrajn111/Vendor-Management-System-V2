@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - Vendor Management System</title>
+
+    <!-- FONT AWESOME -->
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg,#141e30,#243b55);
+            overflow:hidden;
+        }
+
+        /* BACKGROUND */
+
+        .circle{
+            position:absolute;
+            border-radius:50%;
+            background:rgba(255,255,255,0.08);
+            animation:float 6s infinite ease-in-out;
+        }
+
+        .circle:nth-child(1){
+            width:140px;
+            height:140px;
+            top:10%;
+            left:12%;
+        }
+
+        .circle:nth-child(2){
+            width:180px;
+            height:180px;
+            bottom:10%;
+            right:12%;
+            animation-duration:8s;
+        }
+
+        @keyframes float{
+            0%{transform:translateY(0px);}
+            50%{transform:translateY(-20px);}
+            100%{transform:translateY(0px);}
+        }
+
+        /* REGISTER BOX */
+
+        .register-box{
+            width:430px;
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(12px);
+            border-radius:20px;
+            padding:35px;
+            box-shadow:0 8px 32px rgba(0,0,0,0.3);
+            color:white;
+            animation:fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn{
+            from{
+                opacity:0;
+                transform:translateY(-20px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0px);
+            }
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:10px;
+            font-size:32px;
+        }
+
+        .slogan{
+            text-align:center;
+            color:#ddd;
+            margin-bottom:25px;
+            font-size:14px;
+        }
+
+        /* INPUT */
+
+        input{
+            width:100%;
+            padding:14px;
+            margin-top:15px;
+            border:none;
+            border-radius:10px;
+            outline:none;
+            font-size:15px;
+            transition:0.3s;
+        }
+
+        input:focus{
+            transform:scale(1.02);
+            box-shadow:0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* PASSWORD BOX */
+
+        .password-box{
+            position:relative;
+        }
+
+        .toggle-password{
+            position:absolute;
+            right:15px;
+            top:30px;
+            cursor:pointer;
+            color:#444;
+            font-size:20px;
+            transition:0.3s;
+        }
+
+        .toggle-password:hover{
+            transform:scale(1.15);
+            color:black;
+        }
+
+        /* RULES */
+
+        .rules{
+            margin-top:18px;
+            background:rgba(255,255,255,0.15);
+            padding:12px;
+            border-radius:10px;
+            line-height:1.8;
+            color:#f1f1f1;
+            font-size:14px;
+        }
+
+        .rules ul{
+            margin-left:18px;
+            margin-top:5px;
+        }
+
+        /* MESSAGE */
+
+        #message{
+            margin-top:12px;
+            text-align:center;
+            font-size:15px;
+            font-weight:bold;
+        }
+
+        .valid{
+            color:#7CFC00;
+        }
+
+        .invalid{
+            color:#ff4d4d;
+        }
+
+        /* BUTTON */
+
+        button{
+            width:100%;
+            padding:14px;
+            margin-top:20px;
+            border:none;
+            border-radius:10px;
+            background:linear-gradient(135deg,#ff512f,#dd2476);
+            color:white;
+            font-size:17px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            transform:scale(1.03);
+            box-shadow:0 0 15px rgba(255,255,255,0.4);
+        }
+
+        /* LINK */
+
+        a{
+            display:block;
+            text-align:center;
+            margin-top:18px;
+            color:white;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- BACKGROUND -->
+
+    <div class="circle"></div>
+    <div class="circle"></div>
+
+    <!-- REGISTER BOX -->
+
+    <div class="register-box">
+
+        <h1>Create Account</h1>
+
+        <p class="slogan">
+            “Strong Security Begins with Strong Passwords”
+        </p>
+
+        <form method="POST"
+              onsubmit="return validateForm()">
+
+            <!-- USERNAME -->
+
+            <input type="text"
+                   name="username"
+                   placeholder="Enter Username"
+                   required>
+
+            <!-- PASSWORD -->
+
+            <div class="password-box">
+
+                <input type="password"
+                       id="password"
+                       name="password"
+                       placeholder="Create Password"
+                       onkeyup="validatePassword()"
+                       required>
+
+                <!-- EYE ICON -->
+
+                <span class="toggle-password"
+                      onclick="togglePassword()">
+
+                    <i class="fa-solid fa-eye-slash"
+                       id="eyeIcon"></i>
+
+                </span>
+
+            </div>
+
+            <!-- PASSWORD RULES -->
+
+            <div class="rules">
+
+                Password must contain:
+
+                <ul>
+                    <li>Minimum 8 characters</li>
+                    <li>Maximum 16 characters</li>
+                    <li>At least 1 uppercase letter</li>
+                    <li>At least 1 lowercase letter</li>
+                    <li>At least 1 number</li>
+                    <li>At least 1 special character (@$!%*?&)</li>
+                </ul>
+
+            </div>
+
+            <!-- VALIDATION MESSAGE -->
+
+            <div id="message">
+
+                {% if error %}
+                    <span class="invalid">{{ error }}</span>
+                {% endif %}
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <button type="submit">
+
+                Register
+
+            </button>
+
+        </form>
+
+        <a href="/">
+
+            Already have an account? Login
+
+        </a>
+
+    </div>
+
+<script>
+
+/* PASSWORD VALIDATION STATUS */
+
+let passwordValid = false;
+
+/* SHOW / HIDE PASSWORD */
+
+function togglePassword(){
+
+    let password = document.getElementById("password");
+
+    let eyeIcon = document.getElementById("eyeIcon");
+
+    if(password.type === "password"){
+
+        password.type = "text";
+
+        eyeIcon.classList.remove("fa-eye-slash");
+
+        eyeIcon.classList.add("fa-eye");
+    }
+
+    else{
+
+        password.type = "password";
+
+        eyeIcon.classList.remove("fa-eye");
+
+        eyeIcon.classList.add("fa-eye-slash");
+    }
+}
+
+/* PASSWORD VALIDATION */
+
+function validatePassword(){
+
+    let password =
+    document.getElementById("password").value;
+
+    let message =
+    document.getElementById("message");
+
+    /*
+       CONDITIONS:
+       - 8 to 16 characters
+       - uppercase
+       - lowercase
+       - number
+       - special character
+    */
+
+    let pattern =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
+
+    if(password.length === 0){
+
+        message.innerHTML = "";
+
+        passwordValid = false;
+    }
+
+    else if(pattern.test(password)){
+
+        message.innerHTML =
+        "<span class='valid'>Valid Password</span>";
+
+        passwordValid = true;
+    }
+
+    else{
+
+        message.innerHTML =
+        "<span class='invalid'>Invalid Password Format</span>";
+
+        passwordValid = false;
+    }
+}
+
+/* FORM VALIDATION */
+
+function validateForm(){
+
+    if(passwordValid){
+
+        return true;
+    }
+
+    else{
+
+        document.getElementById("message").innerHTML =
+        "<span class='invalid'>Please enter a valid password</span>";
+
+        return false;
+    }
+}
+
+</script>
+
+</body>
+</html>

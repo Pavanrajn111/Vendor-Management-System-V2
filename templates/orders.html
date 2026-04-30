@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:linear-gradient(135deg,#141e30,#243b55);
+            color:white;
+        }
+
+        .container{
+            width:85%;
+            margin:auto;
+            padding:30px;
+        }
+
+        .card{
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(10px);
+            padding:30px;
+            border-radius:20px;
+        }
+
+        select,input,button{
+            width:100%;
+            padding:14px;
+            margin-top:15px;
+            border:none;
+            border-radius:10px;
+        }
+
+        button{
+            background:#ff512f;
+            color:white;
+        }
+
+        table{
+            width:100%;
+            margin-top:30px;
+        }
+
+        table th,table td{
+            padding:15px;
+            background:rgba(255,255,255,0.08);
+            text-align:center;
+        }
+        .back-btn{
+    display:inline-block;
+    margin-top:20px;
+    padding:12px 20px;
+    background:#ff512f;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    transition:0.3s;
+}
+
+.back-btn:hover{
+    background:#ff774f;
+    transform:scale(1.05);
+}
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>Orders</h1>
+
+<form method="POST">
+
+<select name="vendor_id">
+
+{% for v in vendors %}
+
+<option value="{{v.id}}">
+
+{{v.name}}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+<select name="product_id">
+
+{% for p in products %}
+
+<option value="{{p.id}}">
+
+{{p.name}}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+<input type="text"
+       name="status"
+       placeholder="Order Status">
+
+<button type="submit">
+
+Create Order
+
+</button>
+
+</form>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Vendor</th>
+<th>Product</th>
+<th>Status</th>
+</tr>
+
+{% for o in orders %}
+
+<tr>
+<td>{{o.id}}</td>
+<td>{{o.vendor_id}}</td>
+<td>{{o.product_id}}</td>
+<td>{{o.status}}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+        <br>
+
+<a href="/dashboard" class="back-btn">
+
+    ← Back to Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+
+</body>
+</html>

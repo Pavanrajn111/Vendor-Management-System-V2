@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reviews</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:linear-gradient(135deg,#141e30,#243b55);
+            color:white;
+        }
+
+        .container{
+            width:85%;
+            margin:auto;
+            padding:30px;
+        }
+
+        .card{
+            background:rgba(255,255,255,0.12);
+            padding:30px;
+            border-radius:20px;
+            backdrop-filter:blur(10px);
+        }
+
+        select,input,textarea,button{
+            width:100%;
+            padding:14px;
+            margin-top:15px;
+            border:none;
+            border-radius:10px;
+        }
+
+        button{
+            background:#ff512f;
+            color:white;
+        }
+
+        table{
+            width:100%;
+            margin-top:30px;
+        }
+
+        table th,table td{
+            padding:15px;
+            background:rgba(255,255,255,0.08);
+            text-align:center;
+        }
+        .back-btn{
+    display:inline-block;
+    margin-top:20px;
+    padding:12px 20px;
+    background:#ff512f;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    transition:0.3s;
+}
+
+.back-btn:hover{
+    background:#ff774f;
+    transform:scale(1.05);
+}
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>Vendor Reviews</h1>
+
+<form method="POST">
+
+<select name="vendor_id">
+
+{% for v in vendors %}
+
+<option value="{{v.id}}">
+
+{{v.name}}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+<input type="number"
+       name="rating"
+       placeholder="Rating out of 5">
+
+<textarea name="comment"
+          placeholder="Write Review"></textarea>
+
+<button type="submit">
+
+Submit Review
+
+</button>
+
+</form>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Vendor</th>
+<th>Rating</th>
+<th>Comment</th>
+</tr>
+
+{% for r in reviews %}
+
+<tr>
+<td>{{r.id}}</td>
+<td>{{r.vendor_id}}</td>
+<td>{{r.rating}}</td>
+<td>{{r.comment}}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+        <br>
+
+<a href="/dashboard" class="back-btn">
+
+    ← Back to Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+
+</body>
+</html>
