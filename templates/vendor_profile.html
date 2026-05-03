@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Vendor Profile</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:linear-gradient(135deg,#141e30,#243b55);
+            min-height:100vh;
+            color:white;
+        }
+
+        .container{
+            width:90%;
+            margin:auto;
+            padding:40px 0;
+        }
+
+        .profile-box{
+            background:rgba(255,255,255,0.08);
+            backdrop-filter:blur(10px);
+            border-radius:25px;
+            padding:40px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .top-section{
+            text-align:center;
+            margin-bottom:40px;
+        }
+
+        .top-section img{
+            width:130px;
+            height:130px;
+            border-radius:50%;
+            border:4px solid white;
+            margin-bottom:15px;
+        }
+
+        .top-section h1{
+            font-size:36px;
+        }
+
+        .top-section p{
+            color:#ddd;
+            margin-top:8px;
+        }
+
+        .welcome{
+            margin-top:25px;
+            background:rgba(255,255,255,0.07);
+            padding:20px;
+            border-radius:15px;
+            line-height:1.8;
+        }
+
+        .welcome h2{
+            color:#00d4ff;
+            margin-bottom:10px;
+        }
+
+        .cards{
+            margin-top:40px;
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+            gap:25px;
+        }
+
+        .card{
+            background:rgba(255,255,255,0.08);
+            padding:30px;
+            border-radius:20px;
+            text-align:center;
+            transition:0.4s;
+        }
+
+        .card:hover{
+            transform:translateY(-10px);
+            background:linear-gradient(135deg,#1d2671,#243b55);
+        }
+
+        .card h1{
+            font-size:40px;
+            color:#00d4ff;
+            margin-bottom:10px;
+        }
+
+        .card p{
+            color:#ddd;
+        }
+
+        .services{
+            margin-top:50px;
+        }
+
+        .services h2{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .service-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:25px;
+        }
+
+        .service{
+            background:rgba(255,255,255,0.08);
+            padding:25px;
+            border-radius:20px;
+            text-align:center;
+            transition:0.4s;
+            text-decoration:none;
+            color:white;
+        }
+
+        .service:hover{
+            transform:scale(1.05);
+            background:linear-gradient(135deg,#1d2671,#243b55);
+        }
+
+        .service h3{
+            margin-top:10px;
+            margin-bottom:10px;
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-top:40px;
+            padding:14px 22px;
+            background:#ff4d4d;
+            color:white;
+            text-decoration:none;
+            border-radius:10px;
+            transition:0.3s;
+        }
+
+        .back-btn:hover{
+            background:#cc0000;
+            transform:scale(1.05);
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="profile-box">
+
+        <div class="top-section">
+
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+            <h1>{{ session['user'] }}</h1>
+
+            <p>Vendor Account</p>
+
+            <div class="welcome">
+
+                <h2>Welcome Vendor</h2>
+
+                <p>
+                    Manage your customers, products,
+                    delivery status and business activities
+                    efficiently through this platform.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- STATISTICS -->
+         <div class="services">
+
+    <h2>Connected Customers</h2>
+
+    <div class="service-grid">
+
+        {% for customer in connected_customers %}
+
+        <div class="service">
+
+            <h3>👤 {{ customer['customer'] }}</h3>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h1>{{ total_customers }}</h1>
+
+                <p>Total Customers</p>
+
+            </div>
+
+            <div class="card">
+
+                <h1>{{ total_orders }}</h1>
+
+                <p>Orders Received</p>
+
+            </div>
+
+            <div class="card">
+
+                <h1>{{ total_reviews }}</h1>
+
+                <p>Customer Reviews</p>
+
+            </div>
+
+        </div>
+
+        <!-- SERVICES -->
+
+        <div class="services">
+
+            <h2>Vendor Services</h2>
+
+            <div class="service-grid">
+
+                <a href="/products" class="service">
+
+                    <h3>📦 Products</h3>
+
+                    <p>Manage your products</p>
+
+                </a>
+
+                <a href="/orders" class="service">
+
+                    <h3>🛒 Orders</h3>
+
+                    <p>Track customer orders</p>
+
+                </a>
+
+                <a href="/delivery" class="service">
+
+                    <h3>🚚 Delivery</h3>
+
+                    <p>Check delivery status</p>
+
+                </a>
+
+                <a href="/payments" class="service">
+
+                    <h3>💳 Payments</h3>
+
+                    <p>Monitor transactions</p>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <a href="/dashboard" class="back-btn">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,69 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Payments</title>
 
     <style>
 
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
         body{
-            font-family:Arial;
             background:linear-gradient(135deg,#141e30,#243b55);
             color:white;
+            min-height:100vh;
         }
 
         .container{
-            width:85%;
+            width:90%;
             margin:auto;
-            padding:30px;
+            padding:40px 0;
         }
 
         .card{
             background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(12px);
             padding:30px;
             border-radius:20px;
-            backdrop-filter:blur(10px);
+            box-shadow:0 8px 20px rgba(0,0,0,0.3);
         }
 
-        select,input,button{
-            width:100%;
-            padding:14px;
-            margin-top:15px;
-            border:none;
-            border-radius:10px;
+        h1{
+            text-align:center;
+            margin-bottom:35px;
+            font-size:38px;
         }
 
-        button{
-            background:#ff512f;
-            color:white;
+        h2{
+            margin-top:25px;
+            margin-bottom:20px;
         }
 
         table{
             width:100%;
-            margin-top:30px;
+            border-collapse:collapse;
+            margin-top:20px;
+            overflow:hidden;
+            border-radius:15px;
         }
 
-        table th,table td{
-            padding:15px;
+        table th{
+            background:#ff512f;
+            padding:16px;
+            font-size:16px;
+        }
+
+        table td{
             background:rgba(255,255,255,0.08);
+            padding:16px;
             text-align:center;
         }
-        .back-btn{
-    display:inline-block;
-    margin-top:20px;
-    padding:12px 20px;
-    background:#ff512f;
-    color:white;
-    text-decoration:none;
-    border-radius:10px;
-    transition:0.3s;
-}
 
-.back-btn:hover{
-    background:#ff774f;
-    transform:scale(1.05);
-}
+        tr:hover td{
+            background:rgba(255,255,255,0.14);
+            transition:0.3s;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            background:#ff512f;
+            color:white;
+            cursor:pointer;
+            transition:0.3s;
+            font-size:15px;
+        }
+
+        button:hover{
+            background:#ff774f;
+        }
+
+        .pending{
+            background:#ff9800;
+            color:white;
+            padding:8px 14px;
+            border-radius:20px;
+            font-size:14px;
+        }
+
+        .accepted{
+            background:#28a745;
+            color:white;
+            padding:8px 14px;
+            border-radius:20px;
+            font-size:14px;
+        }
+
+        .rejected{
+            background:#dc3545;
+            color:white;
+            padding:8px 14px;
+            border-radius:20px;
+            font-size:14px;
+        }
+
+        .disabled-btn{
+            background:#28a745;
+            cursor:not-allowed;
+            opacity:0.9;
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-top:30px;
+            padding:12px 22px;
+            background:#ff512f;
+            color:white;
+            text-decoration:none;
+            border-radius:12px;
+            transition:0.3s;
+        }
+
+        .back-btn:hover{
+            background:#ff774f;
+            transform:scale(1.05);
+        }
 
     </style>
+
 </head>
 
 <body>
@@ -74,65 +143,226 @@
 
 <h1>Payments</h1>
 
-<form method="POST">
+<!-- CUSTOMER SECTION -->
 
-<select name="order_id">
+{% if session['role'] == 'customer' %}
+
+<h2>Pending Payments</h2>
+
+<table>
+
+<tr>
+
+<th>Vendor</th>
+
+<th>Product</th>
+
+<th>Price</th>
+
+<th>Payment</th>
+
+</tr>
 
 {% for o in orders %}
 
-<option value="{{o.id}}">
+{% set payment_found = payments
+| selectattr('order_id', 'equalto', o['id'])
+| list %}
 
-Order {{o.id}}
+{% if payment_found|length == 0 %}
 
-</option>
+<tr>
 
-{% endfor %}
+<td>{{ o['vendor'] }}</td>
 
-</select>
+<td>{{ o['product_name'] }}</td>
 
-<input type="number"
+<td>₹{{ o['price'] }}</td>
+
+<td>
+
+{% if o['status'] == 'Pending' %}
+
+<span class="pending">
+
+Waiting For Vendor Confirmation
+
+</span>
+
+{% elif o['status'] == 'Accepted' %}
+
+<form method="POST">
+
+<input type="hidden"
+       name="vendor"
+       value="{{ o['vendor'] }}">
+
+<input type="hidden"
+       name="product_name"
+       value="{{ o['product_name'] }}">
+
+<input type="hidden"
        name="amount"
-       placeholder="Payment Amount">
+       value="{{ o['price'] }}">
+
+<input type="hidden"
+       name="order_id"
+       value="{{ o['id'] }}">
 
 <button type="submit">
 
-Add Payment
+Pay Now
 
 </button>
 
 </form>
 
+{% endif %}
+
+</td>
+
+</tr>
+
+Pay Now
+
+</button>
+
+</form>
+
+</td>
+
+</tr>
+
+{% endif %}
+
+{% endfor %}
+
+</table>
+
+{% endif %}
+
+<!-- PAYMENT HISTORY -->
+
+<h2>Payment History</h2>
+
 <table>
 
 <tr>
-<th>ID</th>
-<th>Order ID</th>
+
+<th>Customer</th>
+
+<th>Vendor</th>
+
+<th>Product</th>
+
 <th>Amount</th>
+
+<th>Status</th>
+
+{% if session['role'] == 'vendor' %}
+<th>Action</th>
+{% endif %}
+
 </tr>
 
 {% for p in payments %}
 
 <tr>
-<td>{{p.id}}</td>
-<td>{{p.order_id}}</td>
-<td>{{p.amount}}</td>
+
+<td>{{ p['customer'] }}</td>
+
+<td>{{ p['vendor'] }}</td>
+
+<td>{{ p['product_name'] }}</td>
+
+<td>₹{{ p['amount'] }}</td>
+
+<td>
+
+{% if p['status'] == 'Pending' %}
+
+<span class="pending">
+
+Waiting For Vendor Confirmation
+
+</span>
+
+{% elif p['status'] == 'Accepted' %}
+
+<span class="accepted">
+
+Payment Accepted
+
+</span>
+
+{% elif p['status'] == 'Out Of Stock' %}
+
+<span class="rejected">
+
+Sorry Product Is Out Of Stock
+
+</span>
+
+{% endif %}
+
+</td>
+
+{% if session['role'] == 'vendor' %}
+
+<td>
+
+{% if p['status'] == 'Accepted' %}
+
+<button class="disabled-btn"
+        disabled>
+
+Payment Accepted
+
+</button>
+
+{% else %}
+
+<form method="POST"
+      action="/update_payment">
+
+<input type="hidden"
+       name="payment_id"
+       value="{{ p['id'] }}">
+
+<input type="hidden"
+       name="status"
+       value="Accepted">
+
+<button type="submit">
+
+Accept Payment
+
+</button>
+
+</form>
+
+{% endif %}
+
+</td>
+
+{% endif %}
+
 </tr>
 
 {% endfor %}
 
 </table>
-        <br>
 
-<a href="/dashboard" class="back-btn">
+<a href="/dashboard"
+   class="back-btn">
 
-    ← Back to Dashboard
+← Back to Dashboard
 
 </a>
 
 </div>
 
 </div>
-
 
 </body>
 </html>

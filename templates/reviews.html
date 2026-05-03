@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reviews</title>
+    <title>Vendor Reviews</title>
 
     <style>
 
@@ -24,7 +24,17 @@
             backdrop-filter:blur(10px);
         }
 
-        select,input,textarea,button{
+        h1{
+            text-align:center;
+            margin-bottom:25px;
+        }
+
+        h2{
+            margin-top:30px;
+            margin-bottom:15px;
+        }
+
+        select,input,button{
             width:100%;
             padding:14px;
             margin-top:15px;
@@ -35,33 +45,50 @@
         button{
             background:#ff512f;
             color:white;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#ff774f;
         }
 
         table{
             width:100%;
-            margin-top:30px;
+            margin-top:25px;
+            border-collapse:collapse;
         }
 
-        table th,table td{
+        table th{
+            background:#ff512f;
             padding:15px;
+        }
+
+        table td{
             background:rgba(255,255,255,0.08);
+            padding:15px;
             text-align:center;
         }
-        .back-btn{
-    display:inline-block;
-    margin-top:20px;
-    padding:12px 20px;
-    background:#ff512f;
-    color:white;
-    text-decoration:none;
-    border-radius:10px;
-    transition:0.3s;
-}
 
-.back-btn:hover{
-    background:#ff774f;
-    transform:scale(1.05);
-}
+        tr:hover td{
+            background:rgba(255,255,255,0.15);
+        }
+
+        .rating{
+            background:#28a745;
+            padding:6px 14px;
+            border-radius:20px;
+            font-size:14px;
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-top:20px;
+            padding:12px 20px;
+            background:#ff512f;
+            color:white;
+            text-decoration:none;
+            border-radius:10px;
+        }
 
     </style>
 </head>
@@ -74,59 +101,112 @@
 
 <h1>Vendor Reviews</h1>
 
+<!-- CUSTOMER CAN ADD REVIEW -->
+
+{% if session['role'] == 'customer' %}
+
+<h2>Add Review</h2>
+
 <form method="POST">
 
-<select name="vendor_id">
+    <label>Select Connected Vendor</label>
 
-{% for v in vendors %}
+    <select name="vendor" required>
 
-<option value="{{v.id}}">
+        {% for v in vendors %}
 
-{{v.name}}
+        <option value="{{ v['vendor'] }}">
 
-</option>
+            {{ v['vendor'] }}
 
-{% endfor %}
+        </option>
 
-</select>
+        {% endfor %}
 
-<input type="number"
-       name="rating"
-       placeholder="Rating out of 5">
+    </select>
 
-<textarea name="comment"
-          placeholder="Write Review"></textarea>
+    <label>Rating</label>
 
-<button type="submit">
+    <input type="number"
+           name="rating"
+           min="1"
+           max="5"
+           required>
 
-Submit Review
+    <label>Comment</label>
 
-</button>
+    <input type="text"
+           name="comment"
+           placeholder="Write your review"
+           required>
+
+    <button type="submit">
+
+        Submit Review
+
+    </button>
 
 </form>
+
+{% endif %}
+
+<!-- ALL VENDOR REVIEWS -->
+
+<h2>All Vendor Reviews</h2>
 
 <table>
 
 <tr>
-<th>ID</th>
-<th>Vendor</th>
-<th>Rating</th>
-<th>Comment</th>
+
+    <th>Customer</th>
+
+    <th>Vendor</th>
+
+    <th>Rating</th>
+
+    <th>Comment</th>
+
 </tr>
 
 {% for r in reviews %}
 
 <tr>
-<td>{{r.id}}</td>
-<td>{{r.vendor_id}}</td>
-<td>{{r.rating}}</td>
-<td>{{r.comment}}</td>
+
+    <td>
+
+        {{ r['customer'] }}
+
+    </td>
+
+    <td>
+
+        {{ r['vendor'] }}
+
+    </td>
+
+    <td>
+
+        <span class="rating">
+
+            {{ r['rating'] }}/5
+
+        </span>
+
+    </td>
+
+    <td>
+
+        {{ r['comment'] }}
+
+    </td>
+
 </tr>
 
 {% endfor %}
 
 </table>
-        <br>
+
+<br>
 
 <a href="/dashboard" class="back-btn">
 
@@ -137,7 +217,6 @@ Submit Review
 </div>
 
 </div>
-
 
 </body>
 </html>

@@ -89,25 +89,29 @@
 
         <h1>Products</h1>
 
-        <form method="POST">
+{% if session['role'] == 'vendor' %}
 
-            <input type="text"
-                   name="name"
-                   placeholder="Product Name"
-                   required>
+<form method="POST">
 
-            <input type="number"
-                   name="price"
-                   placeholder="Price"
-                   required>
+    <input type="text"
+           name="name"
+           placeholder="Product Name"
+           required>
 
-            <button type="submit">
+    <input type="number"
+           name="price"
+           placeholder="Price"
+           required>
 
-                Add Product
+    <button type="submit">
 
-            </button>
+        Add Product
 
-        </form>
+    </button>
+
+</form>
+
+{% endif %}
 
         <table>
 
@@ -115,6 +119,9 @@
                 <th>ID</th>
                 <th>Product</th>
                 <th>Price</th>
+                {% if session['role'] == 'vendor' %}
+                <th>Action</th>
+                {% endif %}
             </tr>
 
             {% for p in products %}
@@ -123,6 +130,25 @@
                 <td>{{ p.id }}</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.price }}</td>
+                {% if session['role'] == 'vendor' %}
+
+<td>
+
+<a href="/delete_product/{{ p['id'] }}"
+   style="
+   background:#dc3545;
+   color:white;
+   padding:8px 14px;
+   border-radius:10px;
+   text-decoration:none;">
+
+   Remove
+
+</a>
+
+</td>
+
+{% endif %}
             </tr>
 
             {% endfor %}

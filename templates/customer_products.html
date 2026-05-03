@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Products</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:#eef2f7;
+        }
+
+        .container{
+            width:90%;
+            margin:auto;
+            padding:40px 0;
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:40px;
+            color:#1d2671;
+        }
+
+        .product-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+            gap:25px;
+        }
+
+        .product-card{
+            background:white;
+            padding:30px;
+            border-radius:18px;
+            text-align:center;
+            box-shadow:0 8px 20px rgba(0,0,0,0.1);
+            transition:0.4s;
+        }
+
+        .product-card:hover{
+            transform:translateY(-10px);
+            background:linear-gradient(135deg,#1d2671,#243b55);
+            color:white;
+        }
+
+        .product-card h2{
+            margin-bottom:15px;
+        }
+
+        .product-card p{
+            margin-bottom:12px;
+        }
+
+        button{
+            padding:12px 18px;
+            border:none;
+            border-radius:10px;
+            background:#1d2671;
+            color:white;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            transform:scale(1.05);
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-bottom:30px;
+            padding:12px 20px;
+            background:#ff4d4d;
+            color:white;
+            text-decoration:none;
+            border-radius:10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="/dashboard"
+       class="back-btn">
+
+        ← Back to Dashboard
+
+    </a>
+
+    <h1>Available Products</h1>
+
+    <div class="product-grid">
+
+        {% for product in products %}
+
+        <div class="product-card">
+
+            <h2>
+
+                📦 {{ product['name'] }}
+
+            </h2>
+
+            <p>
+
+                Vendor:
+                {{ product['vendor'] }}
+
+            </p>
+
+            <p>
+
+                Price:
+                ₹{{ product['price'] }}
+
+            </p>
+
+            <form method="POST"
+                  action="/add_order">
+
+                <input type="hidden"
+                       name="product_id"
+                       value="{{ product['id'] }}">
+
+                <button type="submit">
+
+                    Order Product
+
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

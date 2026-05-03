@@ -1,133 +1,345 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Vendors</title>
+
+    <title>Available Vendors</title>
 
     <style>
 
-        body{
-            font-family:Arial;
-            background:linear-gradient(135deg,#141e30,#243b55);
+        *{
             margin:0;
-            color:white;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:#eef2f7;
         }
 
         .container{
-            width:85%;
+            width:90%;
             margin:auto;
-            padding:30px;
-        }
-
-        .card{
-            background:rgba(255,255,255,0.12);
-            backdrop-filter:blur(10px);
-            padding:30px;
-            border-radius:20px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.3);
+            padding:40px 0;
         }
 
         h1{
             text-align:center;
+            margin-bottom:40px;
+            color:#1d2671;
+            font-size:42px;
+        }
+
+        /* GRID */
+
+        .vendors-grid{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:30px;
+        }
+
+        /* CARD */
+
+        .vendor-card{
+            background:white;
+            border-radius:20px;
+            padding:30px;
+            text-align:center;
+            box-shadow:0 8px 20px rgba(0,0,0,0.12);
+            transition:0.3s;
+        }
+
+        .vendor-card:hover{
+            transform:translateY(-8px);
+        }
+
+        .vendor-card img{
+            width:90px;
+            height:90px;
+            border-radius:50%;
+            margin-bottom:20px;
+        }
+
+        .vendor-card h2{
+            color:#1d2671;
+            margin-bottom:10px;
+        }
+
+        .mobile{
+            color:gray;
             margin-bottom:25px;
+            font-size:18px;
         }
 
-        input{
-            width:100%;
-            padding:14px;
-            margin-top:15px;
-            border:none;
-            border-radius:10px;
-        }
+        /* BUTTONS */
 
-        button{
+        .btn{
+            display:block;
             width:100%;
             padding:14px;
-            margin-top:20px;
+            margin-top:12px;
             border:none;
-            border-radius:10px;
-            background:#ff512f;
+            border-radius:12px;
+            text-decoration:none;
             color:white;
             font-size:16px;
             cursor:pointer;
+            transition:0.3s;
         }
 
-        table{
-            width:100%;
-            margin-top:30px;
-            border-collapse:collapse;
+        .review-btn{
+            background:#1d2671;
         }
 
-        table th, table td{
-            padding:15px;
-            background:rgba(255,255,255,0.08);
-            text-align:center;
+        .review-btn:hover{
+            background:#2d3ea0;
         }
 
-        a{
+        .product-btn{
+            background:#009688;
+        }
+
+        .product-btn:hover{
+            background:#00b3a1;
+        }
+
+        .connect-btn{
+            background:#ff512f;
+        }
+
+        .connect-btn:hover{
+            background:#ff774f;
+        }
+
+        .connected{
+            background:gray;
+            cursor:not-allowed;
+        }
+
+        /* BACK BUTTON */
+
+        .back-btn{
+            display:inline-block;
+            margin-top:40px;
+            padding:14px 22px;
+            background:#ff512f;
             color:white;
             text-decoration:none;
+            border-radius:12px;
+            transition:0.3s;
         }
 
+        .back-btn:hover{
+            background:#ff774f;
+            transform:scale(1.05);
+        }
+
+        /* MOBILE */
+
+        @media(max-width:900px){
+
+            .vendors-grid{
+                grid-template-columns:1fr;
+            }
+
+        }
+.vendor-container{
+    width:90%;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:30px;
+    margin-top:40px;
+}
+
+.vendor-card{
+    background:white;
+    border-radius:20px;
+    padding:35px 25px;
+    text-align:center;
+    box-shadow:0 8px 20px rgba(0,0,0,0.12);
+    transition:0.3s;
+}
+
+.vendor-card:hover{
+    transform:translateY(-8px);
+}
+
+.vendor-icon{
+    font-size:55px;
+    margin-bottom:15px;
+}
+
+.vendor-card h2{
+    color:#1d2671;
+    margin-bottom:10px;
+}
+
+.mobile{
+    color:#555;
+    font-size:17px;
+    margin-bottom:25px;
+}
+
+.btn-group{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.btn-group form{
+    margin:0;
+}
+
+.connect-btn,
+.connected-btn,
+.product-btn,
+.review-btn{
+
+    display:block;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    text-decoration:none;
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.connect-btn{
+    background:#1d2671;
+}
+
+.connect-btn:hover{
+    background:#243b55;
+}
+
+.connected-btn{
+    background:#28a745;
+}
+
+.product-btn{
+    background:#ff9800;
+}
+
+.product-btn:hover{
+    background:#ffb347;
+}
+
+.review-btn{
+    background:#c33764;
+}
+
+.review-btn:hover{
+    background:#d94f7a;
+}
+
+@media(max-width:768px){
+
+    .vendor-container{
+        grid-template-columns:1fr;
+    }
+}
+.connected-btn{
+
+    background:#28a745;
+    color:white;
+    border:none;
+    cursor:not-allowed;
+    opacity:0.9;
+
+}
+
     </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-    <div class="card">
+    <h1>Available Vendors</h1>
 
-        <h1>Vendor Management</h1>
+    <div class="vendor-container">
 
-        <form method="POST">
+    {% for v in vendors %}
 
-            <input type="text"
-                   name="name"
-                   placeholder="Vendor Name"
-                   required>
+    <div class="vendor-card">
 
-            <input type="text"
-                   name="contact"
-                   placeholder="Contact Number"
-                   required>
+        <div class="vendor-icon">
+            🏢
+        </div>
 
-            <button type="submit">
+        <h2>
+            {{ v['username'] }}
+        </h2>
 
-                Add Vendor
+        <p class="mobile">
+            📞 {{ v['mobile'] }}
+        </p>
 
-            </button>
+        <div class="btn-group">
 
-        </form>
+            {% if v['username'] in connected_vendors %}
 
-        <table>
+    <button class="connected-btn"
+            disabled>
 
-            <tr>
-                <th>ID</th>
-                <th>Vendor Name</th>
-                <th>Contact</th>
-            </tr>
+        Connected
 
-            {% for v in vendors %}
+    </button>
 
-            <tr>
-                <td>{{ v.id }}</td>
-                <td>{{ v.name }}</td>
-                <td>{{ v.contact }}</td>
-            </tr>
+{% else %}
 
-            {% endfor %}
+<form method="POST"
+      action="/select_vendor">
 
-        </table>
+    <input type="hidden"
+           name="vendor"
+           value="{{ v['username'] }}">
 
-        <br>
+    <button class="connect-btn"
+            type="submit">
 
-        <a href="/dashboard">
+        Connect
 
-            ← Back to Dashboard
+    </button>
 
-        </a>
+</form>
+
+{% endif %}
+            <a href="/vendor_products/{{ v['username'] }}"
+               class="product-btn">
+
+               View Products
+
+            </a>
+
+            <a href="/vendor_reviews/{{ v['username'] }}"
+               class="review-btn">
+
+               View Reviews
+
+            </a>
+
+        </div>
 
     </div>
+
+    {% endfor %}
+
+    </div>
+
+</div>
+
+    <a href="/dashboard"
+       class="back-btn">
+
+       ← Back to Dashboard
+
+    </a>
 
 </div>
 

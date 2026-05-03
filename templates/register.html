@@ -86,6 +86,14 @@
             margin-bottom:10px;
             font-size:32px;
         }
+        .sub-heading{
+    text-align:center;
+    margin-top:8px;
+    font-size:22px;
+    color:#ffffff;
+    font-weight:normal;
+    letter-spacing:1px;
+}
 
         .slogan{
             text-align:center;
@@ -132,6 +140,16 @@
             transform:scale(1.15);
             color:black;
         }
+        select{
+    width:100%;
+    padding:12px;
+    margin-top:12px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    background:white;
+    font-size:15px;
+}
 
         /* RULES */
 
@@ -212,11 +230,13 @@
 
     <div class="register-box">
 
-        <h1>Create Account</h1>
+       <h1>Vendor Management System</h1>
 
-        <p class="slogan">
-            “Strong Security Begins with Strong Passwords”
-        </p>
+<h2 class="sub-heading">
+    Create Your Account
+</h2>
+
+
 
         <form method="POST"
               onsubmit="return validateForm()">
@@ -227,6 +247,11 @@
                    name="username"
                    placeholder="Enter Username"
                    required>
+            <input type="text"
+                name="mobile"
+                placeholder="Enter Mobile Number"
+                pattern="[0-9]{10}"
+                required>
 
             <!-- PASSWORD -->
 
@@ -253,38 +278,57 @@
 
             <!-- PASSWORD RULES -->
 
-            <div class="rules">
+<div class="rules">
 
-                Password must contain:
+    Password must contain:
 
-                <ul>
-                    <li>Minimum 8 characters</li>
-                    <li>Maximum 16 characters</li>
-                    <li>At least 1 uppercase letter</li>
-                    <li>At least 1 lowercase letter</li>
-                    <li>At least 1 number</li>
-                    <li>At least 1 special character (@$!%*?&)</li>
-                </ul>
+    <ul>
+        <li>Minimum 8 characters</li>
+        <li>Maximum 16 characters</li>
+        <li>At least 1 uppercase letter</li>
+        <li>At least 1 lowercase letter</li>
+        <li>At least 1 number</li>
+        <li>At least 1 special character (@$!%*?&)</li>
+    </ul>
 
-            </div>
+</div>
 
-            <!-- VALIDATION MESSAGE -->
+<!-- ROLE SELECTION -->
 
-            <div id="message">
+<select name="role" required>
 
-                {% if error %}
-                    <span class="invalid">{{ error }}</span>
-                {% endif %}
+    <option value="">
+        Select Account Type
+    </option>
 
-            </div>
+    <option value="vendor">
+        Vendor
+    </option>
 
-            <!-- BUTTON -->
+    <option value="customer">
+        Customer
+    </option>
 
-            <button type="submit">
+</select>
 
-                Register
+<!-- VALIDATION MESSAGE -->
 
-            </button>
+<div id="message">
+
+    {% if error %}
+        <span class="invalid">{{ error }}</span>
+    {% endif %}
+
+</div>
+
+<!-- BUTTON -->
+
+<button type="submit">
+
+    Register
+
+</button>
+          
 
         </form>
 

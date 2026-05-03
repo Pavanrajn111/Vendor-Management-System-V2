@@ -198,6 +198,8 @@
 
             <a href="/payments">💳 Payments</a>
 
+            <a href="/delivery">🚚 Delivery</a>
+
             <a href="/reviews">⭐ Reviews</a>
 
             <a href="/logout">🚪 Logout</a>
@@ -228,64 +230,80 @@
 
     </div>
 
-    <!-- CARDS -->
+   <!-- CARDS -->
+<div class="dashboard">
 
-    <div class="dashboard">
+{% if session['role'] == 'customer' %}
 
-        <div class="card"
-             onclick="window.location.href='/vendors'">
+<div class="card"
+     onclick="window.location.href='/vendors'">
 
-            <h3>🏢 Vendors</h3>
+    <h3>🏢 Vendors</h3>
 
-            <p>
-                Manage vendor details and supplier information.
-            </p>
+    <p>
+        Explore available vendors and suppliers.
+    </p>
 
-        </div>
+</div>
 
-        <div class="card"
-             onclick="window.location.href='/products'">
+{% endif %}
 
-            <h3>📦 Products</h3>
+    <div class="card"
+         onclick="window.location.href='/products'">
 
-            <p>
-                Store and manage products with pricing details.
-            </p>
+        <h3>📦 Products</h3>
 
-        </div>
+        <p>
+            Store and manage products with pricing details.
+        </p>
 
-        <div class="card"
-             onclick="window.location.href='/orders'">
+    </div>
 
-            <h3>🛒 Orders</h3>
+    <div class="card"
+         onclick="window.location.href='/orders'">
 
-            <p>
-                Create and track order delivery status.
-            </p>
+        <h3>🛒 Orders</h3>
 
-        </div>
+        <p>
+            Create and track order delivery status.
+        </p>
 
-        <div class="card"
-             onclick="window.location.href='/payments'">
+    </div>
 
-            <h3>💳 Payments</h3>
+    <!-- NEW DELIVERY STATUS CARD -->
 
-            <p>
-                Monitor payment history and transactions.
-            </p>
+    <div class="card"
+         onclick="window.location.href='/delivery'">
 
-        </div>
+        <h3>🚚 Delivery Status</h3>
 
-        <div class="card"
-             onclick="window.location.href='/reviews'">
+        <p>
+            Track shipping progress and delivery updates.
+        </p>
 
-            <h3>⭐ Reviews</h3>
+    </div>
 
-            <p>
-                Analyze vendor reviews and ratings.
-            </p>
+    <div class="card"
+         onclick="window.location.href='/payments'">
 
-        </div>
+        <h3>💳 Payments</h3>
+
+        <p>
+            Monitor payment history and transactions.
+        </p>
+
+    </div>
+
+    <div class="card"
+         onclick="window.location.href='/reviews'">
+
+        <h3>⭐ Reviews</h3>
+
+        <p>
+            Analyze vendor reviews and ratings.
+        </p>
+
+    </div>
 
     </div>
 

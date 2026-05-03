@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Vendor Reviews</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:#eef2f7;
+        }
+
+        .container{
+            width:95%;
+            padding:40px 30px;
+        }
+
+        .title{
+            margin-bottom:40px;
+        }
+
+        .title h1{
+            color:#1d2671;
+            font-size:42px;
+            text-align:left;
+        }
+
+        .reviews-box{
+
+            width:100%;
+
+            display:flex;
+            flex-direction:column;
+            align-items:flex-start;
+
+        }
+
+        .review-box{
+
+            width:700px;
+
+            background:white;
+
+            padding:25px;
+
+            border-radius:18px;
+
+            margin-bottom:25px;
+
+            box-shadow:0 8px 20px rgba(0,0,0,0.08);
+
+            text-align:left;
+
+        }
+
+        .review-box h3{
+
+            font-size:22px;
+
+            color:#1d2671;
+
+            margin-bottom:12px;
+
+        }
+
+        .stars{
+
+            font-size:24px;
+
+            color:#ffb400;
+
+            margin-bottom:15px;
+
+        }
+
+        .review-text{
+
+            font-size:16px;
+
+            color:#555;
+
+            line-height:1.7;
+
+        }
+
+        .empty{
+
+            background:white;
+
+            padding:30px;
+
+            border-radius:18px;
+
+            color:#666;
+
+            box-shadow:0 8px 20px rgba(0,0,0,0.08);
+
+            width:500px;
+
+        }
+
+        .btn-box{
+            margin-top:30px;
+        }
+
+        .back-btn{
+
+            display:inline-block;
+
+            padding:14px 24px;
+
+            background:#ff512f;
+
+            color:white;
+
+            text-decoration:none;
+
+            border-radius:12px;
+
+            transition:0.3s;
+
+        }
+
+        .back-btn:hover{
+
+            background:#ff774f;
+
+            transform:scale(1.05);
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title">
+
+        <h1>
+
+            {{ vendor_name }} Reviews
+
+        </h1>
+
+    </div>
+
+    <div class="reviews-box">
+
+        {% if reviews %}
+
+            {% for r in reviews %}
+
+            <div class="review-box">
+
+                <h3>
+
+                    {{ r['customer'] }}
+
+                </h3>
+
+                <div class="stars">
+
+                    {% for i in range(r['rating']|int) %}
+                        ⭐
+                    {% endfor %}
+
+                </div>
+
+                <div class="review-text">
+
+                    {{ r['comment'] }}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty">
+
+                No Reviews Available
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="btn-box">
+
+        <a href="/vendors"
+           class="back-btn">
+
+           ← Back to Vendors
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

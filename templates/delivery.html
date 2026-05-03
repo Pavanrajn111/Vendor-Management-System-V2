@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Orders Management</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:Arial;
+            background:linear-gradient(135deg,#141e30,#243b55);
+            min-height:100vh;
+            color:white;
+        }
+
+        .container{
+            width:90%;
+            margin:auto;
+            padding:30px;
+        }
+
+        .card{
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(12px);
+            border-radius:20px;
+            padding:30px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:30px;
+            font-size:34px;
+        }
+
+        .subtitle{
+            text-align:center;
+            margin-bottom:30px;
+            color:#ddd;
+        }
+
+        form{
+            margin-bottom:40px;
+        }
+
+        label{
+            display:block;
+            margin-top:18px;
+            margin-bottom:8px;
+            font-weight:bold;
+        }
+
+        select,
+        input{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            outline:none;
+            font-size:15px;
+        }
+
+        select{
+            background:white;
+        }
+
+        .status-box{
+            margin-top:20px;
+        }
+
+        button{
+            width:100%;
+            padding:15px;
+            margin-top:25px;
+            border:none;
+            border-radius:12px;
+            background:#ff512f;
+            color:white;
+            font-size:17px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            background:#ff774f;
+            transform:scale(1.02);
+        }
+
+        table{
+            width:100%;
+            margin-top:30px;
+            border-collapse:collapse;
+            overflow:hidden;
+            border-radius:15px;
+        }
+
+        table th{
+            background:#ff512f;
+            padding:16px;
+        }
+
+        table td{
+            background:rgba(255,255,255,0.08);
+            padding:15px;
+            text-align:center;
+        }
+
+        tr:hover td{
+            background:rgba(255,255,255,0.15);
+            transition:0.3s;
+        }
+
+        .status{
+            padding:8px 14px;
+            border-radius:20px;
+            font-size:14px;
+            font-weight:bold;
+        }
+
+        .pending{
+            background:#f39c12;
+        }
+
+        .processing{
+            background:#3498db;
+        }
+
+        .shipped{
+            background:#9b59b6;
+        }
+
+        .delivery{
+            background:#1abc9c;
+        }
+
+        .delivered{
+            background:#2ecc71;
+        }
+
+        .cancelled{
+            background:#e74c3c;
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-top:30px;
+            padding:12px 22px;
+            background:#ff512f;
+            color:white;
+            text-decoration:none;
+            border-radius:12px;
+            transition:0.3s;
+        }
+
+        .back-btn:hover{
+            background:#ff774f;
+            transform:scale(1.05);
+        }
+.pending,
+.accepted,
+.shipped,
+.delivered,
+.out{
+
+    color:white;
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.pending{
+    background:#ff9800;
+}
+
+.accepted{
+    background:#28a745;
+}
+
+.shipped{
+    background:#2196f3;
+}
+
+.delivered{
+    background:#673ab7;
+}
+
+.out{
+    background:#dc3545;
+}
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Orders Management</h1>
+
+        <p class="subtitle">
+
+            Create orders, update delivery status and manage vendor orders efficiently
+
+        </p>
+
+        <table>
+
+            <tr>
+
+                <th>Order ID</th>
+
+                <th>Vendor</th>
+
+                <th>Product</th>
+
+                <th>Delivery Status</th>
+
+            </tr>
+
+            {% for o in orders %}
+
+            <tr>
+
+    <td>{{ o.id }}</td>
+
+    <td>{{ o.vendor }}</td>
+
+    <td>{{ o.product_name }}</td>
+
+    <td>
+
+        {% if o['status'] == 'Pending' %}
+
+            <span class="pending">
+
+                Pending
+
+            </span>
+
+        {% elif o['status'] == 'Accepted' %}
+
+            <span class="accepted">
+
+                Accepted
+
+            </span>
+
+        {% elif o['status'] == 'Shipped' %}
+
+            <span class="shipped">
+
+                Shipped
+
+            </span>
+
+        {% elif o['status'] == 'Delivered' %}
+
+            <span class="delivered">
+
+                Delivered
+
+            </span>
+
+        {% else %}
+
+            <span class="out">
+
+                Out Of Stock
+
+            </span>
+
+        {% endif %}
+
+    </td>
+
+</tr>
+
+            {% endfor %}
+
+        </table>
+
+        <a href="/dashboard" class="back-btn">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

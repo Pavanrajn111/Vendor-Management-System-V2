@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Profile</title>
 
     <style>
@@ -13,330 +17,420 @@
         }
 
         body{
-            background:#eef2f7;
-        }
-
-        /* HEADER */
-
-        .header{
             background:linear-gradient(135deg,#141e30,#243b55);
-            padding:20px;
+            min-height:100vh;
             color:white;
-            text-align:center;
-            box-shadow:0 4px 10px rgba(0,0,0,0.2);
         }
-
-        /* MAIN CONTAINER */
 
         .container{
-            width:85%;
-            margin:30px auto;
+            width:90%;
+            max-width:1200px;
+            margin:auto;
+            padding:40px 0;
         }
 
         /* PROFILE CARD */
 
         .profile-card{
-            background:white;
-            padding:35px;
-            border-radius:20px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.1);
+            background:rgba(255,255,255,0.08);
+            backdrop-filter:blur(10px);
+            border-radius:25px;
+            padding:40px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        /* TOP PROFILE */
+
+        .top-section{
             text-align:center;
+            margin-bottom:45px;
         }
 
-        .profile-card img{
-            width:120px;
+        .profile-image-container{
+            width:140px;
+            height:140px;
+            margin:auto;
             border-radius:50%;
-            border:4px solid #1d2671;
+            padding:6px;
+            background:linear-gradient(135deg,#1d2671,#243b55);
+            box-shadow:0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .profile-card h1{
-            margin-top:15px;
-            color:#1d2671;
+        .profile-image{
+            width:100%;
+            height:100%;
+            border-radius:50%;
+            object-fit:cover;
+            background:white;
         }
 
-        .profile-card p{
+        .profile-name{
+            margin-top:20px;
+            font-size:34px;
+            font-weight:bold;
+        }
+
+        .profile-role{
             margin-top:8px;
-            color:#666;
+            color:#d1d5db;
+            font-size:16px;
+            letter-spacing:1px;
         }
 
         /* WELCOME BOX */
 
         .welcome-box{
             margin-top:30px;
-            background:linear-gradient(135deg,#1d2671,#243b55);
-            color:white;
-            padding:30px;
+            background:rgba(255,255,255,0.06);
             border-radius:18px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.15);
-            text-align:center;
+            padding:25px;
+            line-height:1.8;
         }
 
         .welcome-box h2{
-            margin-bottom:15px;
-            font-size:32px;
+            margin-bottom:12px;
+            color:#00d4ff;
         }
 
         .welcome-box p{
-            font-size:17px;
-            line-height:1.8;
-            color:#f1f1f1;
+            color:#ddd;
         }
 
-        /* INFO CARDS */
+        /* STATS */
 
-        .info{
-            margin-top:35px;
+        .stats{
+            margin-top:45px;
             display:grid;
             grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
             gap:25px;
         }
 
-        .box{
-            background:white;
-            padding:30px;
-            border-radius:18px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.1);
+        .stat-card{
+            background:rgba(255,255,255,0.07);
+            padding:28px;
+            border-radius:20px;
             text-align:center;
-            cursor:pointer;
-            transition:0.4s;
+            transition:0.3s;
         }
 
-        .box:hover{
-            transform:translateY(-10px) scale(1.03);
-            background:linear-gradient(135deg,#1d2671,#243b55);
-            color:white;
+        .stat-card:hover{
+            transform:translateY(-8px);
+            background:rgba(255,255,255,0.12);
         }
 
-        .box h3{
+        .stat-card h1{
+            font-size:38px;
+            color:#00d4ff;
             margin-bottom:10px;
         }
 
-        /* DETAILS SECTION */
+        .stat-card p{
+            color:#ddd;
+        }
 
-        .details{
-            margin-top:35px;
-            background:white;
+        /* SERVICES */
+
+        .services-title{
+            margin-top:55px;
+            margin-bottom:30px;
+            text-align:center;
+            font-size:32px;
+        }
+
+        .services{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+            gap:25px;
+        }
+
+        .service-card{
+            background:rgba(255,255,255,0.08);
             padding:30px;
-            border-radius:18px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.1);
-            min-height:220px;
+            border-radius:22px;
+            text-decoration:none;
+            color:white;
+            transition:0.4s;
+            text-align:center;
+            box-shadow:0 8px 20px rgba(0,0,0,0.15);
         }
 
-        .details h2{
-            color:#1d2671;
-            margin-bottom:20px;
+        .service-card:hover{
+            transform:translateY(-10px) scale(1.03);
+            background:linear-gradient(135deg,#1d2671,#243b55);
         }
 
-        .details p{
-            line-height:1.8;
-            color:#444;
+        .service-icon{
+            font-size:50px;
+            margin-bottom:18px;
+        }
+
+        .service-card h3{
+            margin-bottom:12px;
+            font-size:24px;
+        }
+
+        .service-card p{
+            color:#ddd;
+            line-height:1.6;
         }
 
         /* BUTTON */
 
         .back-btn{
             display:inline-block;
-            margin-top:25px;
+            margin-top:45px;
+            padding:14px 24px;
+            background:#00d4ff;
+            color:#141e30;
             text-decoration:none;
-            background:#1d2671;
-            color:white;
-            padding:12px 24px;
-            border-radius:10px;
+            border-radius:12px;
+            font-weight:bold;
             transition:0.3s;
         }
 
         .back-btn:hover{
-            background:#243b55;
+            background:white;
+            transform:scale(1.05);
+        }
+
+        /* FOOTER */
+
+        .footer{
+            text-align:center;
+            margin-top:45px;
+            color:#ccc;
+            padding-bottom:20px;
         }
 
     </style>
+
 </head>
 
 <body>
 
-    <!-- HEADER -->
-
-    <div class="header">
-
-        <h1>User Profile</h1>
-
-        <p>Manage Your Activity & Services</p>
-
-    </div>
-
-    <!-- MAIN -->
-
     <div class="container">
-
-        <!-- PROFILE CARD -->
 
         <div class="profile-card">
 
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <!-- TOP PROFILE -->
 
-            <h1>{{ session['user'] }}</h1>
+            <div class="top-section">
 
-            <p>Premium Vendor Management User</p>
+                <div class="profile-image-container">
 
-        </div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                         class="profile-image">
 
-        <!-- WELCOME SECTION -->
+                </div>
 
-        <div class="welcome-box">
+                <h1 class="profile-name">
+                    {{username}}
+                </h1>
 
-            <h2>Welcome {{ session['user'] }}</h2>
+                <p class="profile-role">
+                    Vendor Management User
+                </p>
 
-            <p>
-                This profile dashboard helps you monitor purchases,
-                payments, vendor activities, and reviews from one place.
-                As your interactions grow, this section will provide
-                personalized insights and analytics for your account.
-            </p>
+                <!-- WELCOME -->
 
-        </div>
+                <div class="welcome-box">
 
-        <!-- INTERACTIVE INFO CARDS -->
+                    <h2>
+                        Welcome to Vendor Management System
+                    </h2>
 
-        <div class="info">
+                    <p>
 
-            <div class="box"
-                 onclick="showDetails('purchases')">
+                        Manage vendors, products, orders,
+                        delivery tracking, payments and customer reviews
+                        from one centralized and secure platform.
 
-                <h3>🛒 Purchases</h3>
+                    </p>
 
-                <p>0 Orders</p>
-
-            </div>
-
-            <div class="box"
-                 onclick="showDetails('payments')">
-
-                <h3>💳 Payments</h3>
-
-                <p>0 Transactions</p>
+                </div>
 
             </div>
 
-            <div class="box"
-                 onclick="showDetails('reviews')">
+            <!-- STATS -->
 
-                <h3>⭐ Reviews</h3>
+            <div class="stats">
 
-                <p>0 Reviews</p>
+                <div class="stat-card">
+
+                    <h1>
+                        {{total_orders}}
+                    </h1>
+
+                    <p>
+                        Total Orders
+                    </p>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <h1>
+                        {{total_payments}}
+                    </h1>
+
+                    <p>
+                        Payments
+                    </p>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <h1>
+                        {{total_reviews}}
+                    </h1>
+
+                    <p>
+                        Reviews
+                    </p>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <h1>
+                        {{total_vendors}}
+                    </h1>
+
+                    <p>
+                        Vendors
+                    </p>
+
+                </div>
 
             </div>
 
-            <div class="box"
-                 onclick="showDetails('vendors')">
+            <!-- SERVICES -->
 
-                <h3>🏢 Vendors</h3>
+            <h2 class="services-title">
+                Services
+            </h2>
 
-                <p>0 Vendors Connected</p>
+            <div class="services">
+
+                <a href="/vendors" class="service-card">
+
+                    <div class="service-icon">
+                        🏢
+                    </div>
+
+                    <h3>
+                        Vendors
+                    </h3>
+
+                    <p>
+                        Manage vendor and supplier information.
+                    </p>
+
+                </a>
+
+                <a href="/products" class="service-card">
+
+                    <div class="service-icon">
+                        📦
+                    </div>
+
+                    <h3>
+                        Products
+                    </h3>
+
+                    <p>
+                        Add and manage product inventory.
+                    </p>
+
+                </a>
+
+                <a href="/orders" class="service-card">
+
+                    <div class="service-icon">
+                        🛒
+                    </div>
+
+                    <h3>
+                        Orders
+                    </h3>
+
+                    <p>
+                        Create and monitor customer orders.
+                    </p>
+
+                </a>
+
+                <a href="/delivery" class="service-card">
+
+                    <div class="service-icon">
+                        🚚
+                    </div>
+
+                    <h3>
+                        Delivery
+                    </h3>
+
+                    <p>
+                        Track shipping and delivery status.
+                    </p>
+
+                </a>
+
+                <a href="/payments" class="service-card">
+
+                    <div class="service-icon">
+                        💳
+                    </div>
+
+                    <h3>
+                        Payments
+                    </h3>
+
+                    <p>
+                        View payment transactions and history.
+                    </p>
+
+                </a>
+
+                <a href="/reviews" class="service-card">
+
+                    <div class="service-icon">
+                        ⭐
+                    </div>
+
+                    <h3>
+                        Reviews
+                    </h3>
+
+                    <p>
+                        Analyze ratings and customer feedback.
+                    </p>
+
+                </a>
 
             </div>
 
-        </div>
+            <!-- BACK BUTTON -->
 
-        <!-- DETAILS AREA -->
+            <a href="/dashboard" class="back-btn">
 
-        <div class="details" id="detailsBox">
-
-            <h2>Services Offered</h2>
-
-            <p>
-                ✔ Vendor Tracking System <br><br>
-
-                ✔ Product Management <br><br>
-
-                ✔ Order Monitoring <br><br>
-
-                ✔ Payment Tracking <br><br>
-
-                ✔ Vendor Review Analysis <br><br>
-
-                ✔ Real-Time Dashboard Access
-            </p>
-
-        </div>
-
-        <center>
-
-            <a href="/dashboard"
-               class="back-btn">
-
-               Back to Dashboard
+                ← Back to Dashboard
 
             </a>
 
-        </center>
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="footer">
+
+            Smart Vendor • Smart Business • Smart Future
+
+        </div>
 
     </div>
 
-<script>
-
-function showDetails(section){
-
-    let details = document.getElementById("detailsBox");
-
-    if(section === "purchases"){
-
-        details.innerHTML = `
-
-            <h2>🛒 Purchases Information</h2>
-
-            <p>
-                You currently have no purchases or orders in the system.
-                Once interactions begin, order history and invoices
-                will appear here.
-            </p>
-        `;
-    }
-
-    else if(section === "payments"){
-
-        details.innerHTML = `
-
-            <h2>💳 Payments Information</h2>
-
-            <p>
-                No payment transactions have been recorded yet.
-                Billing details and completed payments will
-                appear here in future.
-            </p>
-        `;
-    }
-
-    else if(section === "reviews"){
-
-        details.innerHTML = `
-
-            <h2>⭐ Reviews Information</h2>
-
-            <p>
-                No reviews submitted yet.
-                Vendor ratings and review history
-                will appear here once interactions begin.
-            </p>
-        `;
-    }
-
-    else if(section === "vendors"){
-
-        details.innerHTML = `
-
-            <h2>🏢 Vendor Connections</h2>
-
-            <p>
-                Vendor network is currently in the building phase.
-                Connected vendors and supplier information
-                will appear here soon.
-            </p>
-        `;
-    }
-
-}
-
-</script>
-
 </body>
+
 </html>

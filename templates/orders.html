@@ -62,6 +62,37 @@
     background:#ff774f;
     transform:scale(1.05);
 }
+.pending,
+.accepted,
+.shipped,
+.delivered,
+.out{
+
+    color:white;
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:14px;
+}
+
+.pending{
+    background:#ff9800;
+}
+
+.accepted{
+    background:#28a745;
+}
+
+.shipped{
+    background:#2196f3;
+}
+
+.delivered{
+    background:#673ab7;
+}
+
+.out{
+    background:#dc3545;
+}
 
     </style>
 </head>
@@ -74,64 +105,135 @@
 
 <h1>Orders</h1>
 
-<form method="POST">
-
-<select name="vendor_id">
-
-{% for v in vendors %}
-
-<option value="{{v.id}}">
-
-{{v.name}}
-
-</option>
-
-{% endfor %}
-
-</select>
-
-<select name="product_id">
-
-{% for p in products %}
-
-<option value="{{p.id}}">
-
-{{p.name}}
-
-</option>
-
-{% endfor %}
-
-</select>
-
-<input type="text"
-       name="status"
-       placeholder="Order Status">
-
-<button type="submit">
-
-Create Order
-
-</button>
-
-</form>
-
 <table>
 
 <tr>
-<th>ID</th>
-<th>Vendor</th>
-<th>Product</th>
-<th>Status</th>
+
+    {% if session['role'] == 'vendor' %}
+        <th>Customer</th>
+    {% else %}
+        <th>Vendor</th>
+    {% endif %}
+
+    <th>Product</th>
+
+    <th>Price</th>
+
+    <th>Status</th>
+
+    {% if session['role'] == 'vendor' %}
+        <th>Update</th>
+    {% endif %}
+
 </tr>
 
-{% for o in orders %}
+{% for order in orders %}
 
 <tr>
-<td>{{o.id}}</td>
-<td>{{o.vendor_id}}</td>
-<td>{{o.product_id}}</td>
-<td>{{o.status}}</td>
+
+    {% if session['role'] == 'vendor' %}
+
+        <td>{{ order['customer'] }}</td>
+
+    {% else %}
+
+        <td>{{ order['vendor'] }}</td>
+
+    {% endif %}
+
+    <td>
+
+        {{ order['product_name'] }}
+
+    </td>
+
+    <td>
+
+        ₹{{ order['price'] }}
+
+    </td>
+
+    <td>
+
+        {% if order['status'] == 'Pending' %}
+
+            <span class="pending">
+
+                Pending
+
+            </span>
+
+        {% elif order['status'] == 'Accepted' %}
+
+            <span class="accepted">
+
+                Accepted
+
+            </span>
+
+        {% elif order['status'] == 'Shipped' %}
+
+            <span class="shipped">
+
+                Shipped
+
+            </span>
+
+        {% elif order['status'] == 'Delivered' %}
+
+            <span class="delivered">
+
+                Delivered
+
+            </span>
+
+        {% else %}
+
+            <span class="out">
+
+                Out Of Stock
+
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    {% if session['role'] == 'vendor' %}
+
+    <td>
+
+        <form method="POST"
+              action="/update_order">
+
+            <input type="hidden"
+                   name="order_id"
+                   value="{{ order['id'] }}">
+
+            <select name="status">
+
+                <option>Accepted</option>
+
+                <option>Shipped</option>
+
+                <option>Delivered</option>
+
+                <option>Out Of Stock</option>
+
+            </select>
+
+            <button type="submit">
+
+                Update
+
+            </button>
+
+        </form>
+
+    </td>
+
+    {% endif %}
+
 </tr>
 
 {% endfor %}

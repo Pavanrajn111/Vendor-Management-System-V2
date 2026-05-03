@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Vendor Products</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:#eef2f7;
+        }
+
+        .container{
+            width:90%;
+            margin:auto;
+            padding:40px 0;
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:40px;
+            color:#1d2671;
+        }
+
+        .products-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:25px;
+        }
+
+        .product-card{
+            background:white;
+            padding:25px;
+            border-radius:18px;
+            text-align:center;
+            box-shadow:0 8px 20px rgba(0,0,0,0.1);
+            transition:0.3s;
+        }
+
+        .product-card:hover{
+            transform:translateY(-8px);
+        }
+
+        .product-card h2{
+            color:#1d2671;
+            margin-bottom:15px;
+        }
+
+        .price{
+            font-size:22px;
+            color:#ff512f;
+            margin-bottom:20px;
+            font-weight:bold;
+        }
+
+        button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        .buy-btn{
+            background:#28a745;
+        }
+
+        .buy-btn:hover{
+            background:#34c759;
+        }
+
+        .disabled-btn{
+            background:gray;
+            cursor:not-allowed;
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-top:40px;
+            padding:14px 22px;
+            background:#ff512f;
+            color:white;
+            text-decoration:none;
+            border-radius:12px;
+        }
+
+        @media(max-width:900px){
+
+            .products-grid{
+                grid-template-columns:1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>
+
+        {{ vendor_name }} Products
+
+    </h1>
+
+    <div class="products-grid">
+
+        {% for p in products %}
+
+        <div class="product-card">
+
+            <h2>
+
+                {{ p['name'] }}
+
+            </h2>
+
+            <div class="price">
+
+                ₹{{ p['price'] }}
+
+            </div>
+
+            {% if connected %}
+
+            <form method="POST"
+                  action="/add_order">
+
+                <input type="hidden"
+                       name="product_id"
+                       value="{{ p['id'] }}">
+
+                <button type="submit"
+                        class="buy-btn">
+
+                    Buy Product
+
+                </button>
+
+            </form>
+
+            {% else %}
+
+            <button class="disabled-btn">
+
+                Connect Vendor To Purchase
+
+            </button>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <a href="/vendors"
+       class="back-btn">
+
+       ← Back to Vendors
+
+    </a>
+
+</div>
+
+</body>
+</html>
