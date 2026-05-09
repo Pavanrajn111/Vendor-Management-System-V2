@@ -4,36 +4,91 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Vendor Management System{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/main.css') }}">
 </head>
+
 <body>
+
 {% if current_user.is_authenticated %}
-  <header class="navbar">
-    <a class="brand" href="{{ url_for('main.dashboard') }}">VMS</a>
-    <nav>
-      <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
-      {% if current_user.is_customer %}
-        <a href="{{ url_for('vendors.list_vendors') }}">Vendors</a>
-      {% endif %}
-      <a href="{{ url_for('products.index') }}">Products</a>
-      <a href="{{ url_for('orders.index') }}">Orders</a>
-      <a href="{{ url_for('payments.index') }}">Payments</a>
-      <a href="{{ url_for('reviews.index') }}">Reviews</a>
-      <a href="{{ url_for('auth.logout') }}">Logout ({{ current_user.username }})</a>
-    </nav>
-  </header>
+<header class="navbar">
+
+  <a class="brand"
+     href="{{ url_for('main.dashboard') }}">
+     VMS
+  </a>
+
+  <nav>
+    <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+
+    {% if current_user.is_customer %}
+      <a href="{{ url_for('vendors.list_vendors') }}">Vendors</a>
+    {% endif %}
+
+    <a href="{{ url_for('products.index') }}">Products</a>
+    <a href="{{ url_for('orders.index') }}">Orders</a>
+    <a href="{{ url_for('payments.index') }}">Payments</a>
+    <a href="{{ url_for('reviews.index') }}">Reviews</a>
+
+    <a href="{{ url_for('auth.logout') }}">
+      Logout ({{ current_user.username }})
+    </a>
+  </nav>
+
+</header>
 {% endif %}
 
 <main class="{% block main_class %}container{% endblock %}">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for cat, msg in messages %}
-        <div class="flash {{ cat }}">{{ msg }}</div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
 
-  {% block content %}{% endblock %}
+{% if current_user.is_authenticated
+   and request.endpoint is not none
+   and request.endpoint not in [
+        'main.dashboard',
+        'auth.login',
+        'auth.register'
+   ] %}
+
+  <div class="back-bar">
+
+  <button type="button"
+          class="btn ghost sm"
+          onclick="history.back();">
+
+    &larr; Back
+
+  </button>
+
+  <a class="btn ghost sm"
+     href="{{ url_for('main.dashboard') }}">
+
+     Dashboard
+
+  </a>
+
+</div>
+
+{% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+  {% if messages %}
+
+    {% for cat, msg in messages %}
+
+      <div class="flash {{ cat }}">
+        {{ msg }}
+      </div>
+
+    {% endfor %}
+
+  {% endif %}
+
+{% endwith %}
+
+{% block content %}{% endblock %}
+
 </main>
+
 </body>
 </html>

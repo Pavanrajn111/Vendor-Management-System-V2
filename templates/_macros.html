@@ -1,6 +1,18 @@
 {% macro render_field(field) %}
   {{ field.label }}
+
   {{ field(class="form-control") }}
+
+  {% if field.type == 'PasswordField' %}
+    <div class="password-wrap">
+      {{ field(class="form-control", oninput="this.parentElement.parentElement.querySelectorAll('.field-error').forEach(function(e){e.style.display='none'});") }}
+      <button type="button" class="password-toggle" aria-label="Show password"
+              onclick="(function(b){var i=b.previousElementSibling;var s=i.type==='password';i.type=s?'text':'password';b.textContent=s?'Hide':'Show';b.setAttribute('aria-label',s?'Hide password':'Show password');})(this)">Show</button>
+    </div>
+  {% else %}
+    {{ field(class="form-control") }}
+  {% endif %}
+
   {% if field.errors %}
     {% for e in field.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
   {% endif %}

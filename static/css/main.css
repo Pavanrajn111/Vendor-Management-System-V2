@@ -127,3 +127,26 @@ table tr:hover { background: rgba(255,255,255,.02); }
 
 .row-actions { display: flex; gap: 8px; align-items: center; }
 .inline-form { display: inline; }
+
+/* Password field with show/hide toggle */
+.password-wrap { position: relative; display: block; }
+.password-wrap input { padding-right: 64px; }
+.password-toggle {
+  position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+  background: transparent; color: var(--muted); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer;
+  font-weight: 600;
+}
+.password-toggle:hover { color: var(--text); border-color: var(--primary); }
+
+/* Back navigation bar */
+.back-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.back-bar .btn { text-decoration: none; }
+
+@media (max-width: 600px) {
+  .navbar { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 16px; }
+  .navbar nav { display: flex; flex-wrap: wrap; gap: 8px; }
+  .navbar nav a { margin-left: 0; }
+  .container { margin: 16px auto; padding: 0 14px; }
+}
+
