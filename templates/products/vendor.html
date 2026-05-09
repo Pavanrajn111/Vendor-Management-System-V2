@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+{% block title %}My products · VMS{% endblock %}
+{% block content %}
+<div class="grid cols-2">
+  <div class="card">
+    <h2>Add product</h2>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      {{ render_field(form.name) }}
+      {{ render_field(form.price) }}
+      <div style="margin-top:16px">{{ form.submit(class="btn") }}</div>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Your catalog</h2>
+    {% if products %}
+      <table>
+        <thead><tr><th>Name</th><th>Price</th><th></th></tr></thead>
+        <tbody>
+        {% for p in products %}
+          <tr>
+            <td>{{ p.name }}</td>
+            <td>₹{{ "%.2f"|format(p.price) }}</td>
+            <td>
+              <form class="inline-form" method="POST" action="{{ url_for('products.delete', product_id=p.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn sm danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">No products yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

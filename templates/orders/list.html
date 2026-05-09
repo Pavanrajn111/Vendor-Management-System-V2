@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Orders · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Orders</h1>
+  {% if orders %}
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          {% if current_user.is_vendor %}<th>Customer</th>{% else %}<th>Vendor</th>{% endif %}
+          <th>Product</th><th>Price</th><th>Status</th><th>Date</th>
+          {% if current_user.is_vendor %}<th>Update</th>{% endif %}
+        </tr>
+      </thead>
+      <tbody>
+      {% for o in orders %}
+        <tr>
+          <td>{{ o.id }}</td>
+          <td>{{ o.customer.username if current_user.is_vendor else o.vendor.username }}</td>
+          <td>{{ o.product_name }}</td>
+          <td>₹{{ "%.2f"|format(o.price) }}</td>
+          <td><span class="badge {{ o.status|lower|replace(' ', '') }}">{{ o.status }}</span></td>
+          <td class="muted">{{ o.created_at.strftime('%Y-%m-%d') }}</td>
+          {% if current_user.is_vendor %}
+          <td>
+            <form class="inline-form" method="POST" action="{{ url_for('orders.update_status', order_id=o.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <select name="status" onchange="this.form.submit()">
+                {% for s in statuses %}
+                  <option value="{{ s }}" {% if s == o.status %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">No orders yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

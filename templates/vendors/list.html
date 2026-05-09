@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Vendors · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Vendors</h1>
+  <p class="muted">Connect with vendors to browse and order their products.</p>
+  {% if vendors %}
+    <table>
+      <thead><tr><th>Vendor</th><th>Mobile</th><th></th></tr></thead>
+      <tbody>
+      {% for v in vendors %}
+        <tr>
+          <td>{{ v.username }}</td>
+          <td>{{ v.mobile or "—" }}</td>
+          <td class="row-actions">
+            <a class="btn sm ghost" href="{{ url_for('vendors.vendor_products', vendor_id=v.id) }}">Products</a>
+            <a class="btn sm ghost" href="{{ url_for('vendors.vendor_reviews', vendor_id=v.id) }}">Reviews</a>
+            {% if v.id in connected_ids %}
+              <span class="badge delivered">Connected</span>
+            {% else %}
+              <form class="inline-form" method="POST" action="{{ url_for('vendors.connect', vendor_id=v.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn sm">Connect</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">No vendors yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

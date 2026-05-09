@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Delivery · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Delivery tracking</h1>
+  {% if orders %}
+    <table>
+      <thead><tr><th>#</th><th>Product</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for o in orders %}
+        <tr><td>{{ o.id }}</td><td>{{ o.product_name }}</td>
+          <td><span class="badge {{ o.status|lower|replace(' ', '') }}">{{ o.status }}</span></td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}<p class="muted">No deliveries yet.</p>{% endif %}
+</div>
+{% endblock %}

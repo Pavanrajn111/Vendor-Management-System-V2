@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Payments · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Payments received</h1>
+  {% if payments %}
+    <table>
+      <thead><tr><th>#</th><th>Order</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Update</th></tr></thead>
+      <tbody>
+      {% for p in payments %}
+        <tr>
+          <td>{{ p.id }}</td>
+          <td>{{ p.order_id }}</td>
+          <td>{{ p.customer_id }}</td>
+          <td>{{ p.product_name }}</td>
+          <td>₹{{ "%.2f"|format(p.amount) }}</td>
+          <td><span class="badge {{ p.status|lower|replace(' ', '') }}">{{ p.status }}</span></td>
+          <td>
+            <form class="inline-form" method="POST" action="{{ url_for('payments.update_status', payment_id=p.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <select name="status" onchange="this.form.submit()">
+                {% for s in statuses %}<option value="{{ s }}" {% if s == p.status %}selected{% endif %}>{{ s }}</option>{% endfor %}
+              </select>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}<p class="muted">No payments received yet.</p>{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block main_class %}auth-shell{% endblock %}
+{% block title %}Sign in · VMS{% endblock %}
+{% from "_macros.html" import render_field %}
+{% block content %}
+<div class="card auth-card">
+  <h1>Welcome back</h1>
+  <p class="slogan">Secure vendors • Smart business • Better management</p>
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    {{ render_field(form.username) }}
+    {{ render_field(form.password) }}
+    <div style="margin-top:20px">{{ form.submit(class="btn full") }}</div>
+  </form>
+  <p class="muted" style="text-align:center; margin-top:18px">
+    No account? <a href="{{ url_for('auth.register') }}">Create one</a>
+  </p>
+</div>
+{% endblock %}

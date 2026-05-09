@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Payments · VMS{% endblock %}
+{% block content %}
+{% if orders %}
+<div class="card">
+  <h2>Pay for your orders</h2>
+  <table>
+    <thead><tr><th>Order #</th><th>Product</th><th>Amount</th><th></th></tr></thead>
+    <tbody>
+    {% for o in orders %}
+      <tr>
+        <td>{{ o.id }}</td><td>{{ o.product_name }}</td>
+        <td>₹{{ "%.2f"|format(o.price) }}</td>
+        <td>
+          <form class="inline-form" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="order_id" value="{{ o.id }}">
+            <button class="btn sm">Pay</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<div class="card">
+  <h1>Payment history</h1>
+  {% if payments %}
+    <table>
+      <thead><tr><th>#</th><th>Vendor</th><th>Product</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+      {% for p in payments %}
+        <tr>
+          <td>{{ p.id }}</td>
+          <td>{{ p.vendor_id }}</td>
+          <td>{{ p.product_name }}</td>
+          <td>₹{{ "%.2f"|format(p.amount) }}</td>
+          <td><span class="badge {{ p.status|lower|replace(' ', '') }}">{{ p.status }}</span></td>
+          <td class="muted">{{ p.created_at.strftime('%Y-%m-%d') }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}<p class="muted">No payments yet.</p>{% endif %}
+</div>
+{% endblock %}

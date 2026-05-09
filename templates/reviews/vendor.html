@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Reviews · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Customer reviews</h1>
+  {% if reviews %}
+    {% for r in reviews %}
+      <div style="padding:12px 0; border-bottom:1px solid var(--border);">
+        <strong>{{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}</strong>
+        <span class="muted"> — by {{ r.customer.username }} on {{ r.created_at.strftime('%Y-%m-%d') }}</span>
+        {% if r.comment %}<p style="margin:6px 0 0">{{ r.comment }}</p>{% endif %}
+      </div>
+    {% endfor %}
+  {% else %}<p class="muted">No reviews yet.</p>{% endif %}
+</div>
+{% endblock %}

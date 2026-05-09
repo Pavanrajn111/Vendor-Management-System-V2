@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Vendor Dashboard · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Hello, {{ current_user.username }}</h1>
+  <p class="muted">Vendor overview</p>
+</div>
+
+<div class="grid cols-4">
+  <div class="stat"><div class="label">Customers</div><div class="value">{{ stats.customers }}</div></div>
+  <div class="stat"><div class="label">Orders</div><div class="value">{{ stats.orders }}</div></div>
+  <div class="stat"><div class="label">Reviews</div><div class="value">{{ stats.reviews }}</div></div>
+  <div class="stat"><div class="label">Revenue (Paid)</div><div class="value">₹{{ "%.2f"|format(stats.revenue) }}</div></div>
+</div>
+
+<div class="card" style="margin-top:24px">
+  <h2>Connected customers</h2>
+  {% if connected %}
+    <table>
+      <thead><tr><th>Username</th><th>Mobile</th></tr></thead>
+      <tbody>
+        {% for u in connected %}
+          <tr><td>{{ u.username }}</td><td>{{ u.mobile or "—" }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">No customers connected yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

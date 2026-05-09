@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block main_class %}auth-shell{% endblock %}
+{% block title %}{{ code }} · VMS{% endblock %}
+{% block content %}
+<div class="card auth-card" style="text-align:center">
+  <h1 style="font-size:64px; margin:0">{{ code }}</h1>
+  <p class="muted">{{ message }}</p>
+  <a class="btn ghost" href="{{ url_for('main.dashboard') }}">Go to dashboard</a>
+</div>
+{% endblock %}

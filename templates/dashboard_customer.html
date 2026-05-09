@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Customer Dashboard · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Hello, {{ current_user.username }}</h1>
+  <p class="muted">Customer overview</p>
+</div>
+
+<div class="grid cols-4">
+  <div class="stat"><div class="label">Vendors available</div><div class="value">{{ stats.vendors_total }}</div></div>
+  <div class="stat"><div class="label">Your orders</div><div class="value">{{ stats.orders }}</div></div>
+  <div class="stat"><div class="label">Your payments</div><div class="value">{{ stats.payments }}</div></div>
+  <div class="stat"><div class="label">Connected</div><div class="value">{{ connected|length }}</div></div>
+</div>
+
+<div class="card" style="margin-top:24px">
+  <h2>Connected vendors</h2>
+  {% if connected %}
+    <table>
+      <thead><tr><th>Vendor</th><th>Mobile</th><th></th></tr></thead>
+      <tbody>
+        {% for v in connected %}
+          <tr>
+            <td>{{ v.username }}</td>
+            <td>{{ v.mobile or "—" }}</td>
+            <td><a class="btn sm ghost" href="{{ url_for('vendors.vendor_products', vendor_id=v.id) }}">View products</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">You haven't connected with any vendors yet. <a href="{{ url_for('vendors.list_vendors') }}">Browse vendors</a></p>
+  {% endif %}
+</div>
+{% endblock %}

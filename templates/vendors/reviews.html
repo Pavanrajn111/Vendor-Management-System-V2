@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ vendor.username }} · Reviews{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Reviews for {{ vendor.username }}</h1>
+  {% if reviews %}
+    {% for r in reviews %}
+      <div class="card" style="margin-top:12px">
+        <strong>{{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}</strong>
+        <span class="muted"> — by {{ r.customer.username }}</span>
+        {% if r.comment %}<p>{{ r.comment }}</p>{% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No reviews yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

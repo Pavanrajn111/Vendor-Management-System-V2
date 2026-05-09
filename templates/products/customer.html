@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Products · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Products from your vendors</h1>
+  {% if products %}
+    <table>
+      <thead><tr><th>Vendor</th><th>Product</th><th>Price</th><th></th></tr></thead>
+      <tbody>
+      {% for p in products %}
+        <tr>
+          <td>{{ p.vendor_user.username }}</td>
+          <td>{{ p.name }}</td>
+          <td>₹{{ "%.2f"|format(p.price) }}</td>
+          <td>
+            <form class="inline-form" method="POST" action="{{ url_for('orders.place') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="product_id" value="{{ p.id }}">
+              <button class="btn sm">Order</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">No products available. Connect with a vendor first on the <a href="{{ url_for('vendors.list_vendors') }}">Vendors page</a>.</p>
+  {% endif %}
+</div>
+{% endblock %}
