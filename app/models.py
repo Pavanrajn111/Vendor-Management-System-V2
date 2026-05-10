@@ -59,6 +59,7 @@ class Product(db.Model):
     vendor_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     name = db.Column(db.String(120), nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)
+    image_filename = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 

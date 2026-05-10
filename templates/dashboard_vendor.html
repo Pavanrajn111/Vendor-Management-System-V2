@@ -10,7 +10,7 @@
   <div class="stat"><div class="label">Customers</div><div class="value">{{ stats.customers }}</div></div>
   <div class="stat"><div class="label">Orders</div><div class="value">{{ stats.orders }}</div></div>
   <div class="stat"><div class="label">Reviews</div><div class="value">{{ stats.reviews }}</div></div>
-  <div class="stat"><div class="label">Revenue (Paid)</div><div class="value">₹{{ "%.2f"|format(stats.revenue) }}</div></div>
+  <div class="stat"><div class="label">Products</div><div class="value">{{ stats.products }}</div></div>
 </div>
 
 <div class="card" style="margin-top:24px">
@@ -26,6 +26,26 @@
     </table>
   {% else %}
     <p class="muted">No customers connected yet.</p>
+  {% endif %}
+</div>
+
+<div class="card" style="margin-top:24px">
+  <h2>Recent products</h2>
+  {% if recent_products %}
+    <table>
+      <thead><tr><th>Product</th><th>Price</th><th>Added</th></tr></thead>
+      <tbody>
+        {% for p in recent_products %}
+          <tr>
+            <td>{{ p.name }}</td>
+            <td>₹{{ "%.2f"|format(p.price) }}</td>
+            <td>{{ p.created_at|relative_time }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">No products added yet. Add products from the Products page.</p>
   {% endif %}
 </div>
 {% endblock %}

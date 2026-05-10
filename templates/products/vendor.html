@@ -5,10 +5,11 @@
 <div class="grid cols-2">
   <div class="card">
     <h2>Add product</h2>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
       {{ render_field(form.name) }}
       {{ render_field(form.price) }}
+      {{ render_field(form.image) }}
       <div style="margin-top:16px">{{ form.submit(class="btn") }}</div>
     </form>
   </div>
@@ -16,11 +17,17 @@
     <h2>Your catalog</h2>
     {% if products %}
       <table>
-        <thead><tr><th>Name</th><th>Price</th><th></th></tr></thead>
+        <thead><tr><th>Product</th><th>Price</th><th></th></tr></thead>
         <tbody>
         {% for p in products %}
           <tr>
-            <td>{{ p.name }}</td>
+            <td class="product-cell">
+              <img class="product-thumb" src="{{ url_for('static', filename='uploads/' + p.image_filename) if p.image_filename else url_for('static', filename='images/product-placeholder.svg') }}" alt="{{ p.name }}">
+              <div>
+                <div class="product-name">{{ p.name }}</div>
+                <div class="product-meta">Added {{ p.created_at|relative_time }}</div>
+              </div>
+            </td>
             <td>₹{{ "%.2f"|format(p.price) }}</td>
             <td>
               <form class="inline-form" method="POST" action="{{ url_for('products.delete', product_id=p.id) }}">

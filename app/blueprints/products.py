@@ -1,5 +1,9 @@
-from flask import Blueprint, abort, flash, redirect, render_template, url_for
+import os
+from datetime import datetime
+
+from flask import Blueprint, abort, flash, redirect, render_template, url_for, current_app
 from flask_login import current_user, login_required
+from werkzeug.utils import secure_filename
 
 from ..decorators import role_required
 from ..extensions import db
@@ -9,14 +13,41 @@ from ..models import Connection, Product
 bp = Blueprint("products", __name__, url_prefix="/products")
 
 
+def allowed_image(filename: str) -> bool:
+    if not filename or "." not in filename:
+        return False
+    ext = filename.rsplit('.', 1)[1].lower()
+    return ext in current_app.config.get("ALLOWED_IMAGE_EXTENSIONS", set())
+
+
+def save_product_image(file_storage, vendor_id: int) -> str | None:
+    filename = secure_filename(file_storage.filename)
+    if not allowed_image(filename):
+        return None
+    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    safe_name = f"vendor{vendor_id}_{timestamp}_{filename}"
+    upload_folder = current_app.config["UPLOAD_FOLDER"]
+    os.makedirs(upload_folder, exist_ok=True)
+    path = os.path.join(upload_folder, safe_name)
+    file_storage.save(path)
+    return safe_name
+
+
 @bp.route("/", methods=["GET", "POST"])
 @login_required
 def index():
     if current_user.is_vendor:
         form = ProductForm()
         if form.validate_on_submit():
-            db.session.add(Product(vendor_id=current_user.id,
-                                   name=form.name.data, price=form.price.data))
+            image_filename = None
+            if form.image.data:
+                image_filename = save_product_image(form.image.data, current_user.id)
+            db.session.add(Product(
+                vendor_id=current_user.id,
+                name=form.name.data,
+                price=form.price.data,
+                image_filename=image_filename,
+            ))
             db.session.commit()
             flash("Product added.", "success")
             return redirect(url_for("products.index"))

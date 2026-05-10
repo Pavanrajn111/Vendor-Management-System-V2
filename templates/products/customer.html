@@ -4,25 +4,26 @@
 <div class="card">
   <h1>Products from your vendors</h1>
   {% if products %}
-    <table>
-      <thead><tr><th>Vendor</th><th>Product</th><th>Price</th><th></th></tr></thead>
-      <tbody>
+    <div class="product-grid">
       {% for p in products %}
-        <tr>
-          <td>{{ p.vendor_user.username }}</td>
-          <td>{{ p.name }}</td>
-          <td>₹{{ "%.2f"|format(p.price) }}</td>
-          <td>
-            <form class="inline-form" method="POST" action="{{ url_for('orders.place') }}">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <input type="hidden" name="product_id" value="{{ p.id }}">
-              <button class="btn sm">Order</button>
-            </form>
-          </td>
-        </tr>
+        <div class="product-card">
+          <img class="product-image" src="{{ url_for('static', filename='uploads/' + p.image_filename) if p.image_filename else url_for('static', filename='images/product-placeholder.svg') }}" alt="{{ p.name }}">
+          <div class="product-details">
+            <h3 class="product-title">{{ p.name }}</h3>
+            <p class="product-vendor">Sold by {{ p.vendor_user.username }}</p>
+            <p class="product-time">{{ p.created_at|relative_time }}</p>
+            <div class="product-footer">
+              <span class="product-price">₹{{ "%.2f"|format(p.price) }}</span>
+              <form method="POST" action="{{ url_for('orders.place') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="product_id" value="{{ p.id }}">
+                <button class="btn sm">Buy</button>
+              </form>
+            </div>
+          </div>
+        </div>
       {% endfor %}
-      </tbody>
-    </table>
+    </div>
   {% else %}
     <p class="muted">No products available. Connect with a vendor first on the <a href="{{ url_for('vendors.list_vendors') }}">Vendors page</a>.</p>
   {% endif %}

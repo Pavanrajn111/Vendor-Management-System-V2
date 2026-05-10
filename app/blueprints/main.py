@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from sqlalchemy import func
 
 from ..extensions import db
-from ..models import Connection, Order, Payment, Review, User
+from ..models import Connection, Order, Payment, Product, Review, User
 
 bp = Blueprint("main", __name__)
 
@@ -21,10 +21,17 @@ def dashboard():
                 .filter_by(vendor_id=current_user.id).scalar(),
             "revenue": db.session.query(func.coalesce(func.sum(Payment.amount), 0))
                 .filter_by(vendor_id=current_user.id, status="Paid").scalar(),
+            "products": db.session.query(func.count(Product.id))
+                .filter_by(vendor_id=current_user.id).scalar(),
         }
         connected = (db.session.query(User).join(Connection, Connection.customer_id == User.id)
                      .filter(Connection.vendor_id == current_user.id).all())
-        return render_template("dashboard_vendor.html", stats=stats, connected=connected)
+        recent_products = (Product.query
+            .filter_by(vendor_id=current_user.id)
+            .order_by(Product.created_at.desc())
+            .limit(5)
+            .all())
+        return render_template("dashboard_vendor.html", stats=stats, connected=connected, recent_products=recent_products)
 
     stats = {
         "vendors_total": db.session.query(func.count(User.id)).filter_by(role="vendor").scalar(),

@@ -7,6 +7,9 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///vendor.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "..", "static", "uploads")
+    ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
+
     # Security hardening
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"

@@ -2,32 +2,38 @@
 {% from "_macros.html" import render_field %}
 {% block title %}Reviews · VMS{% endblock %}
 {% block content %}
-<div class="grid cols-2">
-  <div class="card">
-    <h2>Leave a review</h2>
-    {% if form.vendor_id.choices %}
-    <form method="POST">
-      {{ form.hidden_tag() }}
-      {{ render_field(form.vendor_id) }}
-      {{ render_field(form.rating) }}
-      {{ render_field(form.comment) }}
-      <div style="margin-top:16px">{{ form.submit(class="btn") }}</div>
-    </form>
-    {% else %}
-      <p class="muted">Connect with a vendor first to leave a review.</p>
-    {% endif %}
-  </div>
-  <div class="card">
-    <h2>Your reviews</h2>
-    {% if reviews %}
+<div class="card">
+  <h2>Leave a review</h2>
+  {% if form.vendor_id.choices %}
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    {{ render_field(form.vendor_id) }}
+    {{ render_field(form.rating) }}
+    {{ render_field(form.comment) }}
+    <div style="margin-top:16px">{{ form.submit(class="btn full") }}</div>
+  </form>
+  {% else %}
+    <p class="muted">Connect with a vendor first to leave a review.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>Your reviews</h2>
+  {% if reviews %}
+    <div class="review-grid">
       {% for r in reviews %}
-        <div style="padding:10px 0; border-bottom:1px solid var(--border);">
-          <strong>{{ r.vendor.username }}</strong>
-          — {{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}
-          {% if r.comment %}<div class="muted">{{ r.comment }}</div>{% endif %}
+        <div class="review-card">
+          <div class="review-header">
+            <strong class="review-vendor">{{ r.vendor.username }}</strong>
+            <span class="review-time">{{ r.created_at|relative_time }}</span>
+          </div>
+          <div class="review-rating">{{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}</div>
+          {% if r.comment %}
+            <p class="review-comment">{{ r.comment }}</p>
+          {% endif %}
         </div>
       {% endfor %}
-    {% else %}<p class="muted">No reviews yet.</p>{% endif %}
-  </div>
+    </div>
+  {% else %}<p class="muted">No reviews yet.</p>{% endif %}
 </div>
 {% endblock %}

@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import (DecimalField, IntegerField, PasswordField, SelectField,
-                     StringField, SubmitField, TextAreaField)
+from wtforms import (DecimalField, FileField, IntegerField, PasswordField,
+                     SelectField, StringField, SubmitField, TextAreaField)
+from flask_wtf.file import FileAllowed
 from wtforms.validators import (DataRequired, EqualTo, Length, NumberRange,
                                 Optional, Regexp)
 
@@ -28,6 +29,7 @@ class RegisterForm(FlaskForm):
 class ProductForm(FlaskForm):
     name = StringField("Product name", validators=[DataRequired(), Length(1, 120)])
     price = DecimalField("Price", validators=[DataRequired(), NumberRange(min=0)])
+    image = FileField("Product image", validators=[FileAllowed(["png", "jpg", "jpeg", "gif", "webp"], "Images only")])
     submit = SubmitField("Add product")
 
 

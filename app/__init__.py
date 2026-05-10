@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from dotenv import load_dotenv
 from flask import Flask, render_template
@@ -22,6 +23,31 @@ def create_app(config_class: type = Config) -> Flask:
     login_manager.init_app(app)
     csrf.init_app(app)
     limiter.init_app(app)
+
+    @app.template_filter("relative_time")
+    def relative_time(value):
+        if not value:
+            return ""
+        now = datetime.utcnow()
+        delta = now - value if now >= value else value - now
+        seconds = int(delta.total_seconds())
+        if seconds < 60:
+            return "Just now"
+        if seconds < 3600:
+            minutes = seconds // 60
+            return f"{minutes} minute{'s' if minutes != 1 else ''} ago"
+        if seconds < 86400:
+            hours = seconds // 3600
+            return f"{hours} hour{'s' if hours != 1 else ''} ago"
+        days = seconds // 86400
+        if days == 1:
+            return "Yesterday"
+        if days < 7:
+            return f"{days} days ago"
+        weeks = days // 7
+        if weeks < 5:
+            return f"{weeks} week{'s' if weeks != 1 else ''} ago"
+        return value.strftime("%b %d, %Y")
 
     # Blueprints
     from .blueprints.auth import bp as auth_bp

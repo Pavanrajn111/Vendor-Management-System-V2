@@ -5,29 +5,29 @@
   <h1>Vendors</h1>
   <p class="muted">Connect with vendors to browse and order their products.</p>
   {% if vendors %}
-    <table>
-      <thead><tr><th>Vendor</th><th>Mobile</th><th></th></tr></thead>
-      <tbody>
+    <div class="vendor-grid">
       {% for v in vendors %}
-        <tr>
-          <td>{{ v.username }}</td>
-          <td>{{ v.mobile or "—" }}</td>
-          <td class="row-actions">
-            <a class="btn sm ghost" href="{{ url_for('vendors.vendor_products', vendor_id=v.id) }}">Products</a>
-            <a class="btn sm ghost" href="{{ url_for('vendors.vendor_reviews', vendor_id=v.id) }}">Reviews</a>
-            {% if v.id in connected_ids %}
-              <span class="badge delivered">Connected</span>
-            {% else %}
-              <form class="inline-form" method="POST" action="{{ url_for('vendors.connect', vendor_id=v.id) }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button class="btn sm">Connect</button>
-              </form>
-            {% endif %}
-          </td>
-        </tr>
+        <div class="vendor-card">
+          <div class="vendor-avatar">{{ v.username[0].upper() }}</div>
+          <div class="vendor-details">
+            <h3 class="vendor-name">{{ v.username }}</h3>
+            <p class="vendor-mobile">{{ v.mobile or "Not provided" }}</p>
+            <div class="vendor-actions">
+              <a class="btn sm ghost" href="{{ url_for('vendors.vendor_products', vendor_id=v.id) }}">Products</a>
+              <a class="btn sm ghost" href="{{ url_for('vendors.vendor_reviews', vendor_id=v.id) }}">Reviews</a>
+              {% if v.id in connected_ids %}
+                <span class="badge delivered">Connected</span>
+              {% else %}
+                <form method="POST" action="{{ url_for('vendors.connect', vendor_id=v.id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="btn sm">Connect</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
       {% endfor %}
-      </tbody>
-    </table>
+    </div>
   {% else %}
     <p class="muted">No vendors yet.</p>
   {% endif %}
