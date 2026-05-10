@@ -7,41 +7,51 @@
     <div class="flex justify-between items-center mb-8 border-b border-glass pb-4">
         <div>
             <h1 class="text-3xl font-bold text-main">Orders & Delivery Tracking</h1>
-            <p class="text-muted mt-1">{% if session['role'] == 'vendor' %}Manage customer orders and update delivery status.{% else %}Track the delivery of your purchases in real-time.{% endif %}</p>
+            <p class="text-muted mt-1">{% if session['role'] == 'vendor' %}Manage customer orders and update delivery
+                status.{% else %}Track the delivery of your purchases in real-time.{% endif %}</p>
         </div>
     </div>
 
     {% if orders %}
-        {% if session['role'] == 'vendor' %}
-        <!-- VENDOR VIEW: Table/Grid for managing orders -->
-        <div class="glass-card overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left whitespace-nowrap">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Customer</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                            <th>Update Delivery</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-glass">
-                        {% for order in orders %}
-                        <tr class="hover:bg-overlay transition-colors">
-                            <td class="font-semibold text-main flex items-center gap-3">
-                                {% if order['product_image'] %}
-                                    <img src="{{ url_for('static', filename=order['product_image']) }}" class="w-10 h-10 rounded object-cover border border-glass">
-                                {% else %}
-                                    <div class="w-10 h-10 rounded bg-overlay flex items-center justify-center text-muted border border-glass"><i class="fa-solid fa-image"></i></div>
-                                {% endif %}
-                                {{ order['product_name'] }}
-                            </td>
-                            <td class="font-medium flex items-center gap-2 text-main"><div class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-500 flex items-center justify-center font-bold">{{ order['customer'][0]|upper }}</div> {{ order['customer'] }}</td>
-                            <td class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 font-bold">${{ order['price'] }}</td>
-                            
-                            <td>
-                                <span class="badge 
+    {% if session['role'] == 'vendor' %}
+    <!-- VENDOR VIEW: Table/Grid for managing orders -->
+    <div class="glass-card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left whitespace-nowrap">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Customer</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Update Delivery</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-glass">
+                    {% for order in orders %}
+                    <tr class="hover:bg-overlay transition-colors">
+                        <td class="font-semibold text-main flex items-center gap-3">
+                            {% if order['product_image'] %}
+                            <img src="{{ url_for('static', filename=order['product_image']) }}"
+                                class="w-10 h-10 rounded object-cover border border-glass">
+                            {% else %}
+                            <div
+                                class="w-10 h-10 rounded bg-overlay flex items-center justify-center text-muted/50 border border-glass">
+                                <i class="fa-solid fa-box-open"></i></div>
+                            {% endif %}
+                            {{ order['product_name'] }}
+                        </td>
+                        <td class="font-medium flex items-center gap-2 text-main">
+                            <div
+                                class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-500 flex items-center justify-center font-bold">
+                                {{ order['customer'][0]|upper }}</div> {{ order['customer'] }}
+                        </td>
+                        <td
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 font-bold">
+                            ${{ order['price'] }}</td>
+
+                        <td>
+                            <span class="badge 
                                     {% if order['status'] == 'Pending' %}badge-pending
                                     {% elif order['status'] == 'Accepted' %}badge-accepted
                                     {% elif order['status'] == 'Processing' %}badge-processing
@@ -49,51 +59,69 @@
                                     {% elif order['status'] == 'Out For Delivery' %}badge-outfordelivery
                                     {% elif order['status'] == 'Delivered' %}badge-delivered
                                     {% else %}badge-outofstock{% endif %}">
-                                    {{ order['status'] }}
-                                </span>
-                            </td>
+                                {{ order['status'] }}
+                            </span>
+                        </td>
 
-                            <td>
-                                <form method="POST" action="/update_order" class="flex flex-col gap-2">
-                                    <input type="hidden" name="order_id" value="{{ order['id'] }}">
-                                    
-                                    <div class="flex gap-2">
-                                        <select name="status" class="glass-input px-3 py-1.5 rounded-lg text-sm appearance-none focus:outline-none w-40" onchange="toggleDateInput(this, {{ order['id'] }})">
-                                            <option value="Pending" class="text-slate-800" {% if order['status'] == 'Pending' %}selected{% endif %}>Pending</option>
-                                            <option value="Accepted" class="text-slate-800" {% if order['status'] == 'Accepted' %}selected{% endif %}>Accepted</option>
-                                            <option value="Processing" class="text-slate-800" {% if order['status'] == 'Processing' %}selected{% endif %}>Processing</option>
-                                            <option value="Shipped" class="text-slate-800" {% if order['status'] == 'Shipped' %}selected{% endif %}>Shipped</option>
-                                            <option value="Out For Delivery" class="text-slate-800" {% if order['status'] == 'Out For Delivery' %}selected{% endif %}>Out For Delivery</option>
-                                            <option value="Delivered" class="text-slate-800" {% if order['status'] == 'Delivered' %}selected{% endif %}>Delivered</option>
-                                            <option value="Out Of Stock" class="text-slate-800" {% if order['status'] == 'Out Of Stock' %}selected{% endif %}>Out Of Stock</option>
+                        <td>
+                            <form method="POST" action="/update_order" class="flex flex-col gap-2">
+                                <input type="hidden" name="order_id" value="{{ order['id'] }}">
+
+                                <div class="flex gap-2 items-center">
+                                    <div class="blend-select-wrapper update-status w-40">
+                                        <select name="status"
+                                            class="glass-input px-3 py-1.5 rounded-lg text-sm appearance-none focus:outline-none w-full blend-select"
+                                            onchange="toggleDateInput(this, {{ order['id'] }})">
+                                            <option value="Pending" {% if order['status']=='Pending' %}selected{% endif
+                                                %}>Pending</option>
+                                            <option value="Accepted" {% if order['status']=='Accepted' %}selected{%
+                                                endif %}>Accepted</option>
+                                            <option value="Processing" {% if order['status']=='Processing' %}selected{%
+                                                endif %}>Processing</option>
+                                            <option value="Shipped" {% if order['status']=='Shipped' %}selected{% endif
+                                                %}>Shipped</option>
+                                            <option value="Out For Delivery" {% if order['status']=='Out For Delivery'
+                                                %}selected{% endif %}>Out For Delivery</option>
+                                            <option value="Delivered" {% if order['status']=='Delivered' %}selected{%
+                                                endif %}>Delivered</option>
+                                            <option value="Out Of Stock" {% if order['status']=='Out Of Stock'
+                                                %}selected{% endif %}>Out Of Stock</option>
                                         </select>
-                                        <button type="submit" class="btn-glow px-3 py-1.5 rounded-lg text-sm font-medium">Update</button>
                                     </div>
-                                    
-                                    <div id="expected-date-container-{{ order['id'] }}" class="{% if order['status'] in ['Processing', 'Shipped', 'Out For Delivery'] %}block{% else %}hidden{% endif %}">
-                                        <input type="date" name="expected_delivery" value="{{ order['expected_delivery'] or '' }}" class="glass-input px-3 py-1 text-xs rounded w-40" placeholder="Expected Delivery">
-                                        <div class="text-[10px] text-muted mt-0.5">Set Expected Delivery Date</div>
-                                    </div>
-                                    
-                                    <div id="delivered-date-container-{{ order['id'] }}" class="{% if order['status'] == 'Delivered' %}block{% else %}hidden{% endif %}">
-                                        <input type="date" name="delivered_date" value="{{ order['delivered_date'] or '' }}" class="glass-input px-3 py-1 text-xs rounded w-40" placeholder="Delivered Date">
-                                        <div class="text-[10px] text-muted mt-0.5">Set Delivery Date</div>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                                    <button type="submit"
+                                        class="btn-glow px-3 py-1.5 rounded-lg text-sm font-medium">Update</button>
+                                </div>
+
+                                <div id="expected-date-container-{{ order['id'] }}"
+                                    class="{% if order['status'] in ['Processing', 'Shipped', 'Out For Delivery'] %}block{% else %}hidden{% endif %}">
+                                    <input type="date" name="expected_delivery"
+                                        value="{{ order['expected_delivery'] or '' }}"
+                                        class="glass-input px-3 py-1 text-xs rounded w-40"
+                                        placeholder="Expected Delivery">
+                                    <div class="text-[10px] text-muted mt-0.5">Set Expected Delivery Date</div>
+                                </div>
+
+                                <div id="delivered-date-container-{{ order['id'] }}"
+                                    class="{% if order['status'] == 'Delivered' %}block{% else %}hidden{% endif %}">
+                                    <input type="date" name="delivered_date" value="{{ order['delivered_date'] or '' }}"
+                                        class="glass-input px-3 py-1 text-xs rounded w-40" placeholder="Delivered Date">
+                                    <div class="text-[10px] text-muted mt-0.5">Set Delivery Date</div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        
-        <script>
+    </div>
+
+    <script>
         function toggleDateInput(selectElem, orderId) {
             const expectedContainer = document.getElementById('expected-date-container-' + orderId);
             const deliveredContainer = document.getElementById('delivered-date-container-' + orderId);
             const status = selectElem.value;
-            
+
             if (['Processing', 'Shipped', 'Out For Delivery'].includes(status)) {
                 expectedContainer.classList.remove('hidden');
                 deliveredContainer.classList.add('hidden');
@@ -105,44 +133,50 @@
                 deliveredContainer.classList.add('hidden');
             }
         }
-        </script>
-        
-        {% else %}
-        <!-- CUSTOMER VIEW: Visual timeline tracker -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {% for order in orders %}
-            <div class="glass-card p-6 flex flex-col relative overflow-hidden {% if order['status'] == 'Out Of Stock' %}opacity-75 grayscale-[30%]{% endif %}">
-                <!-- Decoration -->
-                {% if order['status'] == 'Delivered' %}
-                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-green-500/10 rounded-full blur-xl z-0"></div>
-                {% elif order['status'] == 'Out Of Stock' %}
-                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-500/10 rounded-full blur-xl z-0"></div>
-                {% else %}
-                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-xl z-0"></div>
-                {% endif %}
+    </script>
 
-                <!-- Order Details -->
-                <div class="relative z-10 flex gap-4 mb-6 pb-4 border-b border-glass">
-                    <div class="w-20 h-20 bg-overlay rounded-lg overflow-hidden border border-glass shrink-0">
-                        {% if order['product_image'] %}
-                            <img src="{{ url_for('static', filename=order['product_image']) }}" class="w-full h-full object-cover">
-                        {% else %}
-                            <div class="w-full h-full flex items-center justify-center text-3xl text-muted"><i class="fa-solid fa-image"></i></div>
-                        {% endif %}
-                    </div>
-                    <div class="flex flex-col justify-between w-full">
-                        <div>
-                            <div class="flex justify-between items-start">
-                                <h3 class="text-lg font-bold text-main leading-tight">{{ order['product_name'] }}</h3>
-                                <div class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 ml-2 shrink-0">
-                                    ${{ order['price'] }}
-                                </div>
+    {% else %}
+    <!-- CUSTOMER VIEW: Visual timeline tracker -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {% for order in orders %}
+        <div
+            class="glass-card p-6 flex flex-col relative overflow-hidden {% if order['status'] == 'Out Of Stock' %}opacity-75 grayscale-[30%]{% endif %}">
+            <!-- Decoration -->
+            {% if order['status'] == 'Delivered' %}
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-green-500/10 rounded-full blur-xl z-0"></div>
+            {% elif order['status'] == 'Out Of Stock' %}
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-500/10 rounded-full blur-xl z-0"></div>
+            {% else %}
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-xl z-0"></div>
+            {% endif %}
+
+            <!-- Order Details -->
+            <div class="relative z-10 flex gap-4 mb-6 pb-4 border-b border-glass">
+                <div class="w-20 h-20 bg-overlay rounded-lg overflow-hidden border border-glass shrink-0">
+                    {% if order['product_image'] %}
+                    <img src="{{ url_for('static', filename=order['product_image']) }}"
+                        class="w-full h-full object-cover">
+                    {% else %}
+                    <div
+                        class="w-full h-full flex items-center justify-center text-3xl text-muted/50 bg-gradient-to-br from-transparent to-slate-900/20">
+                        <i class="fa-solid fa-box-open"></i></div>
+                    {% endif %}
+                </div>
+                <div class="flex flex-col justify-between w-full">
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-lg font-bold text-main leading-tight">{{ order['product_name'] }}</h3>
+                            <div
+                                class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 ml-2 shrink-0">
+                                ${{ order['price'] }}
                             </div>
-                            <div class="text-xs text-indigo-500 font-medium mt-1"><i class="fa-solid fa-store"></i> Vendor: {{ order['vendor'] }}</div>
                         </div>
-                        
-                        <div class="flex justify-between items-end mt-2">
-                            <span class="badge 
+                        <div class="text-xs text-indigo-500 font-medium mt-1"><i class="fa-solid fa-store"></i> Vendor:
+                            {{ order['vendor'] }}</div>
+                    </div>
+
+                    <div class="flex justify-between items-end mt-2">
+                        <span class="badge 
                                 {% if order['status'] == 'Pending' %}badge-pending
                                 {% elif order['status'] == 'Accepted' %}badge-accepted
                                 {% elif order['status'] == 'Processing' %}badge-processing
@@ -150,87 +184,141 @@
                                 {% elif order['status'] == 'Out For Delivery' %}badge-outfordelivery
                                 {% elif order['status'] == 'Delivered' %}badge-delivered
                                 {% else %}badge-outofstock{% endif %} text-[10px] px-2 py-0.5">
-                                {{ order['status'] }}
-                            </span>
-                            
-                            {% if order['status'] in ['Processing', 'Shipped', 'Out For Delivery'] and order['expected_delivery'] %}
-                                <div class="text-xs text-slate-300 font-medium bg-black/30 px-2 py-1 rounded">
-                                    <i class="fa-regular fa-calendar text-cyan-400 mr-1"></i> Exp: {{ order['expected_delivery'] }}
-                                </div>
-                            {% endif %}
+                            {{ order['status'] }}
+                        </span>
+
+                        {% if order['status'] in ['Processing', 'Shipped', 'Out For Delivery'] and
+                        order['expected_delivery'] %}
+                        <div class="text-xs text-main font-medium bg-black/30 px-2 py-1 rounded">
+                            <i class="fa-regular fa-calendar text-cyan-400 mr-1"></i> Exp: {{ order['expected_delivery']
+                            }}
                         </div>
+                        {% endif %}
                     </div>
                 </div>
+            </div>
 
-                <!-- Delivery Tracking Timeline -->
-                <div class="relative z-10 mt-auto bg-overlay rounded-xl p-5 border border-glass">
-                    {% if order['status'] == 'Out Of Stock' %}
-                        <div class="text-center py-4">
-                            <i class="fa-solid fa-box-open text-red-500 text-4xl mb-2"></i>
-                            <h4 class="font-bold text-red-500">Order Cancelled</h4>
-                            <p class="text-sm text-muted mt-1">Sorry, this product is currently out of stock. The order has been cancelled and moved to your history.</p>
-                        </div>
-                    {% elif order['status'] == 'Delivered' %}
-                        <div class="text-center py-4 flex flex-col items-center">
-                            <div class="w-16 h-16 rounded-full bg-green-500/20 text-green-400 border-2 border-green-500 flex items-center justify-center text-3xl mb-3 shadow-[0_0_15px_rgba(34,197,94,0.3)] animate-pulse">
-                                <i class="fa-solid fa-check"></i>
-                            </div>
-                            <h4 class="font-bold text-green-500 text-lg">Delivered Successfully!</h4>
-                            {% if order['delivered_date'] %}
-                                <p class="text-sm text-muted mt-1">Your package arrived on {{ order['delivered_date'] }}</p>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div class="flex justify-between items-center relative before:content-[''] before:absolute before:top-4 before:left-0 before:w-full before:h-1 before:bg-slate-700 before:-z-10">
-                            
-                            {% set steps = ['Pending', 'Accepted', 'Processing', 'Shipped', 'Out For Delivery'] %}
-                            {% set current_idx = steps.index(order['status']) if order['status'] in steps else 0 %}
-                            
-                            {% for step in steps %}
-                                {% set step_idx = loop.index0 %}
-                                {% set is_completed = current_idx >= step_idx %}
-                                {% set is_current = current_idx == step_idx %}
-                                
-                                <div class="flex flex-col items-center gap-2 bg-transparent z-10">
-                                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500
+            <!-- Order Actions -->
+            <div class="relative z-10 flex gap-3 mt-4 pt-4 border-t border-glass">
+                <a href="/vendor_products/{{ order['vendor'] }}"
+                    class="flex-1 py-2 text-center rounded-lg bg-overlay text-main border border-glass hover:bg-slate-800 transition-colors font-medium">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> Buy Again
+                </a>
+                <button type="button" onclick="toggleTracking({{ order['id'] }})"
+                    class="flex-1 py-2 text-center rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/20 transition-colors font-medium">
+                    <i class="fa-solid fa-location-crosshairs mr-1"></i> Track Order
+                </button>
+            </div>
+
+            <!-- Delivery Tracking Timeline (Hidden by Default) -->
+            <div id="tracking-{{ order['id'] }}"
+                class="relative z-10 hidden mt-4 bg-overlay rounded-xl p-5 border border-glass transition-all duration-300">
+                {% if order['status'] == 'Out Of Stock' %}
+                <div class="text-center py-4">
+                    <i class="fa-solid fa-box-open text-red-500 text-4xl mb-2"></i>
+                    <h4 class="font-bold text-red-500">Order Cancelled</h4>
+                    <p class="text-sm text-muted mt-1">Sorry, this product is currently out of stock. The order has been
+                        cancelled and moved to your history.</p>
+                </div>
+                {% elif order['status'] == 'Cancelled' %}
+                <div class="text-center py-4">
+                    <i class="fa-solid fa-ban text-red-500 text-4xl mb-2"></i>
+                    <h4 class="font-bold text-red-500">Order Cancelled</h4>
+                    <p class="text-sm text-muted mt-1">You have successfully cancelled this order.</p>
+                </div>
+                {% elif order['status'] == 'Delivered' %}
+                <div class="text-center py-4 flex flex-col items-center">
+                    <div
+                        class="w-16 h-16 rounded-full bg-green-500/20 text-green-400 border-2 border-green-500 flex items-center justify-center text-3xl mb-3 shadow-[0_0_15px_rgba(34,197,94,0.3)] animate-pulse">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h4 class="font-bold text-green-500 text-lg">Delivered Successfully!</h4>
+                    {% if order['delivered_date'] %}
+                    <p class="text-sm text-muted mt-1">Your package arrived on {{ order['delivered_date'] }}</p>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div
+                    class="flex justify-between items-center relative before:content-[''] before:absolute before:top-4 before:left-0 before:w-full before:h-1 before:bg-slate-700 before:-z-10 mb-6">
+
+                    {% set steps = ['Pending', 'Accepted', 'Processing', 'Shipped', 'Out For Delivery'] %}
+                    {% set current_idx = steps.index(order['status']) if order['status'] in steps else 0 %}
+
+                    {% for step in steps %}
+                    {% set step_idx = loop.index0 %}
+                    {% set is_completed = current_idx >= step_idx %}
+                    {% set is_current = current_idx == step_idx %}
+
+                    <div class="flex flex-col items-center gap-2 bg-transparent z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500
                                         {% if is_completed %}
-                                            {% if step == 'Pending' %}bg-orange-500 text-white ring-4 ring-orange-500/20
-                                            {% elif step == 'Accepted' %}bg-teal-500 text-white ring-4 ring-teal-500/20
-                                            {% elif step == 'Processing' %}bg-blue-500 text-white ring-4 ring-blue-500/20
-                                            {% elif step == 'Shipped' %}bg-purple-500 text-white ring-4 ring-purple-500/20
-                                            {% elif step == 'Out For Delivery' %}bg-cyan-500 text-white ring-4 ring-cyan-500/20
+                                            {% if step == 'Pending' %}bg-orange-500 text-main ring-4 ring-orange-500/20
+                                            {% elif step == 'Accepted' %}bg-teal-500 text-main ring-4 ring-teal-500/20
+                                            {% elif step == 'Processing' %}bg-blue-500 text-main ring-4 ring-blue-500/20
+                                            {% elif step == 'Shipped' %}bg-purple-500 text-main ring-4 ring-purple-500/20
+                                            {% elif step == 'Out For Delivery' %}bg-cyan-500 text-main ring-4 ring-cyan-500/20
                                             {% endif %}
                                         {% else %}
                                             bg-overlay text-muted border border-glass
                                         {% endif %}
                                         {% if is_current %}scale-110 shadow-lg{% endif %}">
-                                        {% if is_completed and not is_current %}<i class="fa-solid fa-check text-xs"></i>{% else %}{{ loop.index }}{% endif %}
-                                    </div>
-                                    <span class="text-[10px] sm:text-xs font-medium text-center leading-tight w-16 {% if is_completed %}text-main{% else %}text-muted{% endif %}">
-                                        {% if step == 'Out For Delivery' %}Out For<br>Delivery{% else %}{{ step }}{% endif %}
-                                    </span>
-                                </div>
-                            {% endfor %}
-                            
-                            <!-- Delivered Step (Final) -->
-                            <div class="flex flex-col items-center gap-2 bg-transparent z-10">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-slate-800 text-slate-500 border border-slate-600">
-                                    <i class="fa-solid fa-house"></i>
-                                </div>
-                                <span class="text-[10px] sm:text-xs font-medium text-slate-500">Delivered</span>
-                            </div>
+                            {% if is_completed and not is_current %}<i class="fa-solid fa-check text-xs"></i>{% else
+                            %}{{ loop.index }}{% endif %}
                         </div>
-                    {% endif %}
+                        <span
+                            class="text-[10px] sm:text-xs font-medium text-center leading-tight w-16 {% if is_completed %}text-main{% else %}text-muted{% endif %}">
+                            {% if step == 'Out For Delivery' %}Out For<br>Delivery{% else %}{{ step }}{% endif %}
+                        </span>
+                    </div>
+                    {% endfor %}
+
+                    <!-- Delivered Step (Final) -->
+                    <div class="flex flex-col items-center gap-2 bg-transparent z-10">
+                        <div
+                            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-overlay text-muted border border-slate-600">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-medium text-muted">Delivered</span>
+                    </div>
                 </div>
+
+                <!-- Cancel Order Option -->
+                {% if order['status'] in ['Pending', 'Accepted', 'Processing'] %}
+                <div class="mt-6 pt-4 border-t border-glass text-center">
+                    <form method="POST" action="/cancel_order"
+                        onsubmit="return confirm('Are you sure you want to cancel this order? This action cannot be undone.');">
+                        <input type="hidden" name="order_id" value="{{ order['id'] }}">
+                        <button type="submit"
+                            class="text-red-400 hover:text-red-300 text-sm font-medium transition-colors">
+                            <i class="fa-solid fa-ban mr-1"></i> Cancel Order
+                        </button>
+                        <p class="text-[10px] text-muted mt-1">Cancellation is only available before shipping.</p>
+                    </form>
+                </div>
+                {% endif %}
+                {% endif %}
             </div>
-            {% endfor %}
         </div>
-        {% endif %}
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleTracking(orderId) {
+            const trackingDiv = document.getElementById('tracking-' + orderId);
+            if (trackingDiv.classList.contains('hidden')) {
+                trackingDiv.classList.remove('hidden');
+            } else {
+                trackingDiv.classList.add('hidden');
+            }
+        }
+    </script>
+    {% endif %}
     {% else %}
     <div class="glass-panel p-12 text-center rounded-2xl">
         <div class="text-5xl text-muted mb-4"><i class="fa-solid fa-receipt"></i></div>
         <h3 class="text-xl font-bold mb-2 text-main">No Orders Found</h3>
-        <p class="text-muted">{% if session['role'] == 'vendor' %}You don't have any incoming orders yet.{% else %}You haven't placed any orders yet.{% endif %}</p>
+        <p class="text-muted">{% if session['role'] == 'vendor' %}You don't have any incoming orders yet.{% else %}You
+            haven't placed any orders yet.{% endif %}</p>
         {% if session['role'] == 'customer' %}
         <a href="/vendors" class="btn-glow px-6 py-2 rounded-lg inline-block mt-6">Shop Now</a>
         {% endif %}

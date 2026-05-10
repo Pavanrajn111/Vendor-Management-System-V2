@@ -4,10 +4,10 @@
 
 {% block content %}
 <div class="fade-in">
-    <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+    <div class="flex justify-between items-center mb-8 border-b border-glass pb-4">
         <div>
             <h1 class="text-3xl font-bold">Explore Products</h1>
-            <p class="text-slate-400 mt-1">Browse and purchase products from your connected vendors.</p>
+            <p class="text-muted mt-1">Browse and purchase products from your connected vendors.</p>
         </div>
     </div>
 
@@ -16,16 +16,16 @@
         {% for p in products %}
         <div class="glass-card group flex flex-col relative overflow-hidden">
             <!-- Product Image -->
-            <div class="w-full aspect-square bg-slate-800 relative overflow-hidden flex items-center justify-center text-6xl text-slate-600 border-b border-white/5">
+            <div class="w-full aspect-square bg-overlay relative overflow-hidden flex items-center justify-center text-6xl text-muted border-b border-glass">
                 {% if p['image'] %}
                     <img src="{{ url_for('static', filename=p['image']) }}" alt="{{ p['name'] }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                 {% else %}
-                    <i class="fa-solid fa-image transition-transform duration-500 group-hover:scale-110"></i>
+                    <div class="w-full h-full flex flex-col items-center justify-center text-muted/40 group-hover:text-muted/60 transition-colors bg-gradient-to-br from-transparent to-slate-900/20"><i class="fa-solid fa-box-open text-5xl transition-transform duration-500 group-hover:scale-110 mb-2"></i><span class="text-xs font-medium tracking-wider uppercase">No Image</span></div>
                 {% endif %}
                 
                 {% if p['availability'] == 'Out Of Stock' %}
-                    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] flex items-center justify-center z-10">
-                        <span class="bg-red-500 text-white font-bold px-4 py-1.5 rounded rotate-[-12deg] text-lg shadow-xl shadow-red-500/20">OUT OF STOCK</span>
+                    <div class="absolute inset-0 bg-overlay/60 backdrop-blur-[2px] flex items-center justify-center z-10">
+                        <span class="bg-red-500 text-main font-bold px-4 py-1.5 rounded rotate-[-12deg] text-lg shadow-xl shadow-red-500/20">OUT OF STOCK</span>
                     </div>
                 {% endif %}
             </div>
@@ -34,20 +34,20 @@
                 <div class="mb-1 flex items-center gap-1 text-xs text-indigo-400 font-medium">
                     <i class="fa-solid fa-store"></i> {{ p['vendor'] }}
                 </div>
-                <h3 class="text-lg font-bold text-white mb-1 line-clamp-2" title="{{ p['name'] }}">{{ p['name'] }}</h3>
+                <h3 class="text-lg font-bold text-main mb-1 line-clamp-2" title="{{ p['name'] }}">{{ p['name'] }}</h3>
                 <div class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 mb-5">
                     ${{ p['price'] }}
                 </div>
                 
-                <div class="mt-auto pt-4 border-t border-white/10">
+                <div class="mt-auto pt-4 border-t border-glass">
                     <form method="POST" action="/add_order">
                         <input type="hidden" name="product_id" value="{{ p['id'] }}">
                         {% if p['availability'] == 'Out Of Stock' %}
-                            <button disabled class="w-full py-2.5 rounded-lg bg-slate-700 text-slate-400 font-medium cursor-not-allowed flex items-center justify-center gap-2">
+                            <button disabled class="w-full py-2.5 rounded-lg bg-slate-700 text-muted font-medium cursor-not-allowed flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-xmark"></i> Unavailable
                             </button>
                         {% else %}
-                            <button type="submit" class="w-full py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-medium transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
+                            <button type="submit" class="w-full py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-main font-medium transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
                                 <i class="fa-solid fa-cart-plus"></i> Buy Now
                             </button>
                         {% endif %}
@@ -59,9 +59,9 @@
     </div>
     {% else %}
     <div class="glass-panel p-12 text-center rounded-2xl">
-        <div class="text-5xl text-slate-500 mb-4"><i class="fa-solid fa-boxes-stacked"></i></div>
+        <div class="text-5xl text-muted mb-4"><i class="fa-solid fa-boxes-stacked"></i></div>
         <h3 class="text-xl font-bold mb-2">No Products Available</h3>
-        <p class="text-slate-400 mb-6">Your connected vendors haven't added any products yet, or you haven't connected with any vendors.</p>
+        <p class="text-muted mb-6">Your connected vendors haven't added any products yet, or you haven't connected with any vendors.</p>
         <a href="/vendors" class="btn-glow px-6 py-2 rounded-lg inline-block">
             Find Vendors
         </a>
@@ -69,3 +69,4 @@
     {% endif %}
 </div>
 {% endblock %}
+

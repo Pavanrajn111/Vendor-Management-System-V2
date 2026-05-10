@@ -4,10 +4,10 @@
 
 {% block content %}
 <div class="fade-in">
-    <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+    <div class="flex justify-between items-center mb-8 border-b border-glass pb-4">
         <div>
-            <h1 class="text-3xl font-bold">Reviews & Ratings</h1>
-            <p class="text-slate-400 mt-1">{% if session['role'] == 'vendor' %}See what your customers are saying.{% else %}Share your feedback and read other reviews.{% endif %}</p>
+            <h1 class="text-3xl font-bold text-main">Reviews & Ratings</h1>
+            <p class="text-muted mt-1">{% if session['role'] == 'vendor' %}See what your customers are saying.{% else %}Share your feedback and read other reviews.{% endif %}</p>
         </div>
         {% if session['role'] == 'customer' %}
         <button onclick="document.getElementById('add-review-modal').classList.remove('hidden')" class="btn-glow px-5 py-2 rounded-lg flex items-center gap-2">
@@ -18,58 +18,60 @@
 
     {% if session['role'] == 'customer' %}
     <!-- Add Review Modal -->
-    <div id="add-review-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center fade-in">
+    <div id="add-review-modal" class="fixed inset-0 bg-overlay/80 backdrop-blur-sm z-50 hidden flex items-center justify-center fade-in">
         <div class="glass-card w-full max-w-md p-6 relative">
-            <button onclick="document.getElementById('add-review-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+            <button onclick="document.getElementById('add-review-modal').classList.add('hidden')" class="absolute top-4 right-4 text-muted hover:text-main transition-colors">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
-            <h2 class="text-2xl font-bold mb-6 text-white border-b border-white/10 pb-3"><i class="fa-solid fa-star text-yellow-400 mr-2"></i> Write a Review</h2>
+            <h2 class="text-2xl font-bold mb-6 text-main border-b border-glass pb-3"><i class="fa-solid fa-star text-yellow-400 mr-2"></i> Write a Review</h2>
             
             <form method="POST" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Select Vendor</label>
-                    <select name="vendor" required class="glass-input w-full px-4 py-2 rounded-lg bg-slate-900">
-                        <option value="" disabled selected>Choose a connected vendor...</option>
-                        {% for v in vendors %}
-                            <option value="{{ v['vendor'] }}">{{ v['vendor'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <label class="block text-sm font-medium text-main mb-1">Select Vendor</label>
+                    <div class="blend-select-wrapper w-full">
+                        <select name="vendor" required class="glass-input w-full px-4 py-2 rounded-lg bg-overlay blend-select">
+                            <option value="" disabled selected>Choose a connected vendor...</option>
+                            {% for v in vendors %}
+                                <option value="{{ v['vendor'] }}">{{ v['vendor'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Rating</label>
+                    <label class="block text-sm font-medium text-main mb-1">Rating</label>
                     <div class="flex gap-4 items-center">
                         <label class="cursor-pointer flex flex-col items-center group">
                             <input type="radio" name="rating" value="1" class="peer sr-only" required>
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-slate-400 transition-all"><i class="fa-solid fa-star"></i></div>
-                            <span class="text-xs mt-1 text-slate-500 peer-checked:text-yellow-400">1</span>
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-muted transition-all"><i class="fa-solid fa-star"></i></div>
+                            <span class="text-xs mt-1 text-muted peer-checked:text-yellow-400">1</span>
                         </label>
                         <label class="cursor-pointer flex flex-col items-center group">
                             <input type="radio" name="rating" value="2" class="peer sr-only" required>
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-slate-400 transition-all"><i class="fa-solid fa-star"></i></div>
-                            <span class="text-xs mt-1 text-slate-500 peer-checked:text-yellow-400">2</span>
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-muted transition-all"><i class="fa-solid fa-star"></i></div>
+                            <span class="text-xs mt-1 text-muted peer-checked:text-yellow-400">2</span>
                         </label>
                         <label class="cursor-pointer flex flex-col items-center group">
                             <input type="radio" name="rating" value="3" class="peer sr-only" required>
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-slate-400 transition-all"><i class="fa-solid fa-star"></i></div>
-                            <span class="text-xs mt-1 text-slate-500 peer-checked:text-yellow-400">3</span>
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-muted transition-all"><i class="fa-solid fa-star"></i></div>
+                            <span class="text-xs mt-1 text-muted peer-checked:text-yellow-400">3</span>
                         </label>
                         <label class="cursor-pointer flex flex-col items-center group">
                             <input type="radio" name="rating" value="4" class="peer sr-only" required>
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-slate-400 transition-all"><i class="fa-solid fa-star"></i></div>
-                            <span class="text-xs mt-1 text-slate-500 peer-checked:text-yellow-400">4</span>
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-muted transition-all"><i class="fa-solid fa-star"></i></div>
+                            <span class="text-xs mt-1 text-muted peer-checked:text-yellow-400">4</span>
                         </label>
                         <label class="cursor-pointer flex flex-col items-center group">
                             <input type="radio" name="rating" value="5" class="peer sr-only" required>
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-slate-400 transition-all"><i class="fa-solid fa-star"></i></div>
-                            <span class="text-xs mt-1 text-slate-500 peer-checked:text-yellow-400">5</span>
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center glass-panel peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500 text-muted transition-all"><i class="fa-solid fa-star"></i></div>
+                            <span class="text-xs mt-1 text-muted peer-checked:text-yellow-400">5</span>
                         </label>
                     </div>
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Comment</label>
-                    <textarea name="comment" required rows="4" class="glass-input w-full px-4 py-2 rounded-lg resize-none" placeholder="Share your experience..."></textarea>
+                    <label class="block text-sm font-medium text-main mb-1">Comment</label>
+                    <textarea name="comment" required rows="4" class="glass-input w-full px-4 py-2 rounded-lg resize-none text-main" placeholder="Share your experience..."></textarea>
                 </div>
                 
                 <div class="pt-4">
@@ -87,15 +89,15 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for r in reviews %}
         <div class="glass-card p-6 relative overflow-hidden group">
-            <div class="absolute -right-6 -bottom-6 text-9xl text-white/[0.02] group-hover:scale-110 transition-transform"><i class="fa-solid fa-quote-right"></i></div>
+            <div class="absolute -right-6 -bottom-6 text-9xl text-main/[0.02] group-hover:scale-110 transition-transform"><i class="fa-solid fa-quote-right"></i></div>
             
             <div class="relative z-10 flex justify-between items-start mb-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-slate-300">
+                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-main">
                         {{ r['customer'][0]|upper }}
                     </div>
                     <div>
-                        <div class="font-bold text-white">{{ r['customer'] }}</div>
+                        <div class="font-bold text-main">{{ r['customer'] }}</div>
                         {% if session['role'] == 'customer' %}
                             <div class="text-xs text-indigo-400 font-medium"><i class="fa-solid fa-store mr-1"></i>{{ r['vendor'] }}</div>
                         {% endif %}
@@ -109,24 +111,28 @@
                         {% if i < rating %}
                             <i class="fa-solid fa-star text-yellow-400"></i>
                         {% else %}
-                            <i class="fa-regular fa-star text-slate-600"></i>
+                            <i class="fa-regular fa-star text-muted"></i>
                         {% endif %}
                     {% endfor %}
                 </div>
             </div>
             
-            <p class="relative z-10 text-slate-300 italic leading-relaxed text-sm">
+            <p class="relative z-10 text-muted italic leading-relaxed text-sm mt-2">
                 "{{ r['comment'] }}"
             </p>
+            <div class="relative z-10 mt-3 text-xs font-medium text-slate-500">
+                <i class="fa-regular fa-clock mr-1"></i> {{ r['created_at']|time_ago }}
+            </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
     <div class="glass-panel p-12 text-center rounded-2xl">
-        <div class="text-5xl text-slate-500 mb-4"><i class="fa-regular fa-comments"></i></div>
-        <h3 class="text-xl font-bold mb-2">No Reviews Yet</h3>
-        <p class="text-slate-400">{% if session['role'] == 'vendor' %}You haven't received any reviews yet.{% else %}No reviews have been posted.{% endif %}</p>
+        <div class="text-5xl text-muted mb-4"><i class="fa-regular fa-comments"></i></div>
+        <h3 class="text-xl font-bold mb-2 text-main">No Reviews Yet</h3>
+        <p class="text-muted">{% if session['role'] == 'vendor' %}You haven't received any reviews yet.{% else %}No reviews have been posted.{% endif %}</p>
     </div>
     {% endif %}
 </div>
 {% endblock %}
+

@@ -4,10 +4,10 @@
 
 {% block content %}
 <div class="fade-in">
-    <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+    <div class="flex justify-between items-center mb-8 border-b border-glass pb-4">
         <div>
             <h1 class="text-3xl font-bold">Delivery Status Tracking</h1>
-            <p class="text-slate-400 mt-1">{% if session['role'] == 'vendor' %}Track the fulfillment of your orders.{% else %}Monitor the journey of your purchases.{% endif %}</p>
+            <p class="text-muted mt-1">{% if session['role'] == 'vendor' %}Track the fulfillment of your orders.{% else %}Monitor the journey of your purchases.{% endif %}</p>
         </div>
     </div>
 
@@ -26,8 +26,8 @@
 
             <div class="relative z-10 flex justify-between items-start mb-6">
                 <div>
-                    <h3 class="text-xl font-bold text-white mb-1">{{ order['product_name'] }}</h3>
-                    <div class="text-sm text-slate-400">
+                    <h3 class="text-xl font-bold text-main mb-1">{{ order['product_name'] }}</h3>
+                    <div class="text-sm text-muted">
                         {% if session['role'] == 'vendor' %}
                             <i class="fa-solid fa-user mr-1 text-indigo-400"></i> Customer: {{ order['customer'] }}
                         {% else %}
@@ -72,10 +72,10 @@
                             <div class="flex flex-col items-center gap-2 bg-transparent z-10">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500
                                     {% if is_completed %}
-                                        {% if step == 'Pending' %}bg-orange-500 text-white ring-4 ring-orange-500/20
-                                        {% elif step == 'Processing' %}bg-blue-500 text-white ring-4 ring-blue-500/20
-                                        {% elif step == 'Shipped' %}bg-purple-500 text-white ring-4 ring-purple-500/20
-                                        {% elif step == 'Out For Delivery' %}bg-cyan-500 text-white ring-4 ring-cyan-500/20
+                                        {% if step == 'Pending' %}bg-orange-500 text-main ring-4 ring-orange-500/20
+                                        {% elif step == 'Processing' %}bg-blue-500 text-main ring-4 ring-blue-500/20
+                                        {% elif step == 'Shipped' %}bg-purple-500 text-main ring-4 ring-purple-500/20
+                                        {% elif step == 'Out For Delivery' %}bg-cyan-500 text-main ring-4 ring-cyan-500/20
                                         {% endif %}
                                     {% else %}
                                         bg-overlay text-muted border border-glass
@@ -91,10 +91,10 @@
                         
                         <!-- Delivered Step (Final) -->
                         <div class="flex flex-col items-center gap-2 bg-transparent z-10">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-slate-800 text-slate-500 border border-slate-600">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-overlay text-muted border border-slate-600">
                                 <i class="fa-solid fa-house"></i>
                             </div>
-                            <span class="text-[10px] sm:text-xs font-medium text-slate-500">Delivered</span>
+                            <span class="text-[10px] sm:text-xs font-medium text-muted">Delivered</span>
                         </div>
                     </div>
                 {% endif %}
@@ -104,9 +104,9 @@
     </div>
     {% else %}
     <div class="glass-panel p-12 text-center rounded-2xl">
-        <div class="text-5xl text-slate-500 mb-4"><i class="fa-solid fa-truck-ramp-box"></i></div>
+        <div class="text-5xl text-muted mb-4"><i class="fa-solid fa-truck-ramp-box"></i></div>
         <h3 class="text-xl font-bold mb-2">No Delivery Data</h3>
-        <p class="text-slate-400">There are no orders to track currently.</p>
+        <p class="text-muted">There are no orders to track currently.</p>
     </div>
     {% endif %}
 </div>

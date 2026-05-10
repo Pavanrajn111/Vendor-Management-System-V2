@@ -4,13 +4,13 @@
 
 {% block content %}
 <div class="fade-in">
-    <div class="flex items-center gap-4 mb-8 border-b border-white/10 pb-4">
-        <a href="/vendors" class="text-slate-400 hover:text-white transition-colors w-10 h-10 flex items-center justify-center rounded-full glass-panel">
+    <div class="flex items-center gap-4 mb-8 border-b border-glass pb-4">
+        <a href="/vendors" class="text-muted hover:text-main transition-colors w-10 h-10 flex items-center justify-center rounded-full glass-panel">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <div>
             <h1 class="text-3xl font-bold">{{ vendor_name }}'s Reviews</h1>
-            <p class="text-slate-400 mt-1">See what other customers are saying about this vendor.</p>
+            <p class="text-muted mt-1">See what other customers are saying about this vendor.</p>
         </div>
     </div>
 
@@ -19,14 +19,14 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for r in reviews %}
         <div class="glass-card p-6 relative overflow-hidden group">
-            <div class="absolute -right-6 -bottom-6 text-9xl text-white/[0.02] group-hover:scale-110 transition-transform"><i class="fa-solid fa-quote-right"></i></div>
+            <div class="absolute -right-6 -bottom-6 text-9xl text-main/[0.02] group-hover:scale-110 transition-transform"><i class="fa-solid fa-quote-right"></i></div>
             
-            <div class="relative z-10 flex justify-between items-start mb-4 border-b border-white/5 pb-4">
+            <div class="relative z-10 flex justify-between items-start mb-4 border-b border-glass pb-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-slate-300">
+                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-main">
                         {{ r['customer'][0]|upper }}
                     </div>
-                    <div class="font-bold text-white">{{ r['customer'] }}</div>
+                    <div class="font-bold text-main">{{ r['customer'] }}</div>
                 </div>
                 
                 <!-- Stars -->
@@ -36,24 +36,28 @@
                         {% if i < rating %}
                             <i class="fa-solid fa-star text-yellow-400"></i>
                         {% else %}
-                            <i class="fa-solid fa-star text-slate-600"></i>
+                            <i class="fa-solid fa-star text-muted"></i>
                         {% endif %}
                     {% endfor %}
                 </div>
             </div>
             
-            <p class="relative z-10 text-slate-300 italic leading-relaxed text-sm">
+            <p class="relative z-10 text-main italic leading-relaxed text-sm mt-2">
                 "{{ r['comment'] }}"
             </p>
+            <div class="relative z-10 mt-3 text-xs font-medium text-slate-500">
+                <i class="fa-regular fa-clock mr-1"></i> {{ r['created_at']|time_ago }}
+            </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
     <div class="glass-panel p-12 text-center rounded-2xl">
-        <div class="text-5xl text-slate-500 mb-4"><i class="fa-regular fa-star-half-stroke"></i></div>
+        <div class="text-5xl text-muted mb-4"><i class="fa-regular fa-star-half-stroke"></i></div>
         <h3 class="text-xl font-bold mb-2">No Reviews Yet</h3>
-        <p class="text-slate-400">This vendor hasn't received any feedback yet. Be the first to review them!</p>
+        <p class="text-muted">This vendor hasn't received any feedback yet. Be the first to review them!</p>
     </div>
     {% endif %}
 </div>
 {% endblock %}
+

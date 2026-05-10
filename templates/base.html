@@ -44,7 +44,7 @@
     {% if session.get('user') %}
     <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center mb-8">
         <div class="flex items-center gap-4">
-            <button id="mobile-menu-btn" class="md:hidden text-2xl text-white hover:text-orange-400 transition-colors">
+            <button id="mobile-menu-btn" class="md:hidden text-2xl text-main hover:text-orange-400 transition-colors">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <a href="/dashboard" class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-500">
@@ -70,19 +70,19 @@
                 <i class="fa-solid fa-sun light-icon hidden"></i>
             </button>
             <a href="/profile" class="flex items-center gap-2 hover:text-orange-400 transition-colors">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-red-500 to-orange-500 flex items-center justify-center text-white font-bold">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-red-500 to-orange-500 flex items-center justify-center text-main font-bold">
                     {{ session['user'][0]|upper }}
                 </div>
                 <span class="hidden sm:inline text-main">{{ session['user'] }}</span>
             </a>
-            <a href="/settings" class="flex items-center gap-2 text-slate-400 hover:text-orange-400 transition-colors ml-2 font-medium"><i class="fa-solid fa-gear"></i><span class="hidden sm:inline">Settings</span></a>
+            <a href="/settings" class="flex items-center gap-2 text-muted hover:text-orange-400 transition-colors ml-2 font-medium"><i class="fa-solid fa-gear"></i><span class="hidden sm:inline">Settings</span></a>
             <a href="/logout" class="text-red-400 hover:text-red-300 transition-colors ml-3" title="Logout"><i class="fa-solid fa-right-from-bracket text-lg"></i></a>
         </div>
     </nav>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-40 hidden flex-col pt-20 px-6 gap-6">
-        <button id="close-menu-btn" class="absolute top-6 right-6 text-2xl text-white hover:text-orange-400">
+    <div id="mobile-menu" class="fixed inset-0 bg-overlay/95 backdrop-blur-md z-40 hidden flex-col pt-20 px-6 gap-6">
+        <button id="close-menu-btn" class="absolute top-6 right-6 text-2xl text-main hover:text-orange-400">
             <i class="fa-solid fa-xmark"></i>
         </button>
         
@@ -126,8 +126,8 @@
                 <a href="#" class="text-2xl hover:text-orange-400 transition-colors"><i class="fa-brands fa-linkedin"></i></a>
                 <a href="#" class="text-2xl hover:text-orange-400 transition-colors"><i class="fa-brands fa-github"></i></a>
             </div>
-            <p class="text-slate-400 mb-2">Contact: support@vendormanagement.com | +1 (555) 123-4567</p>
-            <p class="text-slate-500 text-sm">&copy; 2026 Vendor Management System. All rights reserved.</p>
+            <p class="text-muted mb-2">Contact: support@vendormanagement.com</p>
+            <p class="text-muted text-sm">&copy; 2026 Vendor Management System. All rights reserved.</p>
         </div>
     </footer>
     {% endif %}
@@ -200,3 +200,4 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+

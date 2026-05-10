@@ -10,11 +10,11 @@
         <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-orange-500/20 rounded-full blur-3xl z-0"></div>
         
         <div class="relative z-10 flex flex-col sm:flex-row items-center gap-6">
-            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-pink-500 to-orange-500 flex items-center justify-center text-4xl font-bold text-white shadow-xl ring-4 ring-white/10">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-pink-500 to-orange-500 flex items-center justify-center text-4xl font-bold text-main shadow-xl ring-4 ring-white/10">
                 <i class="fa-solid fa-store"></i>
             </div>
             <div class="text-center sm:text-left">
-                <h1 class="text-3xl font-bold text-white mb-1">{{ session['user'] }}</h1>
+                <h1 class="text-3xl font-bold text-main mb-1">{{ session['user'] }}</h1>
                 <div class="text-pink-400 font-medium uppercase tracking-widest text-sm flex items-center justify-center sm:justify-start gap-2">
                     <i class="fa-solid fa-certificate"></i> Verified Vendor
                 </div>
@@ -33,20 +33,20 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="glass-card p-6 border-t-2 border-t-blue-500 relative overflow-hidden group">
             <div class="absolute -right-4 -bottom-4 text-6xl text-blue-500/10 group-hover:scale-110 transition-transform"><i class="fa-solid fa-users"></i></div>
-            <div class="text-sm text-slate-400 font-medium mb-1">Customers</div>
-            <div class="text-3xl font-bold text-white">{{ total_customers }}</div>
+            <div class="text-sm text-muted font-medium mb-1">Customers</div>
+            <div class="text-3xl font-bold text-main">{{ total_customers }}</div>
         </div>
         
         <div class="glass-card p-6 border-t-2 border-t-orange-500 relative overflow-hidden group">
             <div class="absolute -right-4 -bottom-4 text-6xl text-orange-500/10 group-hover:scale-110 transition-transform"><i class="fa-solid fa-box-open"></i></div>
-            <div class="text-sm text-slate-400 font-medium mb-1">Total Orders</div>
-            <div class="text-3xl font-bold text-white">{{ total_orders }}</div>
+            <div class="text-sm text-muted font-medium mb-1">Total Orders</div>
+            <div class="text-3xl font-bold text-main">{{ total_orders }}</div>
         </div>
         
         <div class="glass-card p-6 border-t-2 border-t-yellow-500 relative overflow-hidden group">
             <div class="absolute -right-4 -bottom-4 text-6xl text-yellow-500/10 group-hover:scale-110 transition-transform"><i class="fa-solid fa-star"></i></div>
-            <div class="text-sm text-slate-400 font-medium mb-1">Total Reviews</div>
-            <div class="text-3xl font-bold text-white">{{ total_reviews }}</div>
+            <div class="text-sm text-muted font-medium mb-1">Total Reviews</div>
+            <div class="text-3xl font-bold text-main">{{ total_reviews }}</div>
         </div>
     </div>
 
@@ -66,8 +66,8 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="text-center p-6 bg-black/20 rounded-xl border border-white/5">
-            <p class="text-slate-400">You don't have any connected customers yet.</p>
+        <div class="text-center p-6 bg-black/20 rounded-xl border border-glass">
+            <p class="text-muted">You don't have any connected customers yet.</p>
         </div>
         {% endif %}
     </div>

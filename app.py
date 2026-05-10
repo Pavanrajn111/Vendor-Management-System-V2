@@ -83,7 +83,8 @@ CREATE TABLE IF NOT EXISTS reviews(
     vendor TEXT,
     rating TEXT,
     comment TEXT,
-    customer TEXT
+    customer TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )
 ''')
 conn.execute('''
@@ -128,7 +129,39 @@ try:
     ensure_column_exists(conn, 'payments', 'payment_date', 'TEXT DEFAULT ""')
 except:
     pass
+try:
+    ensure_column_exists(conn, 'reviews', 'created_at', 'DATETIME DEFAULT CURRENT_TIMESTAMP')
+except:
+    pass
 conn.commit()
+
+# ---------------------------------
+# CUSTOM FILTERS
+# ---------------------------------
+@app.template_filter('time_ago')
+def time_ago(dt_str):
+    if not dt_str:
+        return ""
+    try:
+        dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+    except:
+        return dt_str
+    
+    now = datetime.now()
+    diff = now - dt
+    
+    if diff.days > 365:
+        return f"{diff.days // 365} year{'s' if diff.days // 365 > 1 else ''} ago"
+    elif diff.days > 30:
+        return f"{diff.days // 30} month{'s' if diff.days // 30 > 1 else ''} ago"
+    elif diff.days > 0:
+        return f"{diff.days} day{'s' if diff.days > 1 else ''} ago"
+    elif diff.seconds > 3600:
+        return f"{diff.seconds // 3600} hour{'s' if diff.seconds // 3600 > 1 else ''} ago"
+    elif diff.seconds > 60:
+        return f"{diff.seconds // 60} minute{'s' if diff.seconds // 60 > 1 else ''} ago"
+    else:
+        return "Just now"
 
 # ---------------------------------
 # LANDING PAGE
@@ -601,8 +634,8 @@ def payments():
                     vendor,
                     product_name,
                     amount,
-                    'Pending',
-                    datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    'Completed',
+                    datetime.now().strftime('%d-%m-%Y %H:%M')
                 )
             )
 
@@ -664,14 +697,25 @@ def update_payment():
     conn.execute(
         '''
         UPDATE payments
-        SET status=?
+        SET status=?, payment_date=?
         WHERE id=?
         ''',
-        (status,payment_id)
+        (status, datetime.now().strftime('%d-%m-%Y %H:%M'), payment_id)
     )
 
     conn.commit()
 
+    return redirect('/payments')
+
+@app.route('/process_refund', methods=['POST'])
+def process_refund():
+    if 'user' not in session or session.get('role') != 'vendor':
+        return redirect('/login')
+        
+    payment_id = request.form['payment_id']
+    conn = get_db()
+    conn.execute("UPDATE payments SET status='Refund Completed', payment_date=? WHERE id=?", (datetime.now().strftime('%d-%m-%Y %H:%M'), payment_id))
+    conn.commit()
     return redirect('/payments')
 # ---------------------------------
 # REVIEWS
@@ -877,6 +921,26 @@ def update_order():
             conn.execute("UPDATE payments SET status='Out Of Stock' WHERE order_id=?", (order_id,))
 
     conn.commit()
+    return redirect('/orders')
+
+@app.route('/cancel_order', methods=['POST'])
+def cancel_order():
+    if 'user' not in session:
+        return redirect('/login')
+
+    order_id = request.form['order_id']
+    conn = get_db()
+    
+    order = conn.execute("SELECT * FROM orders WHERE id=? AND customer=?", (order_id, session['user'])).fetchone()
+    if order and order['status'] not in ['Shipped', 'Out For Delivery', 'Delivered', 'Cancelled']:
+        conn.execute("UPDATE orders SET status='Cancelled' WHERE id=?", (order_id,))
+        
+        # Check if payment exists
+        payment = conn.execute("SELECT * FROM payments WHERE order_id=?", (order_id,)).fetchone()
+        if payment and payment['status'] in ['Completed', 'Accepted']:
+            conn.execute("UPDATE payments SET status='Refund Pending', payment_date=? WHERE order_id=?", (datetime.now().strftime('%d-%m-%Y %H:%M'), order_id))
+            
+        conn.commit()
 
     return redirect('/orders')
 # ---------------------------------
