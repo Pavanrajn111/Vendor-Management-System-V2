@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Delivery · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Delivery tracking</h1>
+  {% if orders %}
+    {% for o in orders %}
+      {% set step = 1 %}
+      {% if o.status == 'Accepted' %}{% set step = 2 %}{% elif o.status in ['Shipped', 'Out Of Stock'] %}{% set step = 3 %}{% elif o.status == 'Delivered' %}{% set step = 4 %}{% endif %}
+      <div class="delivery-card">
+        <div class="delivery-header">
+          <div>#{{ o.id }}</div>
+          <div>{{ o.product_name }}</div>
+          <span class="badge {{ o.status|lower|replace(' ', '') }}">{{ o.status }}</span>
+        </div>
+        <div class="delivery-track">
+          {% for label, value in [('Accepted', 2), ('Shipping', 3), ('Delivered', 4)] %}
+            <div class="delivery-step {% if step >= value %}active{% endif %}">
+              <span class="delivery-dot"></span>
+              <div>
+                <strong>{{ label }}</strong>
+                <div class="muted">{% if step >= value %}Completed{% else %}Pending{% endif %}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No deliveries yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

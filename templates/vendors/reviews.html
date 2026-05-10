@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ vendor.username }} · Reviews{% endblock %}
+{% block content %}
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <h1>Reviews for {{ vendor.username }}</h1>
+    <a class="btn sm ghost" href="{{ url_for('vendors.list_vendors') }}">Back to Vendors</a>
+  </div>
+  {% if reviews %}
+    {% for r in reviews %}
+      <div class="card" style="margin-top:12px">
+        <strong>{{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}</strong>
+        <span class="muted"> — by {{ r.customer.username }}</span>
+        {% if r.comment %}<p>{{ r.comment }}</p>{% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No reviews yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

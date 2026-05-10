@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Reviews · VMS{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Customer reviews</h1>
+  {% if reviews %}
+    <div class="review-grid">
+      {% for r in reviews %}
+        <div class="review-card">
+          <div class="review-header">
+            <strong class="review-rating-title">{{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}</strong>
+            <span class="review-time">{{ r.created_at|relative_time }}</span>
+          </div>
+          <p class="review-customer">by {{ r.customer.username }}</p>
+          {% if r.comment %}
+            <p class="review-comment">{{ r.comment }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}<p class="muted">No reviews yet.</p>{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ vendor.username }} · Products{% endblock %}
+{% block content %}
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <h1>{{ vendor.username }}'s products</h1>
+    <a class="btn sm ghost" href="{{ url_for('vendors.list_vendors') }}">Back to Vendors</a>
+  </div>
+  {% if products %}
+    <div class="product-grid">
+      {% for p in products %}
+        <div class="product-card">
+          <img class="product-image" src="{{ url_for('static', filename='uploads/' + p.image_filename) if p.image_filename else url_for('static', filename='images/product-placeholder.svg') }}" alt="{{ p.name }}">
+          <div class="product-details">
+            <h3 class="product-title">{{ p.name }}</h3>
+            <p class="product-time">Added {{ p.created_at|relative_time }}</p>
+            <div class="product-footer">
+              <span class="product-price">₹{{ "%.2f"|format(p.price) }}</span>
+              {% if connected and current_user.is_customer %}
+                <form method="POST" action="{{ url_for('orders.place') }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <input type="hidden" name="product_id" value="{{ p.id }}">
+                  <button class="btn sm">Buy</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="muted">No products listed.</p>
+  {% endif %}
+</div>
+{% endblock %}
