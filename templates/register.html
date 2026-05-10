@@ -1,443 +1,266 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register - Vendor Management System</title>
-
-    <!-- FONT AWESOME -->
-
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, sans-serif;
-        }
-
-        body{
-            height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            background:linear-gradient(135deg,#141e30,#243b55);
-            overflow:hidden;
-        }
-
-        /* BACKGROUND */
-
-        .circle{
-            position:absolute;
-            border-radius:50%;
-            background:rgba(255,255,255,0.08);
-            animation:float 6s infinite ease-in-out;
-        }
-
-        .circle:nth-child(1){
-            width:140px;
-            height:140px;
-            top:10%;
-            left:12%;
-        }
-
-        .circle:nth-child(2){
-            width:180px;
-            height:180px;
-            bottom:10%;
-            right:12%;
-            animation-duration:8s;
-        }
-
-        @keyframes float{
-            0%{transform:translateY(0px);}
-            50%{transform:translateY(-20px);}
-            100%{transform:translateY(0px);}
-        }
-
-        /* REGISTER BOX */
-
-        .register-box{
-            width:430px;
-            background:rgba(255,255,255,0.12);
-            backdrop-filter:blur(12px);
-            border-radius:20px;
-            padding:35px;
-            box-shadow:0 8px 32px rgba(0,0,0,0.3);
-            color:white;
-            animation:fadeIn 1s ease;
-        }
-
-        @keyframes fadeIn{
-            from{
-                opacity:0;
-                transform:translateY(-20px);
-            }
-
-            to{
-                opacity:1;
-                transform:translateY(0px);
-            }
-        }
-
-        h1{
-            text-align:center;
-            margin-bottom:10px;
-            font-size:32px;
-        }
-        .sub-heading{
-    text-align:center;
-    margin-top:8px;
-    font-size:22px;
-    color:#ffffff;
-    font-weight:normal;
-    letter-spacing:1px;
-}
-
-        .slogan{
-            text-align:center;
-            color:#ddd;
-            margin-bottom:25px;
-            font-size:14px;
-        }
-
-        /* INPUT */
-
-        input{
-            width:100%;
-            padding:14px;
-            margin-top:15px;
-            border:none;
-            border-radius:10px;
-            outline:none;
-            font-size:15px;
-            transition:0.3s;
-        }
-
-        input:focus{
-            transform:scale(1.02);
-            box-shadow:0 0 10px rgba(255,255,255,0.5);
-        }
-
-        /* PASSWORD BOX */
-
-        .password-box{
-            position:relative;
-        }
-
-        .toggle-password{
-            position:absolute;
-            right:15px;
-            top:30px;
-            cursor:pointer;
-            color:#444;
-            font-size:20px;
-            transition:0.3s;
-        }
-
-        .toggle-password:hover{
-            transform:scale(1.15);
-            color:black;
-        }
-        select{
-    width:100%;
-    padding:12px;
-    margin-top:12px;
-    border-radius:10px;
-    border:none;
-    outline:none;
-    background:white;
-    font-size:15px;
-}
-
-        /* RULES */
-
-        .rules{
-            margin-top:18px;
-            background:rgba(255,255,255,0.15);
-            padding:12px;
-            border-radius:10px;
-            line-height:1.8;
-            color:#f1f1f1;
-            font-size:14px;
-        }
-
-        .rules ul{
-            margin-left:18px;
-            margin-top:5px;
-        }
-
-        /* MESSAGE */
-
-        #message{
-            margin-top:12px;
-            text-align:center;
-            font-size:15px;
-            font-weight:bold;
-        }
-
-        .valid{
-            color:#7CFC00;
-        }
-
-        .invalid{
-            color:#ff4d4d;
-        }
-
-        /* BUTTON */
-
-        button{
-            width:100%;
-            padding:14px;
-            margin-top:20px;
-            border:none;
-            border-radius:10px;
-            background:linear-gradient(135deg,#ff512f,#dd2476);
-            color:white;
-            font-size:17px;
-            cursor:pointer;
-            transition:0.3s;
-        }
-
-        button:hover{
-            transform:scale(1.03);
-            box-shadow:0 0 15px rgba(255,255,255,0.4);
-        }
-
-        /* LINK */
-
-        a{
-            display:block;
-            text-align:center;
-            margin-top:18px;
-            color:white;
-            text-decoration:none;
-            font-weight:bold;
-        }
-
-    </style>
-</head>
-
-<body>
-
-    <!-- BACKGROUND -->
-
-    <div class="circle"></div>
-    <div class="circle"></div>
-
-    <!-- REGISTER BOX -->
-
-    <div class="register-box">
-
-       <h1>Vendor Management System</h1>
-
-<h2 class="sub-heading">
-    Create Your Account
-</h2>
-
-
-
-        <form method="POST"
-              onsubmit="return validateForm()">
-
-            <!-- USERNAME -->
-
-            <input type="text"
-                   name="username"
-                   placeholder="Enter Username"
-                   required>
-            <input type="text"
-                name="mobile"
-                placeholder="Enter Mobile Number"
-                pattern="[0-9]{10}"
-                required>
-
-            <!-- PASSWORD -->
-
-            <div class="password-box">
-
-                <input type="password"
-                       id="password"
-                       name="password"
-                       placeholder="Create Password"
-                       onkeyup="validatePassword()"
-                       required>
-
-                <!-- EYE ICON -->
-
-                <span class="toggle-password"
-                      onclick="togglePassword()">
-
-                    <i class="fa-solid fa-eye-slash"
-                       id="eyeIcon"></i>
-
-                </span>
-
-            </div>
-
-            <!-- PASSWORD RULES -->
-
-<div class="rules">
-
-    Password must contain:
-
-    <ul>
-        <li>Minimum 8 characters</li>
-        <li>Maximum 16 characters</li>
-        <li>At least 1 uppercase letter</li>
-        <li>At least 1 lowercase letter</li>
-        <li>At least 1 number</li>
-        <li>At least 1 special character (@$!%*?&)</li>
-    </ul>
-
-</div>
-
-<!-- ROLE SELECTION -->
-
-<select name="role" required>
-
-    <option value="">
-        Select Account Type
-    </option>
-
-    <option value="vendor">
-        Vendor
-    </option>
-
-    <option value="customer">
-        Customer
-    </option>
-
-</select>
-
-<!-- VALIDATION MESSAGE -->
-
-<div id="message">
-
-    {% if error %}
-        <span class="invalid">{{ error }}</span>
-    {% endif %}
-
-</div>
-
-<!-- BUTTON -->
-
-<button type="submit">
-
-    Register
-
-</button>
-          
-
-        </form>
-
-        <a href="/">
-
-            Already have an account? Login
-
-        </a>
-
+{% extends "base.html" %}
+
+{% block title %}Register - Vendor Management System{% endblock %}
+
+{% block content %}
+<!-- Top Navigation Bar -->
+<nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center mb-12 -mx-4 sm:mx-0 sm:rounded-b-2xl">
+    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-500">
+        <i class="fa-solid fa-store mr-2"></i>VMS
     </div>
+    <div class="hidden md:flex gap-6 items-center">
+        <a href="/" class="hover:text-orange-400 transition-colors">Home</a>
+        <a href="/#about" class="hover:text-orange-400 transition-colors">About Us</a>
+        <a href="/#services" class="hover:text-orange-400 transition-colors">Services</a>
+        <a href="/#contact" class="hover:text-orange-400 transition-colors">Contact</a>
+        <button id="nav-theme-toggle-register" class="text-xl hover:text-orange-400 transition-colors"><i class="fa-solid fa-moon"></i></button>
+    </div>
+    <div class="flex gap-4">
+        <a href="/login" class="px-5 py-2 rounded-lg glass-panel hover:bg-white/10 transition-colors font-medium">Login</a>
+        <a href="/register" class="px-5 py-2 rounded-lg btn-glow font-medium">Register</a>
+    </div>
+</nav>
 
+<div class="flex items-center justify-center min-h-[80vh] fade-in py-8">
+    <div class="glass-card w-full max-w-md p-8 relative overflow-hidden">
+        
+        <!-- Decoration -->
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-pink-500/20 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-2xl"></div>
+        
+        <div class="relative z-10">
+            <div class="text-center mb-8 fade-in" style="animation-delay: 0.2s">
+                <a href="/" class="inline-block text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-500 mb-2 hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid fa-store mr-1"></i>Vendor Management System
+                </a>
+                <h2 class="text-2xl font-bold text-main mb-2">Create an Account</h2>
+                <p class="text-muted text-sm font-medium slide-up" style="animation-delay: 0.4s">Smart Vendor & Customer Management Platform</p>
+            </div>
+            
+            <form method="POST" class="space-y-5" onsubmit="return validateForm()">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-main mb-1">Username</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <input type="text" name="username" id="username" required
+                               class="glass-input w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                               placeholder="Choose a username">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="mobile" class="block text-sm font-medium text-main mb-1">Mobile Number</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <input type="tel" name="mobile" id="mobile" required
+                               class="glass-input w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                               placeholder="Enter mobile number">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="role" class="block text-sm font-medium text-main mb-1">Select Role</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+                            <i class="fa-solid fa-id-badge"></i>
+                        </div>
+                        <select name="role" id="role" required class="glass-input w-full pl-10 pr-4 py-3 rounded-xl appearance-none bg-overlay text-main cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500/50">
+                            <option value="customer" class="bg-overlay">Customer</option>
+                            <option value="vendor" class="bg-overlay">Vendor</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-muted">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-main mb-1">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <input type="password" name="password" id="password" required
+                               class="glass-input w-full pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                               placeholder="Create a strong password">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-muted hover:text-main transition-colors"
+                             onclick="togglePassword()">
+                            <i class="fa-solid fa-eye-slash" id="eyeIcon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Validation Rules Container -->
+                    <div id="password-rules" class="hidden mt-3 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-sm transition-all duration-300">
+                        <p class="text-red-500 font-medium mb-2"><i class="fa-solid fa-circle-exclamation mr-1"></i>Password must contain:</p>
+                        <ul class="space-y-1 pl-1">
+                            <li id="rule-length" class="text-muted flex items-center gap-2"><i class="fa-solid fa-xmark w-4 text-red-500"></i> Minimum 8 characters</li>
+                            <li id="rule-upper" class="text-muted flex items-center gap-2"><i class="fa-solid fa-xmark w-4 text-red-500"></i> One uppercase letter</li>
+                            <li id="rule-lower" class="text-muted flex items-center gap-2"><i class="fa-solid fa-xmark w-4 text-red-500"></i> One lowercase letter</li>
+                            <li id="rule-number" class="text-muted flex items-center gap-2"><i class="fa-solid fa-xmark w-4 text-red-500"></i> One number</li>
+                            <li id="rule-special" class="text-muted flex items-center gap-2"><i class="fa-solid fa-xmark w-4 text-red-500"></i> One special character</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                {% if error %}
+                <div class="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg text-center text-sm font-medium flex items-center justify-center gap-2 slide-up">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+                </div>
+                {% endif %}
+                
+                <button type="submit" id="submit-btn" class="btn-glow w-full py-3 rounded-xl text-lg mt-4 shadow-lg shadow-orange-500/20">
+                    Register
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center text-sm">
+                <span class="text-muted">Already have an account?</span> 
+                <a href="/login" class="text-orange-500 hover:text-orange-400 font-bold ml-1 transition-colors">Login here</a>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    // Link navbar theme toggle to global theme logic
+    document.getElementById('nav-theme-toggle').addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update icon
+        const navIcon = this.querySelector('i');
+        navIcon.className = newTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        
+        const floatIcon = document.querySelector('#floating-theme-toggle i');
+        if(floatIcon) floatIcon.className = navIcon.className;
+    });
+</script>
+{% endblock %}
 
-/* PASSWORD VALIDATION STATUS */
-
-let passwordValid = false;
-
-/* SHOW / HIDE PASSWORD */
-
-function togglePassword(){
-
-    let password = document.getElementById("password");
-
-    let eyeIcon = document.getElementById("eyeIcon");
-
-    if(password.type === "password"){
-
-        password.type = "text";
-
-        eyeIcon.classList.remove("fa-eye-slash");
-
-        eyeIcon.classList.add("fa-eye");
+{% block extra_js %}
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
     }
 
-    else{
+    const passwordInput = document.getElementById('password');
+    const rulesContainer = document.getElementById('password-rules');
+    
+    // Regex Patterns
+    const lengthPattern = /.{8,}/;
+    const upperPattern = /[A-Z]/;
+    const lowerPattern = /[a-z]/;
+    const numberPattern = /[0-9]/;
+    const specialPattern = /[^A-Za-z0-9]/;
 
-        password.type = "password";
-
-        eyeIcon.classList.remove("fa-eye");
-
-        eyeIcon.classList.add("fa-eye-slash");
+    function updateRuleStatus(elementId, isValid) {
+        const el = document.getElementById(elementId);
+        const icon = el.querySelector('i');
+        
+        if (isValid) {
+            el.classList.remove('text-muted');
+            el.classList.add('text-green-500');
+            icon.classList.remove('fa-xmark', 'text-red-500');
+            icon.classList.add('fa-check', 'text-green-500');
+        } else {
+            el.classList.remove('text-green-500');
+            el.classList.add('text-muted');
+            icon.classList.remove('fa-check', 'text-green-500');
+            icon.classList.add('fa-xmark', 'text-red-500');
+        }
     }
-}
-
-/* PASSWORD VALIDATION */
-
-function validatePassword(){
-
-    let password =
-    document.getElementById("password").value;
-
-    let message =
-    document.getElementById("message");
-
-    /*
-       CONDITIONS:
-       - 8 to 16 characters
-       - uppercase
-       - lowercase
-       - number
-       - special character
-    */
-
-    let pattern =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
-
-    if(password.length === 0){
-
-        message.innerHTML = "";
-
-        passwordValid = false;
+    
+    function checkPasswordValidity(val) {
+        return lengthPattern.test(val) && 
+               upperPattern.test(val) && 
+               lowerPattern.test(val) && 
+               numberPattern.test(val) && 
+               specialPattern.test(val);
     }
 
-    else if(pattern.test(password)){
+    passwordInput.addEventListener('input', function() {
+        const val = this.value;
+        const isValid = checkPasswordValidity(val);
+        
+        // Only show validation box if user has typed something AND it's invalid
+        if (val.length > 0 && !isValid) {
+            rulesContainer.classList.remove('hidden');
+        } else {
+            // Hide if empty or completely valid!
+            rulesContainer.classList.add('hidden');
+        }
+        
+        updateRuleStatus('rule-length', lengthPattern.test(val));
+        updateRuleStatus('rule-upper', upperPattern.test(val));
+        updateRuleStatus('rule-lower', lowerPattern.test(val));
+        updateRuleStatus('rule-number', numberPattern.test(val));
+        updateRuleStatus('rule-special', specialPattern.test(val));
+    });
 
-        message.innerHTML =
-        "<span class='valid'>Valid Password</span>";
-
-        passwordValid = true;
-    }
-
-    else{
-
-        message.innerHTML =
-        "<span class='invalid'>Invalid Password Format</span>";
-
-        passwordValid = false;
-    }
-}
-
-/* FORM VALIDATION */
-
-function validateForm(){
-
-    if(passwordValid){
-
+    function validateForm() {
+        const val = passwordInput.value;
+        const isValid = checkPasswordValidity(val);
+                       
+        if (!isValid) {
+            rulesContainer.classList.remove('hidden');
+            
+            // Shake animation
+            rulesContainer.style.transform = 'translate3d(0, 0, 0)';
+            rulesContainer.style.backfaceVisibility = 'hidden';
+            rulesContainer.style.perspective = '1000px';
+            
+            const shakeKeyframes = [
+                { transform: 'translate3d(-5px, 0, 0)' },
+                { transform: 'translate3d(5px, 0, 0)' },
+                { transform: 'translate3d(-5px, 0, 0)' },
+                { transform: 'translate3d(5px, 0, 0)' },
+                { transform: 'translate3d(0, 0, 0)' }
+            ];
+            
+            rulesContainer.animate(shakeKeyframes, {
+                duration: 400,
+                iterations: 1
+            });
+            
+            return false;
+        }
         return true;
     }
-
-    else{
-
-        document.getElementById("message").innerHTML =
-        "<span class='invalid'>Please enter a valid password</span>";
-
-        return false;
-    }
-}
-
 </script>
 
-</body>
-</html>
+<script>
+    document.getElementById('nav-theme-toggle-register').addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        const navIcon = this.querySelector('i');
+        navIcon.className = newTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        
+        const floatIcon = document.querySelector('#floating-theme-toggle i');
+        if(floatIcon) floatIcon.className = navIcon.className;
+    });
+    
+    // Set initial icon
+    if(localStorage.getItem('theme') === 'light') {
+        document.querySelector('#nav-theme-toggle-register i').className = 'fa-solid fa-sun';
+    }
+</script>
+{% endblock %}

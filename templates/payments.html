@@ -1,368 +1,187 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-    <title>Payments</title>
-
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial,sans-serif;
-        }
-
-        body{
-            background:linear-gradient(135deg,#141e30,#243b55);
-            color:white;
-            min-height:100vh;
-        }
-
-        .container{
-            width:90%;
-            margin:auto;
-            padding:40px 0;
-        }
-
-        .card{
-            background:rgba(255,255,255,0.12);
-            backdrop-filter:blur(12px);
-            padding:30px;
-            border-radius:20px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        h1{
-            text-align:center;
-            margin-bottom:35px;
-            font-size:38px;
-        }
-
-        h2{
-            margin-top:25px;
-            margin-bottom:20px;
-        }
-
-        table{
-            width:100%;
-            border-collapse:collapse;
-            margin-top:20px;
-            overflow:hidden;
-            border-radius:15px;
-        }
-
-        table th{
-            background:#ff512f;
-            padding:16px;
-            font-size:16px;
-        }
-
-        table td{
-            background:rgba(255,255,255,0.08);
-            padding:16px;
-            text-align:center;
-        }
-
-        tr:hover td{
-            background:rgba(255,255,255,0.14);
-            transition:0.3s;
-        }
-
-        button{
-            width:100%;
-            padding:12px;
-            border:none;
-            border-radius:10px;
-            background:#ff512f;
-            color:white;
-            cursor:pointer;
-            transition:0.3s;
-            font-size:15px;
-        }
-
-        button:hover{
-            background:#ff774f;
-        }
-
-        .pending{
-            background:#ff9800;
-            color:white;
-            padding:8px 14px;
-            border-radius:20px;
-            font-size:14px;
-        }
-
-        .accepted{
-            background:#28a745;
-            color:white;
-            padding:8px 14px;
-            border-radius:20px;
-            font-size:14px;
-        }
-
-        .rejected{
-            background:#dc3545;
-            color:white;
-            padding:8px 14px;
-            border-radius:20px;
-            font-size:14px;
-        }
-
-        .disabled-btn{
-            background:#28a745;
-            cursor:not-allowed;
-            opacity:0.9;
-        }
-
-        .back-btn{
-            display:inline-block;
-            margin-top:30px;
-            padding:12px 22px;
-            background:#ff512f;
-            color:white;
-            text-decoration:none;
-            border-radius:12px;
-            transition:0.3s;
-        }
-
-        .back-btn:hover{
-            background:#ff774f;
-            transform:scale(1.05);
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="card">
-
-<h1>Payments</h1>
-
-<!-- CUSTOMER SECTION -->
-
-{% if session['role'] == 'customer' %}
-
-<h2>Pending Payments</h2>
-
-<table>
-
-<tr>
-
-<th>Vendor</th>
-
-<th>Product</th>
-
-<th>Price</th>
-
-<th>Payment</th>
-
-</tr>
-
-{% for o in orders %}
-
-{% set payment_found = payments
-| selectattr('order_id', 'equalto', o['id'])
-| list %}
-
-{% if payment_found|length == 0 %}
-
-<tr>
-
-<td>{{ o['vendor'] }}</td>
-
-<td>{{ o['product_name'] }}</td>
-
-<td>₹{{ o['price'] }}</td>
-
-<td>
-
-{% if o['status'] == 'Pending' %}
-
-<span class="pending">
-
-Waiting For Vendor Confirmation
-
-</span>
-
-{% elif o['status'] == 'Accepted' %}
-
-<form method="POST">
-
-<input type="hidden"
-       name="vendor"
-       value="{{ o['vendor'] }}">
-
-<input type="hidden"
-       name="product_name"
-       value="{{ o['product_name'] }}">
-
-<input type="hidden"
-       name="amount"
-       value="{{ o['price'] }}">
-
-<input type="hidden"
-       name="order_id"
-       value="{{ o['id'] }}">
-
-<button type="submit">
-
-Pay Now
-
-</button>
-
-</form>
-
-{% endif %}
-
-</td>
-
-</tr>
-
-Pay Now
-
-</button>
-
-</form>
-
-</td>
-
-</tr>
-
-{% endif %}
-
-{% endfor %}
-
-</table>
-
-{% endif %}
-
-<!-- PAYMENT HISTORY -->
-
-<h2>Payment History</h2>
-
-<table>
-
-<tr>
-
-<th>Customer</th>
-
-<th>Vendor</th>
-
-<th>Product</th>
-
-<th>Amount</th>
-
-<th>Status</th>
-
-{% if session['role'] == 'vendor' %}
-<th>Action</th>
-{% endif %}
-
-</tr>
-
-{% for p in payments %}
-
-<tr>
-
-<td>{{ p['customer'] }}</td>
-
-<td>{{ p['vendor'] }}</td>
-
-<td>{{ p['product_name'] }}</td>
-
-<td>₹{{ p['amount'] }}</td>
-
-<td>
-
-{% if p['status'] == 'Pending' %}
-
-<span class="pending">
-
-Waiting For Vendor Confirmation
-
-</span>
-
-{% elif p['status'] == 'Accepted' %}
-
-<span class="accepted">
-
-Payment Accepted
-
-</span>
-
-{% elif p['status'] == 'Out Of Stock' %}
-
-<span class="rejected">
-
-Sorry Product Is Out Of Stock
-
-</span>
-
-{% endif %}
-
-</td>
-
-{% if session['role'] == 'vendor' %}
-
-<td>
-
-{% if p['status'] == 'Accepted' %}
-
-<button class="disabled-btn"
-        disabled>
-
-Payment Accepted
-
-</button>
-
-{% else %}
-
-<form method="POST"
-      action="/update_payment">
-
-<input type="hidden"
-       name="payment_id"
-       value="{{ p['id'] }}">
-
-<input type="hidden"
-       name="status"
-       value="Accepted">
-
-<button type="submit">
-
-Accept Payment
-
-</button>
-
-</form>
-
-{% endif %}
-
-</td>
-
-{% endif %}
-
-</tr>
-
-{% endfor %}
-
-</table>
-
-<a href="/dashboard"
-   class="back-btn">
-
-← Back to Dashboard
-
-</a>
-
+{% extends "base.html" %}
+
+{% block title %}Payments - Vendor Management System{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="flex justify-between items-center mb-8 border-b border-glass pb-4">
+        <div>
+            <h1 class="text-3xl font-bold text-main">Payments</h1>
+            <p class="text-muted mt-1">Manage transactions and payment statuses securely.</p>
+        </div>
+    </div>
+
+    {% if session['role'] == 'customer' %}
+    <div class="mb-10">
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-main"><i class="fa-solid fa-file-invoice-dollar text-orange-400"></i> Pending Payments</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% set pending_found = namespace(value=false) %}
+            
+            {% for o in orders %}
+                {% set payment_exists = false %}
+                {% for p in payments %}
+                    {% if p['order_id']|string == o['id']|string %}
+                        {% set payment_exists = true %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if not payment_exists %}
+                    {% set pending_found.value = true %}
+                    <div class="glass-card p-5 relative overflow-hidden group border border-orange-500/20">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-orange-500/10 rounded-full blur-xl z-0"></div>
+                        
+                        <div class="relative z-10 flex justify-between items-start mb-4">
+                            <div>
+                                <div class="text-xs text-indigo-400 font-medium mb-1"><i class="fa-solid fa-store"></i> {{ o['vendor'] }}</div>
+                                <h3 class="font-bold text-main text-lg">{{ o['product_name'] }}</h3>
+                            </div>
+                            <div class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">
+                                ${{ o['price'] }}
+                            </div>
+                        </div>
+                        
+                        <div class="relative z-10 pt-4 border-t border-glass mt-auto">
+                            {% if o['status'] == 'Pending' %}
+                                <div class="w-full py-2.5 rounded-lg bg-orange-500/10 text-orange-500 border border-orange-500/30 font-medium text-center text-sm flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-hourglass-half animate-pulse"></i> Pending
+                                </div>
+                            {% elif o['status'] == 'Accepted' %}
+                                <div class="w-full py-1.5 mb-2 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 font-medium text-center text-xs">
+                                    Payment Requested
+                                </div>
+                                <form method="POST" action="/payments">
+                                    <input type="hidden" name="vendor" value="{{ o['vendor'] }}">
+                                    <input type="hidden" name="product_name" value="{{ o['product_name'] }}">
+                                    <input type="hidden" name="amount" value="{{ o['price'] }}">
+                                    <input type="hidden" name="order_id" value="{{ o['id'] }}">
+                                    <button type="submit" class="btn-glow w-full py-2.5 rounded-lg font-medium shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-credit-card"></i> Pay Now
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            
+            {% if not pending_found.value %}
+                <div class="col-span-full glass-panel p-8 text-center rounded-xl text-muted">
+                    <i class="fa-solid fa-circle-check text-3xl mb-2 text-green-400"></i>
+                    <p>All set! You have no pending payments.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Payment History -->
+    <div>
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-main"><i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> Payment History</h2>
+        
+        {% if payments %}
+        <div class="glass-card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>{% if session['role'] == 'vendor' %}Customer{% else %}Vendor{% endif %}</th>
+                            <th>Amount</th>
+                            <th>Payment Status</th>
+                            <th>Delivery Status</th>
+                            <th>Payment Date</th>
+                            <th>Delivery Date</th>
+                            {% if session['role'] == 'vendor' %}<th>Action</th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-glass border-t border-glass">
+                        {% for p in payments %}
+                        <tr class="hover:bg-overlay transition-colors">
+                            <td class="font-semibold text-main flex items-center gap-3">
+                                {% if p['product_image'] %}
+                                    <img src="{{ url_for('static', filename=p['product_image']) }}" class="w-10 h-10 rounded object-cover border border-glass">
+                                {% else %}
+                                    <div class="w-10 h-10 rounded bg-overlay flex items-center justify-center text-muted border border-glass"><i class="fa-solid fa-image"></i></div>
+                                {% endif %}
+                                {{ p['product_name'] }}
+                            </td>
+                            
+                            <td class="font-medium text-muted">
+                                {% if session['role'] == 'vendor' %}{{ p['customer'] }}{% else %}{{ p['vendor'] }}{% endif %}
+                            </td>
+                            
+                            <td class="font-bold text-main">${{ p['amount'] }}</td>
+                            
+                            <td>
+                                {% if p['status'] == 'Pending' %}
+                                    <span class="badge badge-pending"><i class="fa-solid fa-hourglass-half"></i> Paid</span>
+                                {% elif p['status'] == 'Accepted' %}
+                                    <div><span class="badge badge-accepted"><i class="fa-solid fa-check-double"></i> Payment Verified</span></div>
+                                    <div class="text-[10px] text-green-500 mt-1 font-medium"><i class="fa-solid fa-circle-check"></i> Payment Verified Successfully</div>
+                                {% elif p['status'] == 'Out Of Stock' %}
+                                    <div><span class="badge badge-outofstock"><i class="fa-solid fa-xmark"></i> Product Currently Out Of Stock</span></div>
+                                {% endif %}
+                            </td>
+                            
+                            <td>
+                                {% set del_stat = p['delivery_status'] or 'Pending' %}
+                                <span class="badge 
+                                    {% if del_stat == 'Pending' %}badge-pending
+                                    {% elif del_stat == 'Accepted' %}badge-accepted
+                                    {% elif del_stat == 'Processing' %}badge-processing
+                                    {% elif del_stat == 'Shipped' %}badge-shipped
+                                    {% elif del_stat == 'Out For Delivery' %}badge-outfordelivery
+                                    {% elif del_stat == 'Delivered' %}badge-delivered
+                                    {% else %}badge-outofstock{% endif %} text-[10px] px-2 py-0.5">
+                                    {{ del_stat }}
+                                </span>
+                            </td>
+                            
+                            <td class="text-sm text-muted">
+                                <i class="fa-regular fa-calendar mr-1"></i> {{ p['payment_date'] }}
+                            </td>
+                            
+                            <td class="text-sm text-muted">
+                                {% if p['delivered_date'] %}
+                                    <i class="fa-regular fa-calendar-check mr-1 text-green-500"></i> {{ p['delivered_date'] }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            
+                            {% if session['role'] == 'vendor' %}
+                            <td>
+                                {% if p['status'] == 'Accepted' %}
+                                    <button class="px-4 py-1.5 rounded-lg bg-green-500/10 text-green-500 border border-green-500/30 text-sm font-medium cursor-default">
+                                        <i class="fa-solid fa-check"></i> Verified
+                                    </button>
+                                {% elif p['status'] == 'Out Of Stock' %}
+                                    <span class="text-muted">-</span>
+                                {% else %}
+                                    <form method="POST" action="/update_payment">
+                                        <input type="hidden" name="payment_id" value="{{ p['id'] }}">
+                                        <input type="hidden" name="status" value="Accepted">
+                                        <button type="submit" class="btn-glow px-4 py-1.5 rounded-lg text-sm font-medium">
+                                            Verify Payment
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="glass-panel p-12 text-center rounded-2xl">
+            <div class="text-5xl text-slate-500 mb-4"><i class="fa-solid fa-wallet"></i></div>
+            <h3 class="text-xl font-bold mb-2 text-main">No Transactions Yet</h3>
+            <p class="text-muted">Payment history will appear here once transactions are made.</p>
+        </div>
+        {% endif %}
+    </div>
 </div>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

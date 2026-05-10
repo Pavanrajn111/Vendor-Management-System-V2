@@ -1,289 +1,75 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
+{% block title %}Vendor Profile - Vendor Management System{% endblock %}
 
-    <title>Vendor Profile</title>
-
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial,sans-serif;
-        }
-
-        body{
-            background:linear-gradient(135deg,#141e30,#243b55);
-            min-height:100vh;
-            color:white;
-        }
-
-        .container{
-            width:90%;
-            margin:auto;
-            padding:40px 0;
-        }
-
-        .profile-box{
-            background:rgba(255,255,255,0.08);
-            backdrop-filter:blur(10px);
-            border-radius:25px;
-            padding:40px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        .top-section{
-            text-align:center;
-            margin-bottom:40px;
-        }
-
-        .top-section img{
-            width:130px;
-            height:130px;
-            border-radius:50%;
-            border:4px solid white;
-            margin-bottom:15px;
-        }
-
-        .top-section h1{
-            font-size:36px;
-        }
-
-        .top-section p{
-            color:#ddd;
-            margin-top:8px;
-        }
-
-        .welcome{
-            margin-top:25px;
-            background:rgba(255,255,255,0.07);
-            padding:20px;
-            border-radius:15px;
-            line-height:1.8;
-        }
-
-        .welcome h2{
-            color:#00d4ff;
-            margin-bottom:10px;
-        }
-
-        .cards{
-            margin-top:40px;
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-            gap:25px;
-        }
-
-        .card{
-            background:rgba(255,255,255,0.08);
-            padding:30px;
-            border-radius:20px;
-            text-align:center;
-            transition:0.4s;
-        }
-
-        .card:hover{
-            transform:translateY(-10px);
-            background:linear-gradient(135deg,#1d2671,#243b55);
-        }
-
-        .card h1{
-            font-size:40px;
-            color:#00d4ff;
-            margin-bottom:10px;
-        }
-
-        .card p{
-            color:#ddd;
-        }
-
-        .services{
-            margin-top:50px;
-        }
-
-        .services h2{
-            text-align:center;
-            margin-bottom:30px;
-        }
-
-        .service-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-            gap:25px;
-        }
-
-        .service{
-            background:rgba(255,255,255,0.08);
-            padding:25px;
-            border-radius:20px;
-            text-align:center;
-            transition:0.4s;
-            text-decoration:none;
-            color:white;
-        }
-
-        .service:hover{
-            transform:scale(1.05);
-            background:linear-gradient(135deg,#1d2671,#243b55);
-        }
-
-        .service h3{
-            margin-top:10px;
-            margin-bottom:10px;
-        }
-
-        .back-btn{
-            display:inline-block;
-            margin-top:40px;
-            padding:14px 22px;
-            background:#ff4d4d;
-            color:white;
-            text-decoration:none;
-            border-radius:10px;
-            transition:0.3s;
-        }
-
-        .back-btn:hover{
-            background:#cc0000;
-            transform:scale(1.05);
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-    <div class="profile-box">
-
-        <div class="top-section">
-
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-
-            <h1>{{ session['user'] }}</h1>
-
-            <p>Vendor Account</p>
-
-            <div class="welcome">
-
-                <h2>Welcome Vendor</h2>
-
-                <p>
-                    Manage your customers, products,
-                    delivery status and business activities
-                    efficiently through this platform.
-                </p>
-
+{% block content %}
+<div class="fade-in max-w-4xl mx-auto">
+    <!-- Profile Header -->
+    <div class="glass-panel rounded-3xl p-8 mb-8 relative overflow-hidden">
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl z-0"></div>
+        <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-orange-500/20 rounded-full blur-3xl z-0"></div>
+        
+        <div class="relative z-10 flex flex-col sm:flex-row items-center gap-6">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-pink-500 to-orange-500 flex items-center justify-center text-4xl font-bold text-white shadow-xl ring-4 ring-white/10">
+                <i class="fa-solid fa-store"></i>
             </div>
-
+            <div class="text-center sm:text-left">
+                <h1 class="text-3xl font-bold text-white mb-1">{{ session['user'] }}</h1>
+                <div class="text-pink-400 font-medium uppercase tracking-widest text-sm flex items-center justify-center sm:justify-start gap-2">
+                    <i class="fa-solid fa-certificate"></i> Verified Vendor
+                </div>
+            </div>
+            <div class="sm:ml-auto">
+                <a href="/logout" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-5 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
         </div>
-
-        <!-- STATISTICS -->
-         <div class="services">
-
-    <h2>Connected Customers</h2>
-
-    <div class="service-grid">
-
-        {% for customer in connected_customers %}
-
-        <div class="service">
-
-            <h3>👤 {{ customer['customer'] }}</h3>
-
-        </div>
-
-        {% endfor %}
-
     </div>
 
-</div>
+    <h2 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-chart-line text-pink-400"></i> Business Performance</h2>
 
-        <div class="cards">
-
-            <div class="card">
-
-                <h1>{{ total_customers }}</h1>
-
-                <p>Total Customers</p>
-
-            </div>
-
-            <div class="card">
-
-                <h1>{{ total_orders }}</h1>
-
-                <p>Orders Received</p>
-
-            </div>
-
-            <div class="card">
-
-                <h1>{{ total_reviews }}</h1>
-
-                <p>Customer Reviews</p>
-
-            </div>
-
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="glass-card p-6 border-t-2 border-t-blue-500 relative overflow-hidden group">
+            <div class="absolute -right-4 -bottom-4 text-6xl text-blue-500/10 group-hover:scale-110 transition-transform"><i class="fa-solid fa-users"></i></div>
+            <div class="text-sm text-slate-400 font-medium mb-1">Customers</div>
+            <div class="text-3xl font-bold text-white">{{ total_customers }}</div>
         </div>
-
-        <!-- SERVICES -->
-
-        <div class="services">
-
-            <h2>Vendor Services</h2>
-
-            <div class="service-grid">
-
-                <a href="/products" class="service">
-
-                    <h3>📦 Products</h3>
-
-                    <p>Manage your products</p>
-
-                </a>
-
-                <a href="/orders" class="service">
-
-                    <h3>🛒 Orders</h3>
-
-                    <p>Track customer orders</p>
-
-                </a>
-
-                <a href="/delivery" class="service">
-
-                    <h3>🚚 Delivery</h3>
-
-                    <p>Check delivery status</p>
-
-                </a>
-
-                <a href="/payments" class="service">
-
-                    <h3>💳 Payments</h3>
-
-                    <p>Monitor transactions</p>
-
-                </a>
-
-            </div>
-
+        
+        <div class="glass-card p-6 border-t-2 border-t-orange-500 relative overflow-hidden group">
+            <div class="absolute -right-4 -bottom-4 text-6xl text-orange-500/10 group-hover:scale-110 transition-transform"><i class="fa-solid fa-box-open"></i></div>
+            <div class="text-sm text-slate-400 font-medium mb-1">Total Orders</div>
+            <div class="text-3xl font-bold text-white">{{ total_orders }}</div>
         </div>
-
-        <a href="/dashboard" class="back-btn">
-
-            ← Back to Dashboard
-
-        </a>
-
+        
+        <div class="glass-card p-6 border-t-2 border-t-yellow-500 relative overflow-hidden group">
+            <div class="absolute -right-4 -bottom-4 text-6xl text-yellow-500/10 group-hover:scale-110 transition-transform"><i class="fa-solid fa-star"></i></div>
+            <div class="text-sm text-slate-400 font-medium mb-1">Total Reviews</div>
+            <div class="text-3xl font-bold text-white">{{ total_reviews }}</div>
+        </div>
     </div>
 
+    <!-- Connected Customers List -->
+    <div class="glass-panel rounded-2xl p-6">
+        <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-address-book text-blue-400"></i> Customer Directory</h3>
+        
+        {% if connected_customers %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {% for c in connected_customers %}
+            <div class="glass-input p-4 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+                    {{ c['customer'][0]|upper }}
+                </div>
+                <div class="font-bold text-slate-200">{{ c['customer'] }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center p-6 bg-black/20 rounded-xl border border-white/5">
+            <p class="text-slate-400">You don't have any connected customers yet.</p>
+        </div>
+        {% endif %}
+    </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

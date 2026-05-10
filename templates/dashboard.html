@@ -1,336 +1,122 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
+{% extends "base.html" %}
 
-    <style>
+{% block title %}Dashboard - Vendor Management System{% endblock %}
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body{
-            background:#eef2f7;
-        }
-
-        /* HEADER */
-
-        .header{
-            background:linear-gradient(135deg,#141e30,#243b55);
-            padding:18px 25px;
-            display:flex;
-            justify-content:flex-end;
-            align-items:center;
-            position:relative;
-            box-shadow:0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        /* MENU BUTTON */
-
-        .menu-btn{
-            font-size:28px;
-            color:white;
-            cursor:pointer;
-            margin-right:25px;
-            transition:0.3s;
-        }
-
-        .menu-btn:hover{
-            transform:scale(1.1);
-            color:#00d4ff;
-        }
-
-        /* MENU */
-
-        .menu{
-            position:absolute;
-            top:70px;
-            right:90px;
-            background:white;
-            width:220px;
-            border-radius:12px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.2);
-            display:none;
-            overflow:hidden;
-            z-index:1000;
-        }
-
-        .menu a{
-            display:block;
-            padding:15px;
-            text-decoration:none;
-            color:#333;
-            transition:0.3s;
-            border-bottom:1px solid #eee;
-        }
-
-        .menu a:hover{
-            background:#1d2671;
-            color:white;
-            padding-left:25px;
-        }
-
-        /* PROFILE */
-
-        .profile{
-            cursor:pointer;
-        }
-
-        .profile img{
-            width:45px;
-            height:45px;
-            border-radius:50%;
-            border:2px solid white;
-            transition:0.3s;
-        }
-
-        .profile img:hover{
-            transform:scale(1.08);
-        }
-
-        /* HERO */
-
-        .hero{
-            text-align:center;
-            padding:60px 20px;
-            background:linear-gradient(135deg,#1d2671,#c33764);
-            color:white;
-        }
-
-        .hero h2{
-            font-size:42px;
-            margin-bottom:15px;
-        }
-
-        .hero p{
-            font-size:18px;
-            opacity:0.9;
-        }
-
-        /* CARDS */
-
-        .dashboard{
-            width:90%;
-            margin:40px auto;
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-            gap:25px;
-        }
-
-        .card{
-            background:white;
-            padding:30px;
-            border-radius:18px;
-            text-align:center;
-            box-shadow:0 8px 20px rgba(0,0,0,0.1);
-            transition:0.4s;
-            cursor:pointer;
-            position:relative;
-            overflow:hidden;
-        }
-
-        .card:hover{
-            transform:translateY(-12px) scale(1.03);
-            background:linear-gradient(135deg,#1d2671,#243b55);
-            color:white;
-        }
-
-        .card:hover p{
-            color:#ddd;
-        }
-
-        .card h3{
-            margin-bottom:15px;
-            font-size:26px;
-        }
-
-        .card p{
-            color:gray;
-            transition:0.3s;
-        }
-
-        .card::before{
-            content:'';
-            position:absolute;
-            width:120px;
-            height:120px;
-            background:rgba(255,255,255,0.15);
-            border-radius:50%;
-            top:-40px;
-            right:-40px;
-        }
-
-        /* FOOTER */
-
-        .footer{
-            margin-top:40px;
-            text-align:center;
-            padding:20px;
-            background:#141e30;
-            color:white;
-        }
-
-    </style>
-</head>
-
-<body>
-
-    <!-- HEADER -->
-
-    <div class="header">
-
-        <!-- MENU -->
-
-        <div class="menu-btn" onclick="toggleMenu()">
-            ☰
+{% block content %}
+<div class="fade-in">
+    <!-- Hero Section for Dashboard -->
+    <div class="glass-panel p-8 rounded-2xl mb-8 flex flex-col md:flex-row items-center justify-between relative overflow-hidden">
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10">
+            <h1 class="text-3xl font-bold mb-2 text-main">Welcome back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-500">{{ session['user'] }}</span>!</h1>
+            <p class="text-muted">
+                Manage your {% if session['role'] == 'vendor' %}business, products, and incoming orders.{% else %}vendors, purchases, and delivery status.{% endif %}
+            </p>
         </div>
-
-        <div class="menu" id="menu">
-
-            <a href="/vendors">🏢 Vendors</a>
-
-            <a href="/products">📦 Products</a>
-
-            <a href="/orders">🛒 Orders</a>
-
-            <a href="/payments">💳 Payments</a>
-
-            <a href="/delivery">🚚 Delivery</a>
-
-            <a href="/reviews">⭐ Reviews</a>
-
-            <a href="/logout">🚪 Logout</a>
-
+        
+        <div class="mt-6 md:mt-0 relative z-10 flex gap-4">
+            <div class="text-center px-6 py-3 glass-card rounded-xl border-t-2 border-t-orange-500">
+                <div class="text-xs text-muted uppercase tracking-wider mb-1">Role</div>
+                <div class="font-bold text-lg capitalize text-main">{{ session['role'] }}</div>
+            </div>
         </div>
-
-        <!-- PROFILE -->
-
-        <div class="profile"
-             onclick="window.location.href='/profile'">
-
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-
-        </div>
-
     </div>
 
-    <!-- HERO -->
+    <h2 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-compass text-orange-400"></i> Quick Navigation</h2>
 
-    <div class="hero">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        
+        {% if session['role'] == 'customer' %}
+        <a href="/vendors" class="glass-card p-6 flex flex-col group hover:border-orange-500/50">
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-building"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1 text-main">Vendors</h3>
+            <p class="text-sm text-muted">Explore available vendors and suppliers to connect with.</p>
+            <div class="mt-auto pt-4 flex justify-end text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
+        {% endif %}
 
-        <h2>Welcome {{ session['user'] }}</h2>
+        <a href="/products" class="glass-card p-6 flex flex-col group hover:border-orange-500/50">
+            <div class="w-12 h-12 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-box"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1 text-main">Products</h3>
+            <p class="text-sm text-muted">{% if session['role'] == 'vendor' %}Manage your product catalog.{% else %}View products from your connected vendors.{% endif %}</p>
+            <div class="mt-auto pt-4 flex justify-end text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
 
-        <p>
-            Manage vendors, products, orders, payments,
-            and reviews efficiently from one platform.
-        </p>
+        <a href="/orders" class="glass-card p-6 flex flex-col group hover:border-orange-500/50">
+            <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1 text-main">Orders</h3>
+            <p class="text-sm text-muted">Track and manage your order history.</p>
+            <div class="mt-auto pt-4 flex justify-end text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
+
+        <a href="/delivery" class="glass-card p-6 flex flex-col group hover:border-orange-500/50">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-truck"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1 text-main">Delivery</h3>
+            <p class="text-sm text-muted">Monitor the shipping progress of your orders.</p>
+            <div class="mt-auto pt-4 flex justify-end text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
+
+        <a href="/payments" class="glass-card p-6 flex flex-col group hover:border-orange-500/50">
+            <div class="w-12 h-12 rounded-xl bg-green-500/20 text-green-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1 text-main">Payments</h3>
+            <p class="text-sm text-muted">{% if session['role'] == 'vendor' %}Verify customer payments.{% else %}Process pending payments for your orders.{% endif %}</p>
+            <div class="mt-auto pt-4 flex justify-end text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
+
+        <a href="/reviews" class="glass-card p-6 flex flex-col group hover:border-orange-500/50">
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-star"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1 text-main">Reviews</h3>
+            <p class="text-sm text-muted">{% if session['role'] == 'vendor' %}Read feedback from your customers.{% else %}Write and read reviews for vendors.{% endif %}</p>
+            <div class="mt-auto pt-4 flex justify-end text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
+        
+        <a href="/profile" class="glass-card p-6 flex flex-col group hover:border-orange-500/50">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-user-gear"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1 text-main">Profile</h3>
+            <p class="text-sm text-muted">View your account statistics and details.</p>
+            <div class="mt-auto pt-4 flex justify-end text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
+
+        <a href="/settings" class="glass-card p-6 flex flex-col group hover:border-orange-500/50">
+            <div class="w-12 h-12 rounded-xl bg-slate-500/20 text-slate-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1 text-main">Settings</h3>
+            <p class="text-sm text-muted">Update preferences, theme, and security.</p>
+            <div class="mt-auto pt-4 flex justify-end text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
 
     </div>
-
-   <!-- CARDS -->
-<div class="dashboard">
-
-{% if session['role'] == 'customer' %}
-
-<div class="card"
-     onclick="window.location.href='/vendors'">
-
-    <h3>🏢 Vendors</h3>
-
-    <p>
-        Explore available vendors and suppliers.
-    </p>
-
 </div>
-
-{% endif %}
-
-    <div class="card"
-         onclick="window.location.href='/products'">
-
-        <h3>📦 Products</h3>
-
-        <p>
-            Store and manage products with pricing details.
-        </p>
-
-    </div>
-
-    <div class="card"
-         onclick="window.location.href='/orders'">
-
-        <h3>🛒 Orders</h3>
-
-        <p>
-            Create and track order delivery status.
-        </p>
-
-    </div>
-
-    <!-- NEW DELIVERY STATUS CARD -->
-
-    <div class="card"
-         onclick="window.location.href='/delivery'">
-
-        <h3>🚚 Delivery Status</h3>
-
-        <p>
-            Track shipping progress and delivery updates.
-        </p>
-
-    </div>
-
-    <div class="card"
-         onclick="window.location.href='/payments'">
-
-        <h3>💳 Payments</h3>
-
-        <p>
-            Monitor payment history and transactions.
-        </p>
-
-    </div>
-
-    <div class="card"
-         onclick="window.location.href='/reviews'">
-
-        <h3>⭐ Reviews</h3>
-
-        <p>
-            Analyze vendor reviews and ratings.
-        </p>
-
-    </div>
-
-    </div>
-
-    <!-- FOOTER -->
-
-    <div class="footer">
-
-        Smart Vendor • Smart Business • Smart Future
-
-    </div>
-
-<script>
-
-function toggleMenu(){
-
-    let menu = document.getElementById("menu");
-
-    if(menu.style.display === "block"){
-        menu.style.display = "none";
-    }
-
-    else{
-        menu.style.display = "block";
-    }
-}
-
-</script>
-
-</body>
-</html>
+{% endblock %}

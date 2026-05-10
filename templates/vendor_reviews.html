@@ -1,215 +1,59 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-    <title>Vendor Reviews</title>
-
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial,sans-serif;
-        }
-
-        body{
-            background:#eef2f7;
-        }
-
-        .container{
-            width:95%;
-            padding:40px 30px;
-        }
-
-        .title{
-            margin-bottom:40px;
-        }
-
-        .title h1{
-            color:#1d2671;
-            font-size:42px;
-            text-align:left;
-        }
-
-        .reviews-box{
-
-            width:100%;
-
-            display:flex;
-            flex-direction:column;
-            align-items:flex-start;
-
-        }
-
-        .review-box{
-
-            width:700px;
-
-            background:white;
-
-            padding:25px;
-
-            border-radius:18px;
-
-            margin-bottom:25px;
-
-            box-shadow:0 8px 20px rgba(0,0,0,0.08);
-
-            text-align:left;
-
-        }
-
-        .review-box h3{
-
-            font-size:22px;
-
-            color:#1d2671;
-
-            margin-bottom:12px;
-
-        }
-
-        .stars{
-
-            font-size:24px;
-
-            color:#ffb400;
-
-            margin-bottom:15px;
-
-        }
-
-        .review-text{
-
-            font-size:16px;
-
-            color:#555;
-
-            line-height:1.7;
-
-        }
-
-        .empty{
-
-            background:white;
-
-            padding:30px;
-
-            border-radius:18px;
-
-            color:#666;
-
-            box-shadow:0 8px 20px rgba(0,0,0,0.08);
-
-            width:500px;
-
-        }
-
-        .btn-box{
-            margin-top:30px;
-        }
-
-        .back-btn{
-
-            display:inline-block;
-
-            padding:14px 24px;
-
-            background:#ff512f;
-
-            color:white;
-
-            text-decoration:none;
-
-            border-radius:12px;
-
-            transition:0.3s;
-
-        }
-
-        .back-btn:hover{
-
-            background:#ff774f;
-
-            transform:scale(1.05);
-
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-    <div class="title">
-
-        <h1>
-
-            {{ vendor_name }} Reviews
-
-        </h1>
-
-    </div>
-
-    <div class="reviews-box">
-
-        {% if reviews %}
-
-            {% for r in reviews %}
-
-            <div class="review-box">
-
-                <h3>
-
-                    {{ r['customer'] }}
-
-                </h3>
-
-                <div class="stars">
-
-                    {% for i in range(r['rating']|int) %}
-                        ⭐
-                    {% endfor %}
-
-                </div>
-
-                <div class="review-text">
-
-                    {{ r['comment'] }}
-
-                </div>
-
-            </div>
-
-            {% endfor %}
-
-        {% else %}
-
-            <div class="empty">
-
-                No Reviews Available
-
-            </div>
-
-        {% endif %}
-
-    </div>
-
-    <div class="btn-box">
-
-        <a href="/vendors"
-           class="back-btn">
-
-           ← Back to Vendors
-
+{% extends "base.html" %}
+
+{% block title %}{{ vendor_name }}'s Reviews - Vendor Management System{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="flex items-center gap-4 mb-8 border-b border-white/10 pb-4">
+        <a href="/vendors" class="text-slate-400 hover:text-white transition-colors w-10 h-10 flex items-center justify-center rounded-full glass-panel">
+            <i class="fa-solid fa-arrow-left"></i>
         </a>
-
+        <div>
+            <h1 class="text-3xl font-bold">{{ vendor_name }}'s Reviews</h1>
+            <p class="text-slate-400 mt-1">See what other customers are saying about this vendor.</p>
+        </div>
     </div>
 
+    <!-- Reviews Grid -->
+    {% if reviews %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for r in reviews %}
+        <div class="glass-card p-6 relative overflow-hidden group">
+            <div class="absolute -right-6 -bottom-6 text-9xl text-white/[0.02] group-hover:scale-110 transition-transform"><i class="fa-solid fa-quote-right"></i></div>
+            
+            <div class="relative z-10 flex justify-between items-start mb-4 border-b border-white/5 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-slate-300">
+                        {{ r['customer'][0]|upper }}
+                    </div>
+                    <div class="font-bold text-white">{{ r['customer'] }}</div>
+                </div>
+                
+                <!-- Stars -->
+                <div class="flex text-sm bg-yellow-500/10 px-2 py-1 rounded-full border border-yellow-500/20">
+                    {% set rating = r['rating']|int %}
+                    {% for i in range(5) %}
+                        {% if i < rating %}
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                        {% else %}
+                            <i class="fa-solid fa-star text-slate-600"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <p class="relative z-10 text-slate-300 italic leading-relaxed text-sm">
+                "{{ r['comment'] }}"
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass-panel p-12 text-center rounded-2xl">
+        <div class="text-5xl text-slate-500 mb-4"><i class="fa-regular fa-star-half-stroke"></i></div>
+        <h3 class="text-xl font-bold mb-2">No Reviews Yet</h3>
+        <p class="text-slate-400">This vendor hasn't received any feedback yet. Be the first to review them!</p>
+    </div>
+    {% endif %}
 </div>
-
-</body>
-</html>
+{% endblock %}

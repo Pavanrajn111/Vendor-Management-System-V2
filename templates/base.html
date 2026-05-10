@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Vendor Management System{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Theme Toggle Script -->
+    <script>
+        let savedTheme = localStorage.getItem('theme');
+        if (!savedTheme || savedTheme === 'auto') {
+            savedTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="antialiased relative">
+
+    <!-- Animated Background -->
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+
+    <!-- Main Navigation for Dashboard -->
+    {% if session.get('user') %}
+    <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center mb-8">
+        <div class="flex items-center gap-4">
+            <button id="mobile-menu-btn" class="md:hidden text-2xl text-white hover:text-orange-400 transition-colors">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="/dashboard" class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-500">
+                <i class="fa-solid fa-store mr-2"></i>VMS
+            </a>
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-6">
+            {% if session['role'] == 'customer' %}
+                <a href="/vendors" class="hover:text-orange-400 transition-colors"><i class="fa-solid fa-building mr-2"></i>Vendors</a>
+            {% endif %}
+            <a href="/products" class="hover:text-orange-400 transition-colors"><i class="fa-solid fa-box mr-2"></i>Products</a>
+            <a href="/orders" class="hover:text-orange-400 transition-colors"><i class="fa-solid fa-cart-shopping mr-2"></i>Orders</a>
+            <a href="/delivery" class="hover:text-orange-400 transition-colors"><i class="fa-solid fa-truck mr-2"></i>Delivery</a>
+            <a href="/payments" class="hover:text-orange-400 transition-colors"><i class="fa-solid fa-credit-card mr-2"></i>Payments</a>
+            <a href="/reviews" class="hover:text-orange-400 transition-colors"><i class="fa-solid fa-star mr-2"></i>Reviews</a>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button id="theme-toggle" class="text-xl text-muted hover:text-orange-400 transition-colors w-8 h-8 flex items-center justify-center rounded-full glass-panel" title="Toggle Theme">
+                <i class="fa-solid fa-moon dark-icon"></i>
+                <i class="fa-solid fa-sun light-icon hidden"></i>
+            </button>
+            <a href="/profile" class="flex items-center gap-2 hover:text-orange-400 transition-colors">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-red-500 to-orange-500 flex items-center justify-center text-white font-bold">
+                    {{ session['user'][0]|upper }}
+                </div>
+                <span class="hidden sm:inline text-main">{{ session['user'] }}</span>
+            </a>
+            <a href="/settings" class="flex items-center gap-2 text-slate-400 hover:text-orange-400 transition-colors ml-2 font-medium"><i class="fa-solid fa-gear"></i><span class="hidden sm:inline">Settings</span></a>
+            <a href="/logout" class="text-red-400 hover:text-red-300 transition-colors ml-3" title="Logout"><i class="fa-solid fa-right-from-bracket text-lg"></i></a>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-40 hidden flex-col pt-20 px-6 gap-6">
+        <button id="close-menu-btn" class="absolute top-6 right-6 text-2xl text-white hover:text-orange-400">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        
+        {% if session['role'] == 'customer' %}
+            <a href="/vendors" class="text-xl hover:text-orange-400 transition-colors border-b border-slate-700 pb-2"><i class="fa-solid fa-building w-8"></i>Vendors</a>
+        {% endif %}
+        <a href="/products" class="text-xl hover:text-orange-400 transition-colors border-b border-slate-700 pb-2"><i class="fa-solid fa-box w-8"></i>Products</a>
+        <a href="/orders" class="text-xl hover:text-orange-400 transition-colors border-b border-slate-700 pb-2"><i class="fa-solid fa-cart-shopping w-8"></i>Orders</a>
+        <a href="/delivery" class="text-xl hover:text-orange-400 transition-colors border-b border-slate-700 pb-2"><i class="fa-solid fa-truck w-8"></i>Delivery</a>
+        <a href="/payments" class="text-xl hover:text-orange-400 transition-colors border-b border-slate-700 pb-2"><i class="fa-solid fa-credit-card w-8"></i>Payments</a>
+        <a href="/reviews" class="text-xl hover:text-orange-400 transition-colors border-b border-slate-700 pb-2"><i class="fa-solid fa-star w-8"></i>Reviews</a>
+        <a href="/settings" class="text-xl hover:text-orange-400 transition-colors border-b border-slate-700 pb-2"><i class="fa-solid fa-gear w-8"></i>Settings</a>
+    </div>
+    {% endif %}
+
+    <main class="container mx-auto px-4 pb-12 min-h-[80vh]">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Floating Back to Dashboard Button (Hidden on actual dashboard) -->
+    {% if session.get('user') and request.path != '/dashboard' %}
+    <a href="/dashboard" class="btn-floating-dash">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="hidden sm:inline">Back to Dashboard</span>
+    </a>
+    {% endif %}
+
+    <!-- Global Floating Theme Toggle for unauthenticated users -->
+    {% if not session.get('user') and request.path != '/' %}
+    <button id="theme-toggle-floating" class="fixed bottom-6 right-6 z-50 text-xl text-muted hover:text-orange-400 transition-colors w-12 h-12 flex items-center justify-center rounded-full glass-card shadow-xl border border-glass cursor-pointer" title="Toggle Theme">
+        <i class="fa-solid fa-moon dark-icon-float"></i>
+        <i class="fa-solid fa-sun light-icon-float hidden"></i>
+    </button>
+    {% endif %}
+
+    {% if not session.get('user') %}
+    <footer class="glass-panel mt-auto py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center gap-6 mb-6">
+                <a href="#" class="text-2xl hover:text-orange-400 transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="text-2xl hover:text-orange-400 transition-colors"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#" class="text-2xl hover:text-orange-400 transition-colors"><i class="fa-brands fa-github"></i></a>
+            </div>
+            <p class="text-slate-400 mb-2">Contact: support@vendormanagement.com | +1 (555) 123-4567</p>
+            <p class="text-slate-500 text-sm">&copy; 2026 Vendor Management System. All rights reserved.</p>
+        </div>
+    </footer>
+    {% endif %}
+
+    <script>
+        // Theme Toggle Logic for Dashboard
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.querySelector('.dark-icon');
+        const lightIcon = document.querySelector('.light-icon');
+        
+        // Theme Toggle Logic for Floating Button
+        const themeToggleFloatBtn = document.getElementById('theme-toggle-floating');
+        const darkIconFloat = document.querySelector('.dark-icon-float');
+        const lightIconFloat = document.querySelector('.light-icon-float');
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'light') {
+                if (darkIcon) darkIcon.classList.add('hidden');
+                if (lightIcon) lightIcon.classList.remove('hidden');
+                if (darkIconFloat) darkIconFloat.classList.add('hidden');
+                if (lightIconFloat) lightIconFloat.classList.remove('hidden');
+            } else {
+                if (darkIcon) darkIcon.classList.remove('hidden');
+                if (lightIcon) lightIcon.classList.add('hidden');
+                if (darkIconFloat) darkIconFloat.classList.remove('hidden');
+                if (lightIconFloat) lightIconFloat.classList.add('hidden');
+            }
+        }
+        
+        function handleThemeToggle() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+                updateThemeIcon('dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                updateThemeIcon('light');
+            }
+        }
+
+        updateThemeIcon(document.documentElement.getAttribute('data-theme') || 'dark');
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', handleThemeToggle);
+        }
+        
+        if (themeToggleFloatBtn) {
+            themeToggleFloatBtn.addEventListener('click', handleThemeToggle);
+        }
+
+        // Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const closeBtn = document.getElementById('close-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if(mobileBtn && closeBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('flex');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
+            });
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

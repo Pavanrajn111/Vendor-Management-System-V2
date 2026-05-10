@@ -1,9 +1,15 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
 import os
+from werkzeug.utils import secure_filename
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "secret123"
+
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ---------------------------------
 # DATABASE CONNECTION
@@ -66,7 +72,8 @@ CREATE TABLE IF NOT EXISTS payments(
     vendor TEXT,
     product_name TEXT,
     amount TEXT,
-    status TEXT
+    status TEXT,
+    payment_date DATETIME DEFAULT CURRENT_TIMESTAMP
 )
 ''')
 
@@ -90,10 +97,77 @@ CREATE TABLE IF NOT EXISTS connections(
 conn.commit()
 
 # ---------------------------------
-# LOGIN
+# APPLY SCHEMA MIGRATIONS
+# ---------------------------------
+try:
+    conn.execute('ALTER TABLE products ADD COLUMN image TEXT DEFAULT ""')
+except:
+    pass
+try:
+    conn.execute('ALTER TABLE products ADD COLUMN availability TEXT DEFAULT "In Stock"')
+except:
+    pass
+try:
+    conn.execute('ALTER TABLE orders ADD COLUMN product_image TEXT DEFAULT ""')
+except:
+    pass
+try:
+    conn.execute('ALTER TABLE orders ADD COLUMN expected_delivery TEXT DEFAULT ""')
+except:
+    pass
+try:
+    conn.execute('ALTER TABLE orders ADD COLUMN delivered_date TEXT DEFAULT ""')
+except:
+    pass
+def ensure_column_exists(conn, table, column, definition):
+    columns = [row['name'] for row in conn.execute(f"PRAGMA table_info({table})").fetchall()]
+    if column not in columns:
+        conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
+
+try:
+    ensure_column_exists(conn, 'payments', 'payment_date', 'TEXT DEFAULT ""')
+except:
+    pass
+conn.commit()
+
+# ---------------------------------
+# LANDING PAGE
 # ---------------------------------
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+# ---------------------------------
+# LOGIN & SETTINGS
+# ---------------------------------
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if 'user' not in session:
+        return redirect('/login')
+        
+    conn = get_db()
+    
+    if request.method == 'POST':
+        action = request.form.get('action')
+        
+        if action == 'update_password':
+            new_password = request.form['new_password']
+            conn.execute("UPDATE users SET password=? WHERE username=?", (new_password, session['user']))
+            conn.commit()
+            
+        elif action == 'update_mobile':
+            mobile = request.form['mobile']
+            conn.execute("UPDATE users SET mobile=? WHERE username=?", (mobile, session['user']))
+            conn.commit()
+            
+        return redirect('/settings?success=1')
+        
+    user = conn.execute("SELECT * FROM users WHERE username=?", (session['user'],)).fetchone()
+    return render_template('settings.html', user=user)
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
 
     conn = get_db()
@@ -160,7 +234,7 @@ def register():
 
         conn.commit()
 
-        return redirect('/')
+        return redirect('/login')
 
     return render_template('register.html', error=error)
 
@@ -172,7 +246,7 @@ def register():
 def dashboard():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     return render_template('dashboard.html')
 
@@ -184,7 +258,7 @@ def dashboard():
 def profile():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -259,7 +333,7 @@ def profile():
 def vendors():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -286,7 +360,7 @@ def vendors():
 def products():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -302,12 +376,19 @@ def products():
 
             name = request.form['name']
             price = request.form['price']
-
             vendor = session['user']
+            image_path = ""
+
+            if 'image' in request.files:
+                file = request.files['image']
+                if file.filename != '':
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    image_path = f"uploads/{filename}"
 
             conn.execute(
-                "INSERT INTO products(vendor,name,price) VALUES(?,?,?)",
-                (vendor,name,price)
+                "INSERT INTO products(vendor,name,price,image,availability) VALUES(?,?,?,?,?)",
+                (vendor,name,price,image_path,"In Stock")
             )
 
             conn.commit()
@@ -357,11 +438,52 @@ def products():
             products=products
         )
 
+@app.route('/edit_product/<int:id>', methods=['POST'])
+def edit_product(id):
+    if 'user' not in session or session.get('role') != 'vendor':
+        return redirect('/login')
+
+    conn = get_db()
+    name = request.form['name']
+    price = request.form['price']
+    availability = request.form['availability']
+    
+    # Check if a new image was uploaded
+    if 'image' in request.files:
+        file = request.files['image']
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            image_path = f"uploads/{filename}"
+            conn.execute(
+                "UPDATE products SET name=?, price=?, availability=?, image=? WHERE id=? AND vendor=?",
+                (name, price, availability, image_path, id, session['user'])
+            )
+            conn.commit()
+            return redirect('/products')
+            
+    conn.execute(
+        "UPDATE products SET name=?, price=?, availability=? WHERE id=? AND vendor=?",
+        (name, price, availability, id, session['user'])
+    )
+    conn.commit()
+    return redirect('/products')
+
+@app.route('/delete_product/<int:id>')
+def delete_product(id):
+    if 'user' not in session or session.get('role') != 'vendor':
+        return redirect('/login')
+
+    conn = get_db()
+    conn.execute("DELETE FROM products WHERE id=? AND vendor=?", (id, session['user']))
+    conn.commit()
+    return redirect('/products')
+
 @app.route('/orders')
 def orders():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -401,7 +523,7 @@ def orders():
 def delivery():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -431,7 +553,7 @@ def delivery():
 def payments():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -468,9 +590,10 @@ def payments():
                     vendor,
                     product_name,
                     amount,
-                    status
+                    status,
+                    payment_date
                 )
-                VALUES(?,?,?,?,?,?)
+                VALUES(?,?,?,?,?,?,?)
                 ''',
                 (
                     order_id,
@@ -478,20 +601,22 @@ def payments():
                     vendor,
                     product_name,
                     amount,
-                    'Pending'
+                    'Pending',
+                    datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 )
             )
 
             conn.commit()
 
     # CUSTOMER VIEW
-
     if session['role'] == 'customer':
-
         payments = conn.execute(
             '''
-            SELECT * FROM payments
-            WHERE customer=?
+            SELECT p.*, o.product_image, o.status as delivery_status, o.delivered_date 
+            FROM payments p
+            LEFT JOIN orders o ON p.order_id = o.id
+            WHERE p.customer=?
+            ORDER BY p.payment_date DESC, p.id DESC
             ''',
             (session['user'],)
         ).fetchall()
@@ -505,13 +630,14 @@ def payments():
         ).fetchall()
 
     # VENDOR VIEW
-
     else:
-
         payments = conn.execute(
             '''
-            SELECT * FROM payments
-            WHERE vendor=?
+            SELECT p.*, o.product_image, o.status as delivery_status, o.delivered_date 
+            FROM payments p
+            LEFT JOIN orders o ON p.order_id = o.id
+            WHERE p.vendor=?
+            ORDER BY p.payment_date DESC, p.id DESC
             ''',
             (session['user'],)
         ).fetchall()
@@ -527,7 +653,7 @@ def payments():
 def update_payment():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     payment_id = request.form['payment_id']
 
@@ -555,7 +681,7 @@ def update_payment():
 def reviews():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -633,7 +759,7 @@ def reviews():
 def allusers():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -649,7 +775,7 @@ def allusers():
 def select_vendor():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     customer = session['user']
 
@@ -676,7 +802,7 @@ def select_vendor():
 def add_order():
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     product_id = request.form['product_id']
 
@@ -700,16 +826,18 @@ def add_order():
             vendor,
             product_name,
             price,
-            status
+            status,
+            product_image
         )
-        VALUES(?,?,?,?,?)
+        VALUES(?,?,?,?,?,?)
         ''',
         (
             customer,
             vendor,
             product_name,
             price,
-            'Pending'
+            'Pending',
+            product['image']
         )
     )
 
@@ -718,56 +846,35 @@ def add_order():
     return redirect('/orders')
 @app.route('/update_order', methods=['POST'])
 def update_order():
+    if 'user' not in session or session.get('role') != 'vendor':
+        return redirect('/login')
 
     order_id = request.form['order_id']
-
     status = request.form['status']
+    expected_delivery = request.form.get('expected_delivery', '')
+    delivered_date = request.form.get('delivered_date', '')
 
     conn = get_db()
 
     conn.execute(
-        "UPDATE orders SET status=? WHERE id=?",
-        (status, order_id)
+        "UPDATE orders SET status=?, expected_delivery=?, delivered_date=? WHERE id=?",
+        (status, expected_delivery, delivered_date, order_id)
     )
+
     if status == "Out Of Stock":
-
-        order = conn.execute(
-        "SELECT * FROM orders WHERE id=?",
-        (order_id,)
-    ).fetchone()
-
-    existing_payment = conn.execute(
-        '''
-        SELECT * FROM payments
-        WHERE order_id=?
-        ''',
-        (order_id,)
-    ).fetchone()
-
-    if not existing_payment:
-
-        conn.execute(
-            '''
-            INSERT INTO payments
-            (
-                order_id,
-                customer,
-                vendor,
-                product_name,
-                amount,
-                status
+        order = conn.execute("SELECT * FROM orders WHERE id=?", (order_id,)).fetchone()
+        existing_payment = conn.execute("SELECT * FROM payments WHERE order_id=?", (order_id,)).fetchone()
+        
+        if not existing_payment:
+            conn.execute(
+                '''
+                INSERT INTO payments(order_id, customer, vendor, product_name, amount, status, payment_date)
+                VALUES(?,?,?,?,?,?,?)
+                ''',
+                (order['id'], order['customer'], order['vendor'], order['product_name'], order['price'], 'Out Of Stock', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             )
-            VALUES(?,?,?,?,?,?)
-            ''',
-            (
-                order['id'],
-                order['customer'],
-                order['vendor'],
-                order['product_name'],
-                order['price'],
-                'Out Of Stock'
-            )
-        )
+        else:
+            conn.execute("UPDATE payments SET status='Out Of Stock' WHERE order_id=?", (order_id,))
 
     conn.commit()
 
@@ -780,7 +887,7 @@ def update_order():
 def vendor_products(vendor_name):
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -823,7 +930,7 @@ def vendor_products(vendor_name):
 def vendor_reviews(vendor_name):
 
     if 'user' not in session:
-        return redirect('/')
+        return redirect('/login')
 
     conn = get_db()
 
@@ -840,28 +947,7 @@ def vendor_reviews(vendor_name):
         vendor_name=vendor_name,
         reviews=reviews
     )
-# ---------------------------------
-# DELETE PRODUCT
-# ---------------------------------
 
-@app.route('/delete_product/<int:id>')
-def delete_product(id):
-
-    if 'user' not in session:
-        return redirect('/')
-
-    conn = get_db()
-
-    conn.execute(
-        "DELETE FROM products WHERE id=?",
-        (id,)
-    )
-
-    conn.commit()
-
-    return redirect('/products')
-
-    return redirect('/products')
 # ---------------------------------
 # LOGOUT
 # ---------------------------------
@@ -878,4 +964,4 @@ def logout():
 # ---------------------------------
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 

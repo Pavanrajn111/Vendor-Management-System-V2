@@ -1,290 +1,163 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login - Vendor Management System</title>
+{% extends "base.html" %}
 
-    <style>
+{% block title %}Login - Vendor Management System{% endblock %}
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family: Arial, sans-serif;
-        }
+{% block content %}
+<!-- Top Navigation Bar -->
+<nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center mb-12 -mx-4 sm:mx-0 sm:rounded-b-2xl">
+    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-500">
+        <i class="fa-solid fa-store mr-2"></i>VMS
+    </div>
+    <div class="hidden md:flex gap-6 items-center">
+        <a href="/" class="hover:text-orange-400 transition-colors">Home</a>
+        <a href="/#about" class="hover:text-orange-400 transition-colors">About Us</a>
+        <a href="/#services" class="hover:text-orange-400 transition-colors">Services</a>
+        <a href="/#contact" class="hover:text-orange-400 transition-colors">Contact</a>
+        <button id="nav-theme-toggle-login" class="text-xl hover:text-orange-400 transition-colors"><i class="fa-solid fa-moon"></i></button>
+    </div>
+    <div class="flex gap-4">
+        <a href="/login" class="px-5 py-2 rounded-lg btn-glow font-medium">Login</a>
+        <a href="/register" class="px-5 py-2 rounded-lg glass-panel hover:bg-white/10 transition-colors font-medium">Register</a>
+    </div>
+</nav>
 
-        body{
-            height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            background: linear-gradient(135deg,#141e30,#243b55);
-            overflow:hidden;
-        }
-
-        /* Animated Background */
-
-        .circle{
-            position:absolute;
-            border-radius:50%;
-            background:rgba(255,255,255,0.08);
-            animation:float 6s infinite ease-in-out;
-        }
-
-        .circle:nth-child(1){
-            width:140px;
-            height:140px;
-            top:10%;
-            left:12%;
-        }
-
-        .circle:nth-child(2){
-            width:180px;
-            height:180px;
-            bottom:10%;
-            right:12%;
-            animation-duration:8s;
-        }
-
-        @keyframes float{
-            0%{ transform:translateY(0px); }
-            50%{ transform:translateY(-20px); }
-            100%{ transform:translateY(0px); }
-        }
-
-        /* LOGIN BOX */
-
-        .login-box{
-            position:relative;
-            width:420px;
-            background:rgba(255,255,255,0.12);
-            backdrop-filter: blur(12px);
-            border-radius:20px;
-            padding:35px;
-            box-shadow:0 8px 32px rgba(0,0,0,0.3);
-            color:white;
-            animation:fadeIn 1s ease;
-        }
-
-        @keyframes fadeIn{
-            from{
-                opacity:0;
-                transform:translateY(-20px);
-            }
-            to{
-                opacity:1;
-                transform:translateY(0);
-            }
-        }
-
-        h1{
-            text-align:center;
-            margin-bottom:10px;
-            font-size:32px;
-        }
-
-        .slogan{
-            text-align:center;
-            color:#ddd;
-            margin-bottom:25px;
-            font-size:14px;
-        }
-
-        /* INPUTS */
-
-        input{
-            width:100%;
-            padding:14px;
-            margin-top:15px;
-            border:none;
-            border-radius:10px;
-            outline:none;
-            font-size:15px;
-            transition:0.3s;
-        }
-
-        input:focus{
-            transform:scale(1.02);
-            box-shadow:0 0 10px rgba(255,255,255,0.5);
-        }
-
-        /* PASSWORD BOX */
-
-.password-box{
-    position:relative;
-}
-
-/* EYE ICON */
-
-.toggle-password{
-    position:absolute;
-    right:15px;
-    top:30px;
-    cursor:pointer;
-    color:#444;
-    font-size:20px;
-    transition:0.3s;
-}
-
-.toggle-password:hover{
-    transform:scale(1.15);
-    color:#000;
-}
-
-        /* ERROR MESSAGE */
-
-        .error-message{
-    color:#ff4d4d;
-    margin-top:12px;
-    text-align:center;
-    font-weight:bold;
-    font-size:15px;
-}
-
-        /* BUTTON */
-
-        button{
-            width:100%;
-            padding:14px;
-            margin-top:20px;
-            border:none;
-            border-radius:10px;
-            background:linear-gradient(135deg,#ff512f,#dd2476);
-            color:white;
-            font-size:17px;
-            cursor:pointer;
-            transition:0.3s;
-        }
-
-        button:hover{
-            transform:scale(1.03);
-            box-shadow:0 0 15px rgba(255,255,255,0.4);
-        }
-
-        /* LINK */
-
-        a{
-            display:block;
-            text-align:center;
-            margin-top:18px;
-            color:#fff;
-            text-decoration:none;
-            font-weight:bold;
-        }
-
-    </style>
-</head>
-
-<body>
-
-    <!-- Background Circles -->
-
-    <div class="circle"></div>
-    <div class="circle"></div>
-
-    <!-- LOGIN BOX -->
-
-    <div class="login-box">
-
-        <h1>Vendor Management System</h1>
-
-        <p class="slogan">
-            “Secure Vendors • Smart Business • Better Management”
-        </p>
-
-        <form method="POST">
-
-            <!-- USERNAME -->
-
-            <input type="text"
-                   name="username"
-                   placeholder="Enter Username"
-                   required>
-
-          <!-- Font Awesome Icons -->
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<!-- PASSWORD BOX -->
-
-<div class="password-box">
-
-    <input type="password"
-           id="password"
-           name="password"
-           placeholder="Enter Password"
-           required>
-
-    <!-- Eye Icon -->
-
-    <span class="toggle-password"
-          onclick="togglePassword()">
-
-        <i class="fa-solid fa-eye-slash"
-           id="eyeIcon"></i>
-
-    </span>
-
+<div class="flex flex-col lg:flex-row items-center justify-center min-h-[80vh] gap-12 fade-in">
+    <div class="glass-card w-full max-w-md p-8 relative overflow-hidden shrink-0">
+        
+        <!-- Decoration -->
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-orange-500/20 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-2xl"></div>
+        
+        <div class="relative z-10">
+            <div class="text-center mb-8 fade-in" style="animation-delay: 0.2s">
+                <a href="/" class="inline-block text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-500 mb-2 hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid fa-store mr-1"></i>Vendor Management System
+                </a>
+                <h2 class="text-2xl font-bold text-main mb-2">Welcome Back</h2>
+                <p class="text-muted text-sm font-medium slide-up" style="animation-delay: 0.4s">Smart Vendor & Customer Management Platform</p>
+            </div>
+            
+            <form method="POST" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-main mb-1">Username</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <input type="text" name="username" id="username" required
+                               class="glass-input w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                               placeholder="Enter Username">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-main mb-1">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <input type="password" name="password" id="password" required
+                               class="glass-input w-full pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                               placeholder="Enter Password">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-muted hover:text-main transition-colors"
+                             onclick="togglePassword()">
+                            <i class="fa-solid fa-eye-slash" id="eyeIcon"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if error %}
+                <div class="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg text-center text-sm font-medium flex items-center justify-center gap-2 slide-up">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+                </div>
+                {% endif %}
+                
+                <button type="submit" class="btn-glow w-full py-3 rounded-xl text-lg mt-4 shadow-lg shadow-orange-500/20">
+                    Login
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center text-sm">
+                <span class="text-muted">New user?</span> 
+                <a href="/register" class="text-orange-500 hover:text-orange-400 font-bold ml-1 transition-colors">Register here</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Services Header Section -->
+    <div class="w-full lg:w-1/2 hidden lg:flex flex-col justify-center slide-up" style="animation-delay: 0.3s">
+        <h2 class="text-4xl font-bold mb-6 text-main">Our <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-500">Services</span></h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-card p-5 border border-glass hover:-translate-y-1 transition-transform">
+                <i class="fa-solid fa-store text-3xl text-orange-400 mb-3"></i>
+                <h3 class="text-lg font-bold text-main mb-1">Vendor Management</h3>
+                <p class="text-sm text-muted">Efficiently manage vendor profiles, connections, and catalogues.</p>
+            </div>
+            <div class="glass-card p-5 border border-glass hover:-translate-y-1 transition-transform">
+                <i class="fa-solid fa-box-open text-3xl text-blue-400 mb-3"></i>
+                <h3 class="text-lg font-bold text-main mb-1">Product Tracking</h3>
+                <p class="text-sm text-muted">Real-time product inventory and catalogue monitoring.</p>
+            </div>
+            <div class="glass-card p-5 border border-glass hover:-translate-y-1 transition-transform">
+                <i class="fa-solid fa-shield-halved text-3xl text-green-400 mb-3"></i>
+                <h3 class="text-lg font-bold text-main mb-1">Secure Payments</h3>
+                <p class="text-sm text-muted">End-to-end encrypted verification and payment history.</p>
+            </div>
+            <div class="glass-card p-5 border border-glass hover:-translate-y-1 transition-transform">
+                <i class="fa-solid fa-truck-fast text-3xl text-purple-400 mb-3"></i>
+                <h3 class="text-lg font-bold text-main mb-1">Delivery Tracking</h3>
+                <p class="text-sm text-muted">Live status tracking from pending to delivered.</p>
+            </div>
+            <div class="glass-card p-5 border border-glass hover:-translate-y-1 transition-transform">
+                <i class="fa-solid fa-star text-3xl text-yellow-400 mb-3"></i>
+                <h3 class="text-lg font-bold text-main mb-1">Customer Reviews</h3>
+                <p class="text-sm text-muted">Transparent feedback system for vendor quality assurance.</p>
+            </div>
+            <div class="glass-card p-5 border border-glass hover:-translate-y-1 transition-transform">
+                <i class="fa-solid fa-handshake text-3xl text-cyan-400 mb-3"></i>
+                <h3 class="text-lg font-bold text-main mb-1">Vendor Connections</h3>
+                <p class="text-sm text-muted">Seamless customer-to-vendor pairing algorithms.</p>
+            </div>
+        </div>
+    </div>
 </div>
 
-            <!-- INVALID PASSWORD MESSAGE -->
-
-           {% if error %}
-
-        <div class="error-message">
-
-    {{ error }}
-
-        </div>
-
-        {% endif %} 
-
-            <!-- BUTTON -->
-
-            <button type="submit">
-
-                Login
-
-            </button>
-
-        </form>
-
-        <a href="/register">
-
-            New user? Register here
-
-        </a>
-
-    </div>
-
 <script>
-
-function togglePassword(){
-
-    let password = document.getElementById("password");
-
-    let eyeIcon = document.getElementById("eyeIcon");
-
-    if(password.type === "password"){
-
-        password.type = "text";
-
-        eyeIcon.classList.remove("fa-eye-slash");
-
-        eyeIcon.classList.add("fa-eye");
+    document.getElementById('nav-theme-toggle-login').addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        const navIcon = this.querySelector('i');
+        navIcon.className = newTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        
+        const floatIcon = document.querySelector('#floating-theme-toggle i');
+        if(floatIcon) floatIcon.className = navIcon.className;
+    });
+    
+    // Set initial icon
+    if(localStorage.getItem('theme') === 'light') {
+        document.querySelector('#nav-theme-toggle-login i').className = 'fa-solid fa-sun';
     }
-
-    else{
-
-        password.type = "password";
-
-        eyeIcon.classList.remove("fa-eye");
-
-        eyeIcon.classList.add("fa-eye-slash");
-    }
-}
-
 </script>
+{% endblock %}
 
-</body>
-</html>
+{% block extra_js %}
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    }
+</script>
+{% endblock %}

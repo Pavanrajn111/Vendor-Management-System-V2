@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Vendor Management System{% endblock %}
+
+{% block content %}
+<div class="fade-in max-w-5xl mx-auto">
+    <div class="flex justify-between items-center mb-8 border-b border-glass pb-4">
+        <div>
+            <h1 class="text-3xl font-bold text-main">Settings</h1>
+            <p class="text-muted mt-1">Manage your preferences and account settings.</p>
+        </div>
+    </div>
+
+    {% if request.args.get('success') %}
+    <div class="bg-green-500/10 border border-green-500/50 text-green-500 p-4 rounded-lg mb-8 flex items-center gap-3 slide-up">
+        <i class="fa-solid fa-circle-check text-xl"></i> Settings updated successfully.
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Sidebar Navigation (Visual Only) -->
+        <div class="md:col-span-1 space-y-2">
+            <button class="w-full text-left px-4 py-3 rounded-lg glass-panel font-medium text-orange-400 border border-orange-500/30 flex items-center gap-3">
+                <i class="fa-solid fa-user-gear w-5 text-center"></i> Account Settings
+            </button>
+            <button class="w-full text-left px-4 py-3 rounded-lg hover:bg-overlay text-muted hover:text-main transition-colors flex items-center gap-3">
+                <i class="fa-solid fa-palette w-5 text-center"></i> Appearance
+            </button>
+            <button class="w-full text-left px-4 py-3 rounded-lg hover:bg-overlay text-muted hover:text-main transition-colors flex items-center gap-3">
+                <i class="fa-solid fa-bell w-5 text-center"></i> Notifications
+            </button>
+            <button class="w-full text-left px-4 py-3 rounded-lg hover:bg-overlay text-muted hover:text-main transition-colors flex items-center gap-3">
+                <i class="fa-solid fa-shield-halved w-5 text-center"></i> Privacy & Security
+            </button>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="md:col-span-2 space-y-8">
+            
+            <!-- Appearance / Theme -->
+            <div class="glass-card p-6">
+                <h3 class="text-xl font-bold text-main mb-4 flex items-center gap-2"><i class="fa-solid fa-palette text-indigo-400"></i> Theme Options</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <button onclick="setThemeOption('light')" id="theme-btn-light" class="p-4 rounded-xl border border-glass flex flex-col items-center gap-2 hover:border-orange-500/50 transition-colors">
+                        <i class="fa-solid fa-sun text-2xl text-yellow-500"></i>
+                        <span class="font-medium text-main">Light</span>
+                    </button>
+                    <button onclick="setThemeOption('dark')" id="theme-btn-dark" class="p-4 rounded-xl border border-glass flex flex-col items-center gap-2 hover:border-orange-500/50 transition-colors">
+                        <i class="fa-solid fa-moon text-2xl text-indigo-400"></i>
+                        <span class="font-medium text-main">Dark</span>
+                    </button>
+                    <button onclick="setThemeOption('auto')" id="theme-btn-auto" class="p-4 rounded-xl border border-glass flex flex-col items-center gap-2 hover:border-orange-500/50 transition-colors">
+                        <i class="fa-solid fa-desktop text-2xl text-slate-400"></i>
+                        <span class="font-medium text-main">Auto</span>
+                    </button>
+                </div>
+                
+                <div class="mt-6 flex items-center justify-between">
+                    <div>
+                        <h4 class="font-bold text-main">Enable UI Animations</h4>
+                        <p class="text-sm text-muted">Toggle background and hover animations.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="animation-toggle" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="glass-card p-6">
+                <h3 class="text-xl font-bold text-main mb-4 flex items-center gap-2"><i class="fa-solid fa-address-card text-green-400"></i> Profile Information</h3>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-muted mb-1">Username (Read Only)</label>
+                    <input type="text" value="{{ user['username'] }}" disabled class="w-full glass-input px-4 py-2.5 rounded-lg opacity-50 cursor-not-allowed">
+                </div>
+                
+                <form method="POST" action="/settings" class="mb-4">
+                    <input type="hidden" name="action" value="update_mobile">
+                    <label class="block text-sm font-medium text-muted mb-1">Mobile Number</label>
+                    <div class="flex gap-3">
+                        <input type="text" name="mobile" value="{{ user['mobile'] }}" class="w-full glass-input px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50">
+                        <button type="submit" class="btn-glow px-4 py-2.5 rounded-lg font-medium whitespace-nowrap">Save</button>
+                    </div>
+                </form>
+                
+                <div class="flex items-center justify-between border-t border-glass pt-4 mt-4">
+                    <div>
+                        <h4 class="font-bold text-main">Language</h4>
+                        <p class="text-sm text-muted">Preferred interface language.</p>
+                    </div>
+                    <select class="glass-input px-4 py-2 rounded-lg text-main focus:outline-none focus:ring-2 focus:ring-orange-500/50 appearance-none pr-8">
+                        <option>English (US)</option>
+                        <option>Spanish</option>
+                        <option>French</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Security Settings -->
+            <div class="glass-card p-6">
+                <h3 class="text-xl font-bold text-main mb-4 flex items-center gap-2"><i class="fa-solid fa-lock text-red-400"></i> Account Security</h3>
+                
+                <form method="POST" action="/settings" class="mb-6 border-b border-glass pb-6">
+                    <input type="hidden" name="action" value="update_password">
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-muted mb-1">New Password</label>
+                        <input type="password" name="new_password" required class="w-full glass-input px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50">
+                    </div>
+                    <button type="submit" class="btn-glow w-full py-2.5 rounded-lg font-medium">Update Password</button>
+                </form>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-main">Two-Factor Authentication</h4>
+                            <p class="text-sm text-muted">Add an extra layer of security.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-red-400">Logout All Devices</h4>
+                            <p class="text-sm text-muted">End all active sessions immediately.</p>
+                        </div>
+                        <button class="px-4 py-1.5 rounded bg-red-500/10 text-red-500 border border-red-500/30 hover:bg-red-500/20 transition-colors text-sm font-medium">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="glass-card p-6">
+                <h3 class="text-xl font-bold text-main mb-4 flex items-center gap-2"><i class="fa-solid fa-bell text-yellow-400"></i> Notification Preferences</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-main">Order Updates</h4>
+                            <p class="text-sm text-muted">Email and SMS alerts for order status.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-main">Payment Receipts</h4>
+                            <p class="text-sm text-muted">Receive a copy of every transaction.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Visual Theme Selector Logic
+    function setThemeOption(theme) {
+        // Reset borders
+        document.getElementById('theme-btn-light').classList.remove('ring-2', 'ring-orange-500');
+        document.getElementById('theme-btn-dark').classList.remove('ring-2', 'ring-orange-500');
+        document.getElementById('theme-btn-auto').classList.remove('ring-2', 'ring-orange-500');
+        
+        // Add active state
+        document.getElementById('theme-btn-' + theme).classList.add('ring-2', 'ring-orange-500');
+        
+        // Apply theme globally
+        localStorage.setItem('theme', theme);
+        
+        let actualTheme = theme;
+        if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        document.documentElement.setAttribute('data-theme', actualTheme);
+        
+        // Fire custom event to update navbar toggle icon
+        window.dispatchEvent(new Event('storage'));
+    }
+
+    // Set initial active state based on current storage
+    const currentThemeSetting = localStorage.getItem('theme') || 'dark';
+    if(document.getElementById('theme-btn-' + currentThemeSetting)) {
+        document.getElementById('theme-btn-' + currentThemeSetting).classList.add('ring-2', 'ring-orange-500');
+    }
+    
+    // Animation Toggle
+    document.getElementById('animation-toggle').addEventListener('change', function(e) {
+        if(!e.target.checked) {
+            document.documentElement.classList.add('disable-animations');
+        } else {
+            document.documentElement.classList.remove('disable-animations');
+        }
+    });
+</script>
+{% endblock %}

@@ -1,154 +1,71 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
+{% block title %}Explore Products - Vendor Management System{% endblock %}
 
-    <title>Products</title>
-
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial,sans-serif;
-        }
-
-        body{
-            background:#eef2f7;
-        }
-
-        .container{
-            width:90%;
-            margin:auto;
-            padding:40px 0;
-        }
-
-        h1{
-            text-align:center;
-            margin-bottom:40px;
-            color:#1d2671;
-        }
-
-        .product-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-            gap:25px;
-        }
-
-        .product-card{
-            background:white;
-            padding:30px;
-            border-radius:18px;
-            text-align:center;
-            box-shadow:0 8px 20px rgba(0,0,0,0.1);
-            transition:0.4s;
-        }
-
-        .product-card:hover{
-            transform:translateY(-10px);
-            background:linear-gradient(135deg,#1d2671,#243b55);
-            color:white;
-        }
-
-        .product-card h2{
-            margin-bottom:15px;
-        }
-
-        .product-card p{
-            margin-bottom:12px;
-        }
-
-        button{
-            padding:12px 18px;
-            border:none;
-            border-radius:10px;
-            background:#1d2671;
-            color:white;
-            cursor:pointer;
-            transition:0.3s;
-        }
-
-        button:hover{
-            transform:scale(1.05);
-        }
-
-        .back-btn{
-            display:inline-block;
-            margin-bottom:30px;
-            padding:12px 20px;
-            background:#ff4d4d;
-            color:white;
-            text-decoration:none;
-            border-radius:10px;
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-    <a href="/dashboard"
-       class="back-btn">
-
-        ← Back to Dashboard
-
-    </a>
-
-    <h1>Available Products</h1>
-
-    <div class="product-grid">
-
-        {% for product in products %}
-
-        <div class="product-card">
-
-            <h2>
-
-                📦 {{ product['name'] }}
-
-            </h2>
-
-            <p>
-
-                Vendor:
-                {{ product['vendor'] }}
-
-            </p>
-
-            <p>
-
-                Price:
-                ₹{{ product['price'] }}
-
-            </p>
-
-            <form method="POST"
-                  action="/add_order">
-
-                <input type="hidden"
-                       name="product_id"
-                       value="{{ product['id'] }}">
-
-                <button type="submit">
-
-                    Order Product
-
-                </button>
-
-            </form>
-
+{% block content %}
+<div class="fade-in">
+    <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+        <div>
+            <h1 class="text-3xl font-bold">Explore Products</h1>
+            <p class="text-slate-400 mt-1">Browse and purchase products from your connected vendors.</p>
         </div>
-
-        {% endfor %}
-
     </div>
 
+    {% if products %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for p in products %}
+        <div class="glass-card group flex flex-col relative overflow-hidden">
+            <!-- Product Image -->
+            <div class="w-full aspect-square bg-slate-800 relative overflow-hidden flex items-center justify-center text-6xl text-slate-600 border-b border-white/5">
+                {% if p['image'] %}
+                    <img src="{{ url_for('static', filename=p['image']) }}" alt="{{ p['name'] }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                {% else %}
+                    <i class="fa-solid fa-image transition-transform duration-500 group-hover:scale-110"></i>
+                {% endif %}
+                
+                {% if p['availability'] == 'Out Of Stock' %}
+                    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] flex items-center justify-center z-10">
+                        <span class="bg-red-500 text-white font-bold px-4 py-1.5 rounded rotate-[-12deg] text-lg shadow-xl shadow-red-500/20">OUT OF STOCK</span>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="p-5 flex flex-col flex-grow">
+                <div class="mb-1 flex items-center gap-1 text-xs text-indigo-400 font-medium">
+                    <i class="fa-solid fa-store"></i> {{ p['vendor'] }}
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1 line-clamp-2" title="{{ p['name'] }}">{{ p['name'] }}</h3>
+                <div class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 mb-5">
+                    ${{ p['price'] }}
+                </div>
+                
+                <div class="mt-auto pt-4 border-t border-white/10">
+                    <form method="POST" action="/add_order">
+                        <input type="hidden" name="product_id" value="{{ p['id'] }}">
+                        {% if p['availability'] == 'Out Of Stock' %}
+                            <button disabled class="w-full py-2.5 rounded-lg bg-slate-700 text-slate-400 font-medium cursor-not-allowed flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-xmark"></i> Unavailable
+                            </button>
+                        {% else %}
+                            <button type="submit" class="w-full py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-medium transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
+                                <i class="fa-solid fa-cart-plus"></i> Buy Now
+                            </button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass-panel p-12 text-center rounded-2xl">
+        <div class="text-5xl text-slate-500 mb-4"><i class="fa-solid fa-boxes-stacked"></i></div>
+        <h3 class="text-xl font-bold mb-2">No Products Available</h3>
+        <p class="text-slate-400 mb-6">Your connected vendors haven't added any products yet, or you haven't connected with any vendors.</p>
+        <a href="/vendors" class="btn-glow px-6 py-2 rounded-lg inline-block">
+            Find Vendors
+        </a>
+    </div>
+    {% endif %}
 </div>
-
-</body>
-
-</html>
+{% endblock %}

@@ -1,347 +1,73 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "base.html" %}
 
-    <title>Available Vendors</title>
+{% block title %}Vendors - Vendor Management System{% endblock %}
 
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial,sans-serif;
-        }
-
-        body{
-            background:#eef2f7;
-        }
-
-        .container{
-            width:90%;
-            margin:auto;
-            padding:40px 0;
-        }
-
-        h1{
-            text-align:center;
-            margin-bottom:40px;
-            color:#1d2671;
-            font-size:42px;
-        }
-
-        /* GRID */
-
-        .vendors-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:30px;
-        }
-
-        /* CARD */
-
-        .vendor-card{
-            background:white;
-            border-radius:20px;
-            padding:30px;
-            text-align:center;
-            box-shadow:0 8px 20px rgba(0,0,0,0.12);
-            transition:0.3s;
-        }
-
-        .vendor-card:hover{
-            transform:translateY(-8px);
-        }
-
-        .vendor-card img{
-            width:90px;
-            height:90px;
-            border-radius:50%;
-            margin-bottom:20px;
-        }
-
-        .vendor-card h2{
-            color:#1d2671;
-            margin-bottom:10px;
-        }
-
-        .mobile{
-            color:gray;
-            margin-bottom:25px;
-            font-size:18px;
-        }
-
-        /* BUTTONS */
-
-        .btn{
-            display:block;
-            width:100%;
-            padding:14px;
-            margin-top:12px;
-            border:none;
-            border-radius:12px;
-            text-decoration:none;
-            color:white;
-            font-size:16px;
-            cursor:pointer;
-            transition:0.3s;
-        }
-
-        .review-btn{
-            background:#1d2671;
-        }
-
-        .review-btn:hover{
-            background:#2d3ea0;
-        }
-
-        .product-btn{
-            background:#009688;
-        }
-
-        .product-btn:hover{
-            background:#00b3a1;
-        }
-
-        .connect-btn{
-            background:#ff512f;
-        }
-
-        .connect-btn:hover{
-            background:#ff774f;
-        }
-
-        .connected{
-            background:gray;
-            cursor:not-allowed;
-        }
-
-        /* BACK BUTTON */
-
-        .back-btn{
-            display:inline-block;
-            margin-top:40px;
-            padding:14px 22px;
-            background:#ff512f;
-            color:white;
-            text-decoration:none;
-            border-radius:12px;
-            transition:0.3s;
-        }
-
-        .back-btn:hover{
-            background:#ff774f;
-            transform:scale(1.05);
-        }
-
-        /* MOBILE */
-
-        @media(max-width:900px){
-
-            .vendors-grid{
-                grid-template-columns:1fr;
-            }
-
-        }
-.vendor-container{
-    width:90%;
-    margin:auto;
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:30px;
-    margin-top:40px;
-}
-
-.vendor-card{
-    background:white;
-    border-radius:20px;
-    padding:35px 25px;
-    text-align:center;
-    box-shadow:0 8px 20px rgba(0,0,0,0.12);
-    transition:0.3s;
-}
-
-.vendor-card:hover{
-    transform:translateY(-8px);
-}
-
-.vendor-icon{
-    font-size:55px;
-    margin-bottom:15px;
-}
-
-.vendor-card h2{
-    color:#1d2671;
-    margin-bottom:10px;
-}
-
-.mobile{
-    color:#555;
-    font-size:17px;
-    margin-bottom:25px;
-}
-
-.btn-group{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
-
-.btn-group form{
-    margin:0;
-}
-
-.connect-btn,
-.connected-btn,
-.product-btn,
-.review-btn{
-
-    display:block;
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    text-decoration:none;
-    color:white;
-    font-size:15px;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.connect-btn{
-    background:#1d2671;
-}
-
-.connect-btn:hover{
-    background:#243b55;
-}
-
-.connected-btn{
-    background:#28a745;
-}
-
-.product-btn{
-    background:#ff9800;
-}
-
-.product-btn:hover{
-    background:#ffb347;
-}
-
-.review-btn{
-    background:#c33764;
-}
-
-.review-btn:hover{
-    background:#d94f7a;
-}
-
-@media(max-width:768px){
-
-    .vendor-container{
-        grid-template-columns:1fr;
-    }
-}
-.connected-btn{
-
-    background:#28a745;
-    color:white;
-    border:none;
-    cursor:not-allowed;
-    opacity:0.9;
-
-}
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-    <h1>Available Vendors</h1>
-
-    <div class="vendor-container">
-
-    {% for v in vendors %}
-
-    <div class="vendor-card">
-
-        <div class="vendor-icon">
-            🏢
+{% block content %}
+<div class="fade-in">
+    <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+        <div>
+            <h1 class="text-3xl font-bold">Available Vendors</h1>
+            <p class="text-slate-400 mt-1">Connect with vendors to browse and purchase their products.</p>
         </div>
-
-        <h2>
-            {{ v['username'] }}
-        </h2>
-
-        <p class="mobile">
-            📞 {{ v['mobile'] }}
-        </p>
-
-        <div class="btn-group">
-
-            {% if v['username'] in connected_vendors %}
-
-    <button class="connected-btn"
-            disabled>
-
-        Connected
-
-    </button>
-
-{% else %}
-
-<form method="POST"
-      action="/select_vendor">
-
-    <input type="hidden"
-           name="vendor"
-           value="{{ v['username'] }}">
-
-    <button class="connect-btn"
-            type="submit">
-
-        Connect
-
-    </button>
-
-</form>
-
-{% endif %}
-            <a href="/vendor_products/{{ v['username'] }}"
-               class="product-btn">
-
-               View Products
-
-            </a>
-
-            <a href="/vendor_reviews/{{ v['username'] }}"
-               class="review-btn">
-
-               View Reviews
-
-            </a>
-
-        </div>
-
     </div>
 
-    {% endfor %}
-
+    {% if vendors %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for vendor in vendors %}
+        <div class="glass-card p-6 flex flex-col relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-bl-full z-0 transition-transform group-hover:scale-110"></div>
+            
+            <div class="relative z-10 flex items-center gap-4 mb-6 border-b border-white/10 pb-4">
+                <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold shadow-lg">
+                    {{ vendor['username'][0]|upper }}
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">{{ vendor['username'] }}</h3>
+                    <p class="text-sm text-slate-400 flex items-center gap-1">
+                        <i class="fa-solid fa-phone text-xs"></i> {{ vendor['mobile'] }}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="relative z-10 space-y-3 mt-auto">
+                {% if vendor['username'] in connected_vendors %}
+                    <div class="bg-green-500/20 text-green-400 border border-green-500/30 w-full py-2 rounded-lg text-center font-medium flex items-center justify-center gap-2 mb-3">
+                        <i class="fa-solid fa-handshake"></i> Connected
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="/vendor_products/{{ vendor['username'] }}" class="glass-panel text-center py-2 rounded-lg hover:bg-white/10 transition-colors text-sm font-medium">
+                            <i class="fa-solid fa-box mr-1 text-pink-400"></i> Products
+                        </a>
+                        <a href="/vendor_reviews/{{ vendor['username'] }}" class="glass-panel text-center py-2 rounded-lg hover:bg-white/10 transition-colors text-sm font-medium">
+                            <i class="fa-solid fa-star mr-1 text-yellow-400"></i> Reviews
+                        </a>
+                    </div>
+                {% else %}
+                    <form method="POST" action="/select_vendor" class="mb-3">
+                        <input type="hidden" name="vendor" value="{{ vendor['username'] }}">
+                        <button type="submit" class="btn-glow w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-link"></i> Connect
+                        </button>
+                    </form>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="glass-panel text-center py-2 rounded-lg text-slate-500 text-sm font-medium cursor-not-allowed border-dashed" title="Connect to view">
+                            <i class="fa-solid fa-box mr-1"></i> Products
+                        </div>
+                        <a href="/vendor_reviews/{{ vendor['username'] }}" class="glass-panel text-center py-2 rounded-lg hover:bg-white/10 transition-colors text-sm font-medium">
+                            <i class="fa-solid fa-star mr-1 text-yellow-400"></i> Reviews
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
     </div>
-
+    {% else %}
+    <div class="glass-panel p-12 text-center rounded-2xl">
+        <div class="text-5xl text-slate-500 mb-4"><i class="fa-solid fa-store-slash"></i></div>
+        <h3 class="text-xl font-bold mb-2">No Vendors Found</h3>
+        <p class="text-slate-400">There are currently no vendors registered on the platform.</p>
+    </div>
+    {% endif %}
 </div>
-
-    <a href="/dashboard"
-       class="back-btn">
-
-       ← Back to Dashboard
-
-    </a>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

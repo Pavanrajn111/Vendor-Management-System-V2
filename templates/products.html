@@ -1,172 +1,135 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Products</title>
+{% extends "base.html" %}
 
-    <style>
+{% block title %}Manage Products - Vendor Management System{% endblock %}
 
-        body{
-            font-family:Arial;
-            background:linear-gradient(135deg,#141e30,#243b55);
-            margin:0;
-            color:white;
-        }
-
-        .container{
-            width:85%;
-            margin:auto;
-            padding:30px;
-        }
-
-        .card{
-            background:rgba(255,255,255,0.12);
-            backdrop-filter:blur(10px);
-            padding:30px;
-            border-radius:20px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        h1{
-            text-align:center;
-            margin-bottom:25px;
-        }
-
-        input{
-            width:100%;
-            padding:14px;
-            margin-top:15px;
-            border:none;
-            border-radius:10px;
-        }
-
-        button{
-            width:100%;
-            padding:14px;
-            margin-top:20px;
-            border:none;
-            border-radius:10px;
-            background:#ff512f;
-            color:white;
-            font-size:16px;
-            cursor:pointer;
-        }
-
-        table{
-            width:100%;
-            margin-top:30px;
-            border-collapse:collapse;
-        }
-
-        table th, table td{
-            padding:15px;
-            background:rgba(255,255,255,0.08);
-            text-align:center;
-        }
-        .back-btn{
-    display:inline-block;
-    margin-top:20px;
-    padding:12px 20px;
-    background:#ff512f;
-    color:white;
-    text-decoration:none;
-    border-radius:10px;
-    transition:0.3s;
-}
-
-.back-btn:hover{
-    background:#ff774f;
-    transform:scale(1.05);
-}
-
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-
-    <div class="card">
-
-        <h1>Products</h1>
-
-{% if session['role'] == 'vendor' %}
-
-<form method="POST">
-
-    <input type="text"
-           name="name"
-           placeholder="Product Name"
-           required>
-
-    <input type="number"
-           name="price"
-           placeholder="Price"
-           required>
-
-    <button type="submit">
-
-        Add Product
-
-    </button>
-
-</form>
-
-{% endif %}
-
-        <table>
-
-            <tr>
-                <th>ID</th>
-                <th>Product</th>
-                <th>Price</th>
-                {% if session['role'] == 'vendor' %}
-                <th>Action</th>
-                {% endif %}
-            </tr>
-
-            {% for p in products %}
-
-            <tr>
-                <td>{{ p.id }}</td>
-                <td>{{ p.name }}</td>
-                <td>{{ p.price }}</td>
-                {% if session['role'] == 'vendor' %}
-
-<td>
-
-<a href="/delete_product/{{ p['id'] }}"
-   style="
-   background:#dc3545;
-   color:white;
-   padding:8px 14px;
-   border-radius:10px;
-   text-decoration:none;">
-
-   Remove
-
-</a>
-
-</td>
-
-{% endif %}
-            </tr>
-
-            {% endfor %}
-
-        </table>
-        <br>
-
-<a href="/dashboard" class="back-btn">
-
-    ← Back to Dashboard
-
-</a>
-
-
+{% block content %}
+<div class="fade-in">
+    <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+        <div>
+            <h1 class="text-3xl font-bold">Manage Products</h1>
+            <p class="text-slate-400 mt-1">Add new products to your catalog and manage existing ones.</p>
+        </div>
+        <button onclick="document.getElementById('add-product-modal').classList.remove('hidden')" class="btn-glow px-5 py-2 rounded-lg flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i> Add Product
+        </button>
     </div>
 
+    <!-- Add Product Modal -->
+    <div id="add-product-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center fade-in overflow-y-auto">
+        <div class="glass-card w-full max-w-md p-6 relative my-8">
+            <button onclick="document.getElementById('add-product-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h2 class="text-2xl font-bold mb-6 text-white border-b border-white/10 pb-3"><i class="fa-solid fa-box-open text-pink-400 mr-2"></i> Add New Product</h2>
+            
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div>
+                    <label for="image" class="block text-sm font-medium text-slate-300 mb-1">Product Image</label>
+                    <input type="file" name="image" id="image" accept="image/*" class="glass-input w-full px-4 py-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-500/20 file:text-pink-400 hover:file:bg-pink-500/30">
+                </div>
+                <div>
+                    <label for="name" class="block text-sm font-medium text-slate-300 mb-1">Product Name</label>
+                    <input type="text" name="name" id="name" required class="glass-input w-full px-4 py-2 rounded-lg" placeholder="e.g. Premium Widget">
+                </div>
+                <div>
+                    <label for="price" class="block text-sm font-medium text-slate-300 mb-1">Price ($)</label>
+                    <input type="number" step="0.01" name="price" id="price" required class="glass-input w-full px-4 py-2 rounded-lg" placeholder="e.g. 299.99">
+                </div>
+                <div class="pt-4">
+                    <button type="submit" class="btn-glow w-full py-3 rounded-lg shadow-lg shadow-pink-500/20">
+                        Save Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    {% if products %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for p in products %}
+        <div class="glass-card group flex flex-col overflow-hidden">
+            <!-- Product Image with Zoom Effect -->
+            <div class="w-full aspect-square bg-slate-800 relative overflow-hidden flex items-center justify-center text-6xl text-slate-600 border-b border-white/5">
+                {% if p['image'] %}
+                    <img src="{{ url_for('static', filename=p['image']) }}" alt="{{ p['name'] }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                {% else %}
+                    <i class="fa-solid fa-image transition-transform duration-500 group-hover:scale-110"></i>
+                {% endif %}
+                
+                <!-- Availability Badge -->
+                {% if p['availability'] == 'Out Of Stock' %}
+                    <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg">OUT OF STOCK</div>
+                {% endif %}
+            </div>
+            
+            <div class="p-5 flex flex-col flex-grow">
+                <h3 class="text-lg font-bold text-white mb-1 truncate" title="{{ p['name'] }}">{{ p['name'] }}</h3>
+                <div class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 mb-4">
+                    ${{ p['price'] }}
+                </div>
+                
+                <div class="mt-auto pt-4 border-t border-white/10 flex justify-between">
+                    <button onclick="document.getElementById('edit-product-modal-{{ p['id'] }}').classList.remove('hidden')" class="text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 px-3 py-1.5 rounded transition-colors text-sm font-medium flex items-center gap-1">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <a href="/delete_product/{{ p['id'] }}" class="text-red-400 hover:text-red-300 hover:bg-red-500/10 px-3 py-1.5 rounded transition-colors text-sm font-medium flex items-center gap-1" onclick="return confirm('Are you sure you want to delete this product?')">
+                        <i class="fa-solid fa-trash-can"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Product Modal -->
+        <div id="edit-product-modal-{{ p['id'] }}" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center fade-in overflow-y-auto">
+            <div class="glass-card w-full max-w-md p-6 relative my-8">
+                <button onclick="document.getElementById('edit-product-modal-{{ p['id'] }}').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+                <h2 class="text-2xl font-bold mb-6 text-white border-b border-white/10 pb-3"><i class="fa-solid fa-pen text-indigo-400 mr-2"></i> Edit Product</h2>
+                
+                <form method="POST" action="/edit_product/{{ p['id'] }}" enctype="multipart/form-data" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Update Product Image</label>
+                        {% if p['image'] %}
+                            <img src="{{ url_for('static', filename=p['image']) }}" class="h-20 w-20 object-cover rounded mb-2 border border-white/10">
+                        {% endif %}
+                        <input type="file" name="image" accept="image/*" class="glass-input w-full px-4 py-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-500/20 file:text-indigo-400 hover:file:bg-indigo-500/30">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Product Name</label>
+                        <input type="text" name="name" value="{{ p['name'] }}" required class="glass-input w-full px-4 py-2 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Price ($)</label>
+                        <input type="number" step="0.01" name="price" value="{{ p['price'] }}" required class="glass-input w-full px-4 py-2 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Availability</label>
+                        <select name="availability" required class="glass-input w-full px-4 py-2 rounded-lg bg-slate-900">
+                            <option value="In Stock" {% if p['availability'] == 'In Stock' %}selected{% endif %}>In Stock</option>
+                            <option value="Out Of Stock" {% if p['availability'] == 'Out Of Stock' %}selected{% endif %}>Out Of Stock</option>
+                        </select>
+                    </div>
+                    <div class="pt-4">
+                        <button type="submit" class="btn-glow w-full py-3 rounded-lg shadow-lg shadow-indigo-500/20">
+                            Update Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass-panel p-12 text-center rounded-2xl">
+        <div class="text-5xl text-slate-500 mb-4"><i class="fa-solid fa-box-open"></i></div>
+        <h3 class="text-xl font-bold mb-2">No Products Yet</h3>
+        <p class="text-slate-400 mb-6">You haven't added any products to your catalog.</p>
+        <button onclick="document.getElementById('add-product-modal').classList.remove('hidden')" class="btn-glow px-6 py-2 rounded-lg">
+            Add Your First Product
+        </button>
+    </div>
+    {% endif %}
 </div>
-
-
-</body>
-</html>
+{% endblock %}
