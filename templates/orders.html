@@ -183,7 +183,7 @@
                     {% else %}
                         <div class="flex justify-between items-center relative before:content-[''] before:absolute before:top-4 before:left-0 before:w-full before:h-1 before:bg-slate-700 before:-z-10">
                             
-                            {% set steps = ['Pending', 'Processing', 'Shipped', 'Out For Delivery'] %}
+                            {% set steps = ['Pending', 'Accepted', 'Processing', 'Shipped', 'Out For Delivery'] %}
                             {% set current_idx = steps.index(order['status']) if order['status'] in steps else 0 %}
                             
                             {% for step in steps %}
@@ -195,6 +195,7 @@
                                     <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500
                                         {% if is_completed %}
                                             {% if step == 'Pending' %}bg-orange-500 text-white ring-4 ring-orange-500/20
+                                            {% elif step == 'Accepted' %}bg-teal-500 text-white ring-4 ring-teal-500/20
                                             {% elif step == 'Processing' %}bg-blue-500 text-white ring-4 ring-blue-500/20
                                             {% elif step == 'Shipped' %}bg-purple-500 text-white ring-4 ring-purple-500/20
                                             {% elif step == 'Out For Delivery' %}bg-cyan-500 text-white ring-4 ring-cyan-500/20
