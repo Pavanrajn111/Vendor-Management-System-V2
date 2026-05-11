@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}UPI ID — {{ platform_label }}{% endblock %}
+{% block content %}
+<div class="fade-in max-w-lg mx-auto pb-10">
+    <div class="mb-6 border-b border-glass pb-4">
+        <a href="{{ url_for('payment_upi_flow', order_id=order['id'], platform=platform) }}" class="text-sm text-muted hover:text-orange-400 transition-colors inline-flex items-center gap-2 mb-3">
+            <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+        <h1 class="text-2xl font-bold text-main">Pay via UPI ID</h1>
+        <p class="text-muted text-sm mt-1">{{ platform_label }} · <span class="text-green-400 font-semibold">₹{{ order['price'] }}</span></p>
+    </div>
+
+    {% if error %}
+    <div class="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" id="upi-form" class="space-y-5 glass-card p-6 md:p-8 rounded-2xl border border-glass" novalidate>
+        <div>
+            <label class="block text-xs font-medium text-muted mb-1">Enter UPI ID</label>
+            <input type="text" name="upi_id" id="upi_id" autocomplete="off" required
+                class="glass-input w-full px-4 py-2.5 rounded-lg text-main font-mono lowercase placeholder:text-muted/50"
+                placeholder="example@okaxis">
+            <p class="text-[10px] text-muted mt-1">Examples: name@ybl, user@paytm, shop@okicici</p>
+            <p class="text-[10px] text-red-400 mt-1" id="upi_err"></p>
+        </div>
+        <div>
+            <label class="block text-xs font-medium text-muted mb-1">Confirm UPI ID</label>
+            <input type="text" name="upi_id_confirm" id="upi_id_confirm" autocomplete="off" required
+                class="glass-input w-full px-4 py-2.5 rounded-lg text-main font-mono lowercase placeholder:text-muted/50"
+                placeholder="Re-enter UPI ID">
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+            <button type="button" id="btn_verify" class="flex-1 py-3 rounded-xl font-medium border border-teal-500/40 bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 transition-colors">
+                Verify UPI
+            </button>
+            <button type="submit" class="btn-glow flex-1 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                <i class="fa-solid fa-lock"></i> Pay Now
+            </button>
+        </div>
+        <p id="verify_ok" class="hidden text-center text-sm text-green-400 font-medium"><i class="fa-solid fa-circle-check"></i> UPI format looks valid — you can submit payment.</p>
+        <a href="/payments" class="block text-center text-sm text-muted hover:text-orange-400 transition-colors">Cancel payment</a>
+    </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+(function () {
+    const form = document.getElementById('upi-form');
+    const u1 = document.getElementById('upi_id');
+    const u2 = document.getElementById('upi_id_confirm');
+    const err = document.getElementById('upi_err');
+    const ok = document.getElementById('verify_ok');
+    const re = /^[a-z0-9._-]{2,64}@[a-z0-9.-]{2,64}$/i;
+    document.getElementById('btn_verify').addEventListener('click', function () {
+        err.textContent = '';
+        ok.classList.add('hidden');
+        const a = u1.value.trim().toLowerCase();
+        const b = u2.value.trim().toLowerCase();
+        if (!re.test(a)) { err.textContent = 'Invalid UPI format.'; return; }
+        if (a !== b) { err.textContent = 'UPI IDs do not match.'; return; }
+        ok.classList.remove('hidden');
+    });
+    form.addEventListener('submit', function (e) {
+        err.textContent = '';
+        const a = u1.value.trim().toLowerCase();
+        const b = u2.value.trim().toLowerCase();
+        if (!re.test(a)) { e.preventDefault(); err.textContent = 'Invalid UPI format.'; return; }
+        if (a !== b) { e.preventDefault(); err.textContent = 'UPI IDs must match.'; return; }
+    });
+})();
+</script>
+{% endblock %}

@@ -105,14 +105,42 @@
                 
                 <form method="POST" action="/settings" class="mb-6 border-b border-glass pb-6">
                     <input type="hidden" name="action" value="update_password">
+                    
+                    {% if error %}
+                    <div class="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg mb-4 text-sm font-medium flex items-center gap-2 slide-up">
+                        <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-muted mb-1">Current Password</label>
+                        <input type="password" name="current_password" required class="w-full glass-input px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50" placeholder="Enter your current password">
+                    </div>
+                    
                     <div class="mb-3">
                         <label class="block text-sm font-medium text-muted mb-1">New Password</label>
-                        <input type="password" name="new_password" required class="w-full glass-input px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50">
+                        <input type="password" id="new_password" name="new_password" required class="w-full glass-input px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50" placeholder="Create a new password">
+                        <div class="mt-2 text-xs text-muted p-3 rounded-lg bg-overlay/50">
+                            <p class="font-medium mb-2">Password must contain:</p>
+                            <ul class="space-y-1">
+                                <li><span id="req-length">✗</span> Minimum 8 characters</li>
+                                <li><span id="req-upper">✗</span> At least one uppercase letter</li>
+                                <li><span id="req-lower">✗</span> At least one lowercase letter</li>
+                                <li><span id="req-number">✗</span> At least one number</li>
+                                <li><span id="req-special">✗</span> At least one special character (!@#$%^&*)</li>
+                            </ul>
+                        </div>
                     </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-muted mb-1">Confirm New Password</label>
+                        <input type="password" name="confirm_password" required class="w-full glass-input px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50" placeholder="Re-enter your new password">
+                    </div>
+                    
                     <button type="submit" class="btn-glow w-full py-2.5 rounded-lg font-medium">Update Password</button>
                 </form>
 
-                <div class="space-y-4">
+                <div class="space-y-4 mt-6">
                     <div class="flex items-center justify-between">
                         <div>
                             <h4 class="font-bold text-main">Two-Factor Authentication</h4>
@@ -125,10 +153,12 @@
                     </div>
                     <div class="flex items-center justify-between">
                         <div>
-                            <h4 class="font-bold text-red-400">Logout All Devices</h4>
-                            <p class="text-sm text-muted">End all active sessions immediately.</p>
+                            <h4 class="font-bold text-red-400">Logout</h4>
+                            <p class="text-sm text-muted">End your current session.</p>
                         </div>
-                        <button class="px-4 py-1.5 rounded bg-red-500/10 text-red-500 border border-red-500/30 hover:bg-red-500/20 transition-colors text-sm font-medium">Logout</button>
+                        <a href="/logout" class="px-4 py-1.5 rounded bg-red-500/10 text-red-500 border border-red-500/30 hover:bg-red-500/20 transition-colors text-sm font-medium">
+                            Logout
+                        </a>
                     </div>
                 </div>
             </div>
@@ -203,6 +233,37 @@
             document.documentElement.classList.remove('disable-animations');
         }
     });
+    
+    // Password Validation
+    const passwordInput = document.getElementById('new_password');
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function(e) {
+            const password = e.target.value;
+            
+            // Check requirements
+            const hasMinLength = password.length >= 8;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password);
+            
+            // Update UI
+            document.getElementById('req-length').textContent = hasMinLength ? '✓' : '✗';
+            document.getElementById('req-length').style.color = hasMinLength ? '#10b981' : '#ef4444';
+            
+            document.getElementById('req-upper').textContent = hasUppercase ? '✓' : '✗';
+            document.getElementById('req-upper').style.color = hasUppercase ? '#10b981' : '#ef4444';
+            
+            document.getElementById('req-lower').textContent = hasLowercase ? '✓' : '✗';
+            document.getElementById('req-lower').style.color = hasLowercase ? '#10b981' : '#ef4444';
+            
+            document.getElementById('req-number').textContent = hasNumber ? '✓' : '✗';
+            document.getElementById('req-number').style.color = hasNumber ? '#10b981' : '#ef4444';
+            
+            document.getElementById('req-special').textContent = hasSpecial ? '✓' : '✗';
+            document.getElementById('req-special').style.color = hasSpecial ? '#10b981' : '#ef4444';
+        });
+    }
 </script>
 {% endblock %}
 

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}UPI QR — {{ platform_label }}{% endblock %}
+{% block content %}
+<div class="fade-in max-w-lg mx-auto pb-10">
+    <div class="mb-6 border-b border-glass pb-4">
+        <a href="{{ url_for('payment_upi_flow', order_id=order['id'], platform=platform) }}" class="text-sm text-muted hover:text-orange-400 transition-colors inline-flex items-center gap-2 mb-3">
+            <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+        <h1 class="text-2xl font-bold text-main">Scan &amp; pay</h1>
+        <p class="text-muted text-sm mt-1">{{ platform_label }}</p>
+    </div>
+
+    {% if error %}
+    <div class="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">{{ error }}</div>
+    {% endif %}
+
+    <div class="glass-card p-6 md:p-8 rounded-2xl border border-glass text-center">
+        <p class="text-sm text-muted mb-1">Product</p>
+        <p class="font-bold text-main text-lg mb-4">{{ order['product_name'] }}</p>
+        <p class="text-sm text-muted mb-1">Payable amount</p>
+        <p class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 mb-6">₹{{ order['price'] }}</p>
+        <p class="text-xs text-muted mb-4">UPI amount in QR: <span class="text-main font-mono">₹{{ amount_display }}</span></p>
+
+        {% if qr_src %}
+        <div class="inline-block p-4 rounded-xl bg-white mx-auto mb-4 shadow-inner border border-glass">
+            <img src="{{ qr_src }}" alt="UPI QR code" class="w-48 h-48 md:w-56 md:h-56 object-contain">
+        </div>
+        {% else %}
+        <div class="p-4 rounded-xl bg-overlay border border-glass mb-4 text-left break-all">
+            <p class="text-xs text-muted mb-2">QR unavailable (install <code class="text-orange-300">qrcode[pil]</code>). You can copy the UPI link:</p>
+            <code class="text-[11px] text-main">{{ upi_uri }}</code>
+        </div>
+        {% endif %}
+
+        <p class="text-[11px] text-muted mb-6">Open {{ platform_label }}, scan this QR, complete the payment, then confirm below so your vendor can verify.</p>
+
+        <form method="POST" class="space-y-3">
+            <button type="submit" class="btn-glow w-full py-3 rounded-xl font-semibold transition-transform hover:scale-[1.01]">
+                I have completed payment in my UPI app
+            </button>
+            <a href="/payments" class="block w-full py-3 rounded-xl font-medium text-center border border-glass text-muted hover:bg-overlay transition-colors">Cancel payment</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

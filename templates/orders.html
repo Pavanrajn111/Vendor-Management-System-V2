@@ -48,9 +48,14 @@
                         </td>
                         <td
                             class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 font-bold">
-                            ${{ order['price'] }}</td>
+                            ₹{{ order['price'] }}</td>
 
                         <td>
+                            {% if order['status'] == 'Out Of Stock' %}
+                            <span class="badge badge-finalized cursor-default select-none" title="This order cannot be changed">
+                                <i class="fa-solid fa-lock"></i> Out Of Stock Finalized
+                            </span>
+                            {% else %}
                             <span class="badge 
                                     {% if order['status'] == 'Pending' %}badge-pending
                                     {% elif order['status'] == 'Accepted' %}badge-accepted
@@ -61,16 +66,23 @@
                                     {% else %}badge-outofstock{% endif %}">
                                 {{ order['status'] }}
                             </span>
+                            {% endif %}
                         </td>
 
                         <td>
+                            {% if order['status'] == 'Out Of Stock' %}
+                            <div class="text-sm text-muted max-w-xs">
+                                <p class="mb-1">Status updates are disabled for this order.</p>
+                                <p class="text-[11px] opacity-80">New purchases create a new order with full controls.</p>
+                            </div>
+                            {% else %}
                             <form method="POST" action="/update_order" class="flex flex-col gap-2">
                                 <input type="hidden" name="order_id" value="{{ order['id'] }}">
 
-                                <div class="flex gap-2 items-center">
-                                    <div class="blend-select-wrapper update-status w-40">
+                                <div class="flex flex-wrap gap-2 items-center">
+                                    <div class="blend-select-wrapper update-status w-40 min-w-[10rem]">
                                         <select name="status"
-                                            class="glass-input px-3 py-1.5 rounded-lg text-sm appearance-none focus:outline-none w-full blend-select"
+                                            class="glass-input px-3 py-1.5 rounded-lg text-sm appearance-none focus:outline-none w-full blend-select transition-shadow hover:shadow-md"
                                             onchange="toggleDateInput(this, {{ order['id'] }})">
                                             <option value="Pending" {% if order['status']=='Pending' %}selected{% endif
                                                 %}>Pending</option>
@@ -89,25 +101,26 @@
                                         </select>
                                     </div>
                                     <button type="submit"
-                                        class="btn-glow px-3 py-1.5 rounded-lg text-sm font-medium">Update</button>
+                                        class="btn-glow px-3 py-1.5 rounded-lg text-sm font-medium transition-transform hover:scale-[1.02] active:scale-[0.98]">Update</button>
                                 </div>
 
                                 <div id="expected-date-container-{{ order['id'] }}"
                                     class="{% if order['status'] in ['Processing', 'Shipped', 'Out For Delivery'] %}block{% else %}hidden{% endif %}">
                                     <input type="date" name="expected_delivery"
-                                        value="{{ order['expected_delivery'] or '' }}"
-                                        class="glass-input px-3 py-1 text-xs rounded w-40"
+                                        value="{{ order['expected_delivery']|input_date }}"
+                                        class="glass-input px-3 py-1 text-xs rounded w-40 max-w-full"
                                         placeholder="Expected Delivery">
                                     <div class="text-[10px] text-muted mt-0.5">Set Expected Delivery Date</div>
                                 </div>
 
                                 <div id="delivered-date-container-{{ order['id'] }}"
                                     class="{% if order['status'] == 'Delivered' %}block{% else %}hidden{% endif %}">
-                                    <input type="date" name="delivered_date" value="{{ order['delivered_date'] or '' }}"
-                                        class="glass-input px-3 py-1 text-xs rounded w-40" placeholder="Delivered Date">
+                                    <input type="date" name="delivered_date" value="{{ order['delivered_date']|input_date }}"
+                                        class="glass-input px-3 py-1 text-xs rounded w-40 max-w-full" placeholder="Delivered Date">
                                     <div class="text-[10px] text-muted mt-0.5">Set Delivery Date</div>
                                 </div>
                             </form>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -168,7 +181,7 @@
                             <h3 class="text-lg font-bold text-main leading-tight">{{ order['product_name'] }}</h3>
                             <div
                                 class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 ml-2 shrink-0">
-                                ${{ order['price'] }}
+                                ₹{{ order['price'] }}
                             </div>
                         </div>
                         <div class="text-xs text-indigo-500 font-medium mt-1"><i class="fa-solid fa-store"></i> Vendor:
@@ -183,15 +196,15 @@
                                 {% elif order['status'] == 'Shipped' %}badge-shipped
                                 {% elif order['status'] == 'Out For Delivery' %}badge-outfordelivery
                                 {% elif order['status'] == 'Delivered' %}badge-delivered
+                                {% elif order['status'] == 'Out Of Stock' %}badge-finalized
                                 {% else %}badge-outofstock{% endif %} text-[10px] px-2 py-0.5">
-                            {{ order['status'] }}
+                            {% if order['status'] == 'Out Of Stock' %}Out Of Stock Finalized{% else %}{{ order['status'] }}{% endif %}
                         </span>
 
                         {% if order['status'] in ['Processing', 'Shipped', 'Out For Delivery'] and
                         order['expected_delivery'] %}
                         <div class="text-xs text-main font-medium bg-black/30 px-2 py-1 rounded">
-                            <i class="fa-regular fa-calendar text-cyan-400 mr-1"></i> Exp: {{ order['expected_delivery']
-                            }}
+                            <i class="fa-regular fa-calendar text-cyan-400 mr-1"></i> Exp: {{ order['expected_delivery']|indian_date }}
                         </div>
                         {% endif %}
                     </div>
@@ -234,7 +247,7 @@
                     </div>
                     <h4 class="font-bold text-green-500 text-lg">Delivered Successfully!</h4>
                     {% if order['delivered_date'] %}
-                    <p class="text-sm text-muted mt-1">Your package arrived on {{ order['delivered_date'] }}</p>
+                    <p class="text-sm text-muted mt-1">Your package arrived on {{ order['delivered_date']|indian_date }}</p>
                     {% endif %}
                 </div>
                 {% else %}

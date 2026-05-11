@@ -83,6 +83,10 @@
     --status-cancel-text: #b91c1c;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
     background-attachment: fixed;
@@ -339,3 +343,215 @@ select option {
     opacity: 0;
 }
 
+/* Responsive Improvements */
+@media (max-width: 768px) {
+    .glass-panel {
+        border-radius: 0.75rem;
+    }
+    
+    .btn-floating-dash {
+        bottom: 1.5rem;
+        left: 1.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn-floating-dash span {
+        display: none;
+    }
+    
+    table {
+        font-size: 0.85rem;
+    }
+    
+    td, th {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        font-size: 14px;
+    }
+    
+    .glass-card {
+        border-radius: 0.75rem;
+    }
+    
+    .btn-floating-dash {
+        bottom: 1rem;
+        left: 1rem;
+        width: 3rem;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    table {
+        font-size: 0.75rem;
+    }
+    
+    td, th {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Badge Styling */
+.badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.badge-pending {
+    background: var(--status-pending-bg);
+    color: var(--status-pending-text);
+    border-color: var(--status-pending-border);
+}
+
+.badge-accepted {
+    background: var(--status-accepted-bg);
+    color: var(--status-accepted-text);
+    border-color: var(--status-accepted-border);
+}
+
+.badge-processing {
+    background: var(--status-processing-bg);
+    color: var(--status-processing-text);
+    border-color: var(--status-processing-border);
+}
+
+.badge-shipped {
+    background: var(--status-shipped-bg);
+    color: var(--status-shipped-text);
+    border-color: var(--status-shipped-border);
+}
+
+.badge-outfordelivery {
+    background: var(--status-out-bg);
+    color: var(--status-out-text);
+    border-color: var(--status-out-border);
+}
+
+.badge-delivered {
+    background: var(--status-delivered-bg);
+    color: var(--status-delivered-text);
+    border-color: var(--status-delivered-border);
+}
+
+.badge-outofstock {
+    background: var(--status-cancel-bg);
+    color: var(--status-cancel-text);
+    border-color: var(--status-cancel-border);
+}
+
+.badge-finalized {
+    background: rgba(71, 85, 105, 0.25);
+    color: var(--text-secondary);
+    border-color: rgba(148, 163, 184, 0.45);
+    font-weight: 600;
+}
+
+.payment-history-table th,
+.payment-history-table td {
+    vertical-align: middle;
+    padding: 0.7rem 0.55rem;
+}
+
+@media (min-width: 768px) {
+    .payment-history-table {
+        font-size: 0.875rem;
+    }
+}
+
+.payment-history-card {
+    transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+}
+
+.payment-history-card:hover {
+    border-color: rgba(148, 163, 184, 0.35);
+}
+
+/* Smooth Transitions */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover Effects on Cards */
+.glass-card {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.glass-card:hover {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Text Selection */
+::selection {
+    background-color: rgba(239, 68, 68, 0.3);
+    color: var(--text-primary);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-gradient-1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--glass-border-hover);
+}
+
+/* Accessibility */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus Visible for Keyboard Navigation */
+:focus-visible {
+    outline: 2px solid var(--accent-glow);
+    outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}

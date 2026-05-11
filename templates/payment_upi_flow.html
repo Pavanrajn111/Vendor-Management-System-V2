@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ platform_label }} — UPI{% endblock %}
+{% block content %}
+<div class="fade-in max-w-3xl mx-auto">
+    <div class="mb-6 border-b border-glass pb-4">
+        <a href="{{ url_for('payment_upi_platforms', order_id=order['id']) }}" class="text-sm text-muted hover:text-orange-400 transition-colors inline-flex items-center gap-2 mb-3">
+            <i class="fa-solid fa-arrow-left"></i> Other UPI apps
+        </a>
+        <h1 class="text-2xl font-bold text-main">{{ platform_label }}</h1>
+        <p class="text-muted text-sm mt-1">{{ order['product_name'] }} · <span class="text-green-400 font-semibold">₹{{ order['price'] }}</span></p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <a href="{{ url_for('payment_upi_qr', order_id=order['id'], platform=platform) }}" class="glass-card p-8 rounded-xl border border-glass text-center hover:border-orange-500/40 hover:shadow-lg transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] group">
+            <div class="w-14 h-14 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-2xl text-orange-400 mb-3 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <h3 class="font-bold text-main text-lg">Generate QR code</h3>
+            <p class="text-sm text-muted mt-2 max-w-xs">Scan with your {{ platform_label }} app to pay the exact amount.</p>
+        </a>
+        <a href="{{ url_for('payment_upi_id', order_id=order['id'], platform=platform) }}" class="glass-card p-8 rounded-xl border border-glass text-center hover:border-teal-500/40 hover:shadow-lg transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] group">
+            <div class="w-14 h-14 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-2xl text-teal-400 mb-3 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-at"></i>
+            </div>
+            <h3 class="font-bold text-main text-lg">Pay via UPI ID</h3>
+            <p class="text-sm text-muted mt-2 max-w-xs">Enter your UPI ID (e.g. name@ybl) and confirm payment.</p>
+        </a>
+    </div>
+</div>
+{% endblock %}
