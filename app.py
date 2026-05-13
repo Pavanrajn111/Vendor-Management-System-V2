@@ -216,6 +216,9 @@ def _finalize_customer_payment(
     card_last4,
     upi_masked,
 ):
+    pm_store = (payment_method or '').strip().lower()
+    if pm_store not in ('upi', 'card'):
+        pm_store = 'legacy'
     payment_time = datetime.now().strftime('%d/%m/%Y, %I:%M %p')
     existing = conn.execute("SELECT * FROM payments WHERE order_id=?", (order_id,)).fetchone()
     if not existing:
@@ -235,7 +238,7 @@ def _finalize_customer_payment(
                 amount,
                 'Pending Vendor Verification',
                 payment_time,
-                payment_method or '',
+                pm_store,
                 upi_platform or '',
                 upi_flow or '',
                 card_last4 or '',
@@ -256,7 +259,7 @@ def _finalize_customer_payment(
                 amount,
                 'Pending Vendor Verification',
                 payment_time,
-                payment_method or '',
+                pm_store,
                 upi_platform or '',
                 upi_flow or '',
                 card_last4 or '',
@@ -387,6 +390,43 @@ def ensure_column_exists(conn, table, column, definition):
     if column not in columns:
         conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
 
+
+def backfill_payment_method_codes(conn):
+    """Normalize payment_method to upi | card | legacy. Idempotent; does not delete rows."""
+    try:
+        conn.execute(
+            """
+            UPDATE payments SET payment_method = 'card'
+            WHERE TRIM(COALESCE(card_last4, '')) != ''
+               OR LOWER(TRIM(COALESCE(payment_method, ''))) LIKE '%credit%'
+               OR LOWER(TRIM(COALESCE(payment_method, ''))) LIKE '%debit%'
+            """
+        )
+        conn.execute(
+            """
+            UPDATE payments SET payment_method = 'upi'
+            WHERE TRIM(COALESCE(payment_method, '')) NOT IN ('card', 'upi', 'legacy')
+              AND (
+                    TRIM(COALESCE(upi_platform, '')) != ''
+                 OR TRIM(COALESCE(upi_flow, '')) != ''
+                 OR TRIM(COALESCE(upi_masked, '')) != ''
+                 OR LOWER(TRIM(COALESCE(payment_method, ''))) LIKE '%upi%'
+                  )
+            """
+        )
+        conn.execute(
+            """
+            UPDATE payments SET payment_method = 'legacy'
+            WHERE TRIM(COALESCE(payment_method, '')) NOT IN ('upi', 'card', 'legacy')
+            """
+        )
+        conn.commit()
+    except Exception:
+        try:
+            conn.rollback()
+        except Exception:
+            pass
+
 try:
     ensure_column_exists(conn, 'payments', 'payment_date', 'TEXT DEFAULT ""')
 except:
@@ -410,6 +450,8 @@ try:
     ensure_column_exists(conn, 'users', 'upi_vpa', 'TEXT DEFAULT ""')
 except Exception:
     pass
+backfill_payment_method_codes(conn)
+
 conn.commit()
 
 # ---------------------------------
@@ -425,6 +467,17 @@ def indian_date_filter(date_str):
 @app.template_filter('input_date')
 def input_date_filter(date_str):
     return to_input_date(date_str)
+
+
+@app.template_filter('payment_method_label')
+def payment_method_label_filter(code):
+    c = (code or '').strip().lower()
+    if c == 'upi':
+        return 'Paid Through UPI'
+    if c == 'card':
+        return 'Paid Through Credit/Debit Card'
+    return 'Recorded previously'
+
 
 @app.template_filter('time_ago')
 def time_ago(dt_str):
@@ -945,7 +998,7 @@ def payment_card(order_id):
                 o['vendor'],
                 o['product_name'],
                 o['price'],
-                'Credit/Debit Card',
+                'card',
                 '',
                 '',
                 last4,
@@ -1011,7 +1064,7 @@ def payment_upi_qr(order_id, platform):
             o['vendor'],
             o['product_name'],
             o['price'],
-            'UPI',
+            'upi',
             label,
             'QR',
             '',
@@ -1062,7 +1115,7 @@ def payment_upi_id(order_id, platform):
                 o['vendor'],
                 o['product_name'],
                 o['price'],
-                'UPI',
+                'upi',
                 label,
                 'UPI ID',
                 '',
@@ -1435,7 +1488,7 @@ def update_order():
                     order['price'],
                     'Out Of Stock',
                     current_time,
-                    '',
+                    'legacy',
                     '',
                     '',
                     '',

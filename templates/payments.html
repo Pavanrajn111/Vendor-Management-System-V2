@@ -158,26 +158,23 @@
         {% if payments %}
         <div class="glass-card overflow-hidden rounded-xl border border-glass">
             <div class="hidden md:block overflow-x-auto">
+                {% if session['role'] == 'customer' %}
                 <table class="w-full text-left payment-history-table">
                     <thead>
                         <tr>
                             <th class="align-middle">Product</th>
-                            <th class="align-middle min-w-[6.5rem]">Pay method</th>
-                            <th class="align-middle min-w-[7rem]">UPI / details</th>
                             <th class="align-middle">Vendor</th>
-                            <th class="align-middle">Customer</th>
-                            <th class="align-middle">Amount</th>
-                            <th class="align-middle">Payment Status</th>
-                            <th class="align-middle">Delivery Status</th>
-                            <th class="align-middle min-w-[9.5rem]">Payment Date &amp; Time</th>
-                            <th class="align-middle min-w-[7rem]">Delivery Date</th>
-                            {% if session['role'] == 'vendor' %}<th class="align-middle min-w-[10rem]">Action</th>{% endif %}
+                            <th class="align-middle text-right">Amount paid (₹)</th>
+                            <th class="align-middle">Payment status</th>
+                            <th class="align-middle">Delivery status</th>
+                            <th class="align-middle min-w-[9.5rem]">Payment date &amp; time</th>
+                            <th class="align-middle min-w-[11rem]">Payment method</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-glass border-t border-glass">
                         {% for p in payments %}
                         {% set del_stat = p['delivery_status'] or 'Pending' %}
-                        {% set pm = p['payment_method']|default('', true) %}
+                        {% set pm_raw = (p['payment_method']|default('', true))|lower %}
                         <tr class="hover:bg-overlay/80 transition-colors">
                             <td class="font-semibold text-main">
                                 <div class="flex items-center gap-3 min-w-0">
@@ -189,22 +186,8 @@
                                     <span class="truncate">{{ p['product_name'] }}</span>
                                 </div>
                             </td>
-                            <td class="text-sm text-muted">
-                                {% if pm == 'Credit/Debit Card' %}
-                                    {% if p['card_last4'] %}Card ·•••{{ p['card_last4'] }}{% else %}Credit/Debit Card{% endif %}
-                                {% elif pm == 'UPI' %}UPI
-                                {% elif pm %} {{ pm }}
-                                {% else %}<span class="opacity-60">—</span>{% endif %}
-                            </td>
-                            <td class="text-sm text-muted">
-                                {% if pm == 'UPI' %}
-                                    <span class="text-main/90">{{ p['upi_platform'] or '—' }}</span>{% if p['upi_flow'] %}<span class="opacity-70"> · {{ p['upi_flow'] }}</span>{% endif %}
-                                    {% if p['upi_masked'] %}<div class="text-[10px] mt-0.5 font-mono text-muted">{{ p['upi_masked'] }}</div>{% endif %}
-                                {% else %}<span class="opacity-60">—</span>{% endif %}
-                            </td>
                             <td class="font-medium text-muted">{{ p['vendor'] }}</td>
-                            <td class="font-medium text-muted">{{ p['customer'] }}</td>
-                            <td class="font-bold text-main whitespace-nowrap">₹{{ p['amount'] }}</td>
+                            <td class="font-bold text-main whitespace-nowrap text-right">₹{{ p['amount'] }}</td>
                             <td>
                                 {% if p['status'] == 'Accepted' %}
                                     <span class="badge badge-accepted"><i class="fa-solid fa-circle-check"></i> Payment Verified Successfully</span>
@@ -235,12 +218,80 @@
                                 </span>
                             </td>
                             <td class="text-sm text-muted whitespace-nowrap"><i class="fa-regular fa-calendar mr-1"></i>{{ p['payment_date']|indian_date }}</td>
-                            <td class="text-sm text-muted whitespace-nowrap">
-                                {% if p['delivered_date'] %}
-                                <i class="fa-regular fa-calendar-check mr-1 text-green-500"></i>{{ p['delivered_date']|indian_date }}
-                                {% else %}-{% endif %}
+                            <td>
+                                {% if pm_raw == 'upi' %}
+                                <span class="badge badge-pay-upi inline-flex items-start gap-2"><i class="fa-solid fa-mobile-screen mt-0.5"></i><span>{{ p['payment_method']|payment_method_label }}</span></span>
+                                {% elif pm_raw == 'card' %}
+                                <span class="badge badge-pay-card inline-flex items-start gap-2"><i class="fa-regular fa-credit-card mt-0.5"></i><span>{{ p['payment_method']|payment_method_label }}</span></span>
+                                {% else %}
+                                <span class="badge badge-pay-legacy inline-flex items-start gap-2"><i class="fa-solid fa-clock-rotate-left mt-0.5"></i><span>{{ p['payment_method']|payment_method_label }}</span></span>
+                                {% endif %}
                             </td>
-                            {% if session['role'] == 'vendor' %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <table class="w-full text-left payment-history-table">
+                    <thead>
+                        <tr>
+                            <th class="align-middle">Product</th>
+                            <th class="align-middle">Customer</th>
+                            <th class="align-middle text-right">Amount received (₹)</th>
+                            <th class="align-middle">Payment status</th>
+                            <th class="align-middle">Delivery status</th>
+                            <th class="align-middle min-w-[9.5rem]">Payment date &amp; time</th>
+                            <th class="align-middle min-w-[11rem]">Payment method</th>
+                            <th class="align-middle min-w-[10rem]">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-glass border-t border-glass">
+                        {% for p in payments %}
+                        {% set del_stat = p['delivery_status'] or 'Pending' %}
+                        {% set pm_raw = (p['payment_method']|default('', true))|lower %}
+                        <tr class="hover:bg-overlay/80 transition-colors">
+                            <td class="font-semibold text-main">{{ p['product_name'] }}</td>
+                            <td class="font-medium text-muted">{{ p['customer'] }}</td>
+                            <td class="font-bold text-main whitespace-nowrap text-right">₹{{ p['amount'] }}</td>
+                            <td>
+                                {% if p['status'] == 'Accepted' %}
+                                    <span class="badge badge-accepted"><i class="fa-solid fa-circle-check"></i> Payment Verified Successfully</span>
+                                {% elif p['status'] in ['Completed', 'Pending Vendor Verification'] %}
+                                    <span class="badge badge-pending"><i class="fa-solid fa-hourglass-half"></i> Pending Verification</span>
+                                {% elif p['status'] == 'Payment Not Received' %}
+                                    <span class="badge badge-outofstock"><i class="fa-solid fa-triangle-exclamation"></i> Payment Not Received</span>
+                                {% elif p['status'] == 'Out Of Stock' %}
+                                    <span class="badge badge-outofstock"><i class="fa-solid fa-xmark"></i> Out Of Stock</span>
+                                {% elif p['status'] == 'Refund Pending' %}
+                                    <span class="badge badge-pending"><i class="fa-solid fa-clock-rotate-left"></i> Refund Pending</span>
+                                {% elif p['status'] == 'Refund Completed' %}
+                                    <span class="badge badge-delivered"><i class="fa-solid fa-money-bill-transfer"></i> Refund Completed</span>
+                                {% else %}
+                                    <span class="badge badge-pending"><i class="fa-solid fa-hourglass-half"></i> {{ p['status'] }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if del_stat == 'Pending' %}badge-pending
+                                    {% elif del_stat == 'Accepted' %}badge-accepted
+                                    {% elif del_stat == 'Processing' %}badge-processing
+                                    {% elif del_stat == 'Shipped' %}badge-shipped
+                                    {% elif del_stat == 'Out For Delivery' %}badge-outfordelivery
+                                    {% elif del_stat == 'Delivered' %}badge-delivered
+                                    {% else %}badge-outofstock{% endif %} text-[10px] px-2 py-0.5">
+                                    {{ del_stat }}
+                                </span>
+                            </td>
+                            <td class="text-sm text-muted whitespace-nowrap"><i class="fa-regular fa-calendar mr-1"></i>{{ p['payment_date']|indian_date }}</td>
+                            <td>
+                                {% if pm_raw == 'upi' %}
+                                <span class="badge badge-pay-upi inline-flex items-start gap-2"><i class="fa-solid fa-mobile-screen mt-0.5"></i><span>{{ p['payment_method']|payment_method_label }}</span></span>
+                                {% elif pm_raw == 'card' %}
+                                <span class="badge badge-pay-card inline-flex items-start gap-2"><i class="fa-regular fa-credit-card mt-0.5"></i><span>{{ p['payment_method']|payment_method_label }}</span></span>
+                                {% else %}
+                                <span class="badge badge-pay-legacy inline-flex items-start gap-2"><i class="fa-solid fa-clock-rotate-left mt-0.5"></i><span>{{ p['payment_method']|payment_method_label }}</span></span>
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if p['status'] == 'Accepted' %}
                                     <button type="button" disabled class="px-3 py-1.5 rounded-lg bg-green-500/10 text-green-500 border border-green-500/30 text-xs font-medium cursor-not-allowed opacity-90">
@@ -280,18 +331,19 @@
                                     </form>
                                 {% endif %}
                             </td>
-                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </div>
 
             <div class="md:hidden p-4 space-y-4">
                 {% for p in payments %}
                 {% set del_stat = p['delivery_status'] or 'Pending' %}
-                {% set pm = p['payment_method']|default('', true) %}
+                {% set pm_raw = (p['payment_method']|default('', true))|lower %}
                 <div class="payment-history-card rounded-xl border border-glass bg-overlay/40 p-4 transition-shadow hover:shadow-lg">
+                    {% if session['role'] == 'customer' %}
                     <div class="flex gap-3 mb-3">
                         {% if p['product_image'] %}
                         <img src="{{ url_for('static', filename=p['product_image']) }}" alt="" class="w-16 h-16 shrink-0 rounded-lg object-cover border border-glass">
@@ -301,19 +353,30 @@
                         <div class="min-w-0 flex-1">
                             <div class="font-bold text-main leading-snug">{{ p['product_name'] }}</div>
                             <div class="text-xs text-muted mt-1"><i class="fa-solid fa-store text-indigo-400 mr-1"></i>{{ p['vendor'] }}</div>
-                            <div class="text-xs text-muted"><i class="fa-solid fa-user text-pink-400 mr-1"></i>{{ p['customer'] }}</div>
                         </div>
                         <div class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 shrink-0">₹{{ p['amount'] }}</div>
                     </div>
-                    <div class="text-[11px] text-muted space-y-0.5 mb-2 pb-2 border-b border-glass/80">
-                        <div><span class="text-main/80">Method:</span>
-                            {% if pm == 'Credit/Debit Card' %}{% if p['card_last4'] %}Card ·•••{{ p['card_last4'] }}{% else %}Credit/Debit Card{% endif %}
-                            {% elif pm == 'UPI' %}UPI{% elif pm %}{{ pm }}{% else %}—{% endif %}
+                    {% else %}
+                    <div class="flex justify-between items-start gap-3 mb-3">
+                        <div class="min-w-0">
+                            <div class="text-xs text-muted font-medium">Product</div>
+                            <div class="font-bold text-main leading-snug">{{ p['product_name'] }}</div>
+                            <div class="text-xs text-muted mt-2"><i class="fa-solid fa-user text-pink-400 mr-1"></i>{{ p['customer'] }}</div>
                         </div>
-                        <div><span class="text-main/80">UPI:</span>
-                            {% if pm == 'UPI' %}{{ p['upi_platform'] or '—' }}{% if p['upi_flow'] %} · {{ p['upi_flow'] }}{% endif %}{% if p['upi_masked'] %} ({{ p['upi_masked'] }}){% endif %}{% else %}—{% endif %}
-                        </div>
+                        <div class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 shrink-0">₹{{ p['amount'] }}</div>
                     </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        {% if pm_raw == 'upi' %}
+                        <span class="badge badge-pay-upi inline-flex items-start gap-2 w-full justify-start"><i class="fa-solid fa-mobile-screen mt-0.5"></i><span>{{ p['payment_method']|payment_method_label }}</span></span>
+                        {% elif pm_raw == 'card' %}
+                        <span class="badge badge-pay-card inline-flex items-start gap-2 w-full justify-start"><i class="fa-regular fa-credit-card mt-0.5"></i><span>{{ p['payment_method']|payment_method_label }}</span></span>
+                        {% else %}
+                        <span class="badge badge-pay-legacy inline-flex items-start gap-2 w-full justify-start"><i class="fa-solid fa-clock-rotate-left mt-0.5"></i><span>{{ p['payment_method']|payment_method_label }}</span></span>
+                        {% endif %}
+                    </div>
+
                     <div class="flex flex-wrap gap-2 mb-2">
                         {% if p['status'] == 'Accepted' %}
                             <span class="badge badge-accepted"><i class="fa-solid fa-circle-check"></i> Payment Verified Successfully</span>
@@ -343,7 +406,6 @@
                     </div>
                     <div class="text-xs text-muted space-y-1 border-t border-glass pt-3">
                         <div><i class="fa-regular fa-calendar mr-1"></i><span class="text-main/90">Paid:</span> {{ p['payment_date']|indian_date }}</div>
-                        <div><i class="fa-regular fa-calendar-check mr-1"></i><span class="text-main/90">Delivery:</span> {% if p['delivered_date'] %}{{ p['delivered_date']|indian_date }}{% else %}—{% endif %}</div>
                     </div>
                     {% if session['role'] == 'vendor' %}
                     <div class="mt-3 pt-3 border-t border-glass flex flex-col gap-2">

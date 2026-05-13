@@ -462,6 +462,87 @@ select option {
     font-weight: 600;
 }
 
+/* Payment method badges — high contrast, readable in light + dark theme */
+.badge.badge-pay-upi,
+.badge.badge-pay-card,
+.badge.badge-pay-legacy {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0.95rem;
+    border-radius: 0.65rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.22s ease, filter 0.2s ease;
+    white-space: normal;
+    text-align: left;
+    max-width: 17rem;
+    -webkit-font-smoothing: antialiased;
+}
+
+.badge.badge-pay-upi {
+    background: linear-gradient(135deg, #1e40af 0%, #5b21b6 55%, #6d28d9 100%);
+    color: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.badge.badge-pay-card {
+    background: linear-gradient(135deg, #065f46 0%, #047857 45%, #15803d 100%);
+    color: #ecfdf5;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.badge.badge-pay-legacy {
+    background: linear-gradient(135deg, #334155 0%, #475569 100%);
+    color: #f1f5f9;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+@media (hover: hover) {
+    .badge.badge-pay-upi:hover,
+    .badge.badge-pay-card:hover,
+    .badge.badge-pay-legacy:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.06);
+    }
+
+    .badge.badge-pay-upi:hover {
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.55), 0 2px 8px rgba(15, 23, 42, 0.35);
+    }
+
+    .badge.badge-pay-card:hover {
+        box-shadow: 0 4px 16px rgba(5, 150, 105, 0.5), 0 2px 8px rgba(15, 23, 42, 0.35);
+    }
+
+    .badge.badge-pay-legacy:hover {
+        box-shadow: 0 4px 14px rgba(71, 85, 105, 0.55), 0 2px 8px rgba(15, 23, 42, 0.3);
+    }
+}
+
+[data-theme="light"] .badge.badge-pay-upi,
+[data-theme="light"] .badge.badge-pay-card,
+[data-theme="light"] .badge.badge-pay-legacy {
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.18), 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .badge.badge-pay-upi:hover {
+    box-shadow: 0 4px 18px rgba(37, 99, 235, 0.35), 0 2px 8px rgba(15, 23, 42, 0.15);
+}
+
+[data-theme="light"] .badge.badge-pay-card:hover {
+    box-shadow: 0 4px 18px rgba(5, 150, 105, 0.35), 0 2px 8px rgba(15, 23, 42, 0.15);
+}
+
+[data-theme="light"] .badge.badge-pay-legacy:hover {
+    box-shadow: 0 4px 16px rgba(71, 85, 105, 0.3), 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
 .payment-history-table th,
 .payment-history-table td {
     vertical-align: middle;
