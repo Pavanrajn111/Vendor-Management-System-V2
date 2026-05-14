@@ -22,7 +22,7 @@
         {% for p in products %}
           <tr>
             <td class="product-cell">
-              <img class="product-thumb" src="{{ url_for('static', filename='uploads/' + p.image_filename) if p.image_filename else url_for('static', filename='images/product-placeholder.svg') }}" alt="{{ p.name }}">
+              <img class="product-thumb" src="{{ url_for('static', filename=(('uploads/' + p.image_filename) if p.image_filename else 'images/product-placeholder.svg')|resolve_image) }}" alt="{{ p.name }}">
               <div>
                 <div class="product-name">{{ p.name }}</div>
                 <div class="product-meta">Added {{ p.created_at|relative_time }}</div>

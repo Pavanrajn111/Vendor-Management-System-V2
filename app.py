@@ -277,6 +277,76 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ---------------------------------
+# SMART IMAGE DETECTION
+# ---------------------------------
+
+def find_image_file(image_path):
+    """
+    Intelligently find image file with case-insensitive and extension-agnostic matching.
+    
+    Args:
+        image_path: Path like "uploads/battery.jfif" or "battery" or "uploads/battery"
+    
+    Returns:
+        Path to existing image file or default placeholder if not found
+    """
+    if not image_path:
+        return 'images/product-placeholder.svg'
+    
+    # Extract base filename without extension
+    image_path = str(image_path).strip()
+    
+    # Remove 'uploads/' prefix if present
+    if image_path.startswith('uploads/'):
+        base_name = image_path[8:]  # Remove 'uploads/' prefix
+    else:
+        base_name = image_path
+    
+    # Remove any existing extension
+    if '.' in base_name:
+        base_name = base_name.rsplit('.', 1)[0]
+    
+    # List of extensions to try, in order of preference
+    extensions = ['.png', '.jpg', '.jpeg', '.jfif', '.webp']
+    
+    # Try to find the file in the uploads folder (case-insensitive)
+    try:
+        if os.path.isdir(UPLOAD_FOLDER):
+            files_in_dir = os.listdir(UPLOAD_FOLDER)
+            
+            # First pass: exact case match
+            for ext in extensions:
+                filename = base_name + ext
+                if filename in files_in_dir:
+                    return f'uploads/{filename}'
+            
+            # Second pass: case-insensitive match
+            base_name_lower = base_name.lower()
+            for file in files_in_dir:
+                file_lower = file.lower()
+                # Check if file matches the base name with any of our extensions
+                for ext in extensions:
+                    if file_lower == base_name_lower + ext:
+                        return f'uploads/{file}'
+    except Exception as e:
+        print(f"Error finding image file: {e}")
+    
+    # Return default placeholder if not found
+    return 'images/product-placeholder.svg'
+
+
+def resolve_image_path(image_path):
+    """
+    Flask filter to automatically resolve product image paths.
+    Supports multiple formats and case variations.
+    """
+    return find_image_file(image_path)
+
+
+# Register the filter for use in Jinja templates
+app.jinja_env.filters['resolve_image'] = resolve_image_path
+
+# ---------------------------------
 # DATABASE CONNECTION
 # ---------------------------------
 

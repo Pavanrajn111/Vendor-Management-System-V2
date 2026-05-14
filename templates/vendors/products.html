@@ -10,7 +10,7 @@
     <div class="product-grid">
       {% for p in products %}
         <div class="product-card">
-          <img class="product-image" src="{{ url_for('static', filename='uploads/' + p.image_filename) if p.image_filename else url_for('static', filename='images/product-placeholder.svg') }}" alt="{{ p.name }}">
+          <img class="product-image" src="{{ url_for('static', filename=(('uploads/' + p.image_filename) if p.image_filename else 'images/product-placeholder.svg')|resolve_image) }}" alt="{{ p.name }}">
           <div class="product-details">
             <h3 class="product-title">{{ p.name }}</h3>
             <p class="product-time">Added {{ p.created_at|relative_time }}</p>

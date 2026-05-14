@@ -39,7 +39,7 @@
             <!-- Product Image -->
             <div class="w-full aspect-square bg-overlay relative overflow-hidden flex items-center justify-center text-6xl text-muted border-b border-glass">
                 {% if p['image'] %}
-                    <img src="{{ url_for('static', filename=p['image']) }}" alt="{{ p['name'] }}" class="w-full h-full object-contain transition-all duration-300">
+                    <img src="{{ url_for('static', filename=p['image']|resolve_image) }}" alt="{{ p['name'] }}" class="w-full h-full object-contain transition-all duration-300">
                 {% else %}
                     <div class="w-full h-full flex flex-col items-center justify-center text-muted/40 group-hover:text-muted/60 transition-colors bg-gradient-to-br from-transparent to-slate-900/20"><i class="fa-solid fa-box-open text-5xl mb-2"></i><span class="text-xs font-medium tracking-wider uppercase">No Image</span></div>
                 {% endif %}
