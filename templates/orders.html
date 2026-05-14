@@ -33,7 +33,7 @@
                         <td class="font-semibold text-main flex items-center gap-3">
                             {% if order['product_image'] %}
                             <img src="{{ url_for('static', filename=order['product_image']) }}"
-                                class="w-10 h-10 rounded object-cover border border-glass">
+                                class="w-10 h-10 rounded object-contain bg-slate-700/30 border border-glass">
                             {% else %}
                             <div
                                 class="w-10 h-10 rounded bg-overlay flex items-center justify-center text-muted/50 border border-glass">
@@ -165,10 +165,10 @@
 
             <!-- Order Details -->
             <div class="relative z-10 flex gap-4 mb-6 pb-4 border-b border-glass">
-                <div class="w-20 h-20 bg-overlay rounded-lg overflow-hidden border border-glass shrink-0">
+                <div class="w-20 h-20 bg-overlay rounded-lg overflow-hidden border border-glass shrink-0 flex items-center justify-center">
                     {% if order['product_image'] %}
                     <img src="{{ url_for('static', filename=order['product_image']) }}"
-                        class="w-full h-full object-cover">
+                        class="w-full h-full object-contain">
                     {% else %}
                     <div
                         class="w-full h-full flex items-center justify-center text-3xl text-muted/50 bg-gradient-to-br from-transparent to-slate-900/20">

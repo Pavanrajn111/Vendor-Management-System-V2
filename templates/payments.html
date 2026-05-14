@@ -179,7 +179,7 @@
                             <td class="font-semibold text-main">
                                 <div class="flex items-center gap-3 min-w-0">
                                     {% if p['product_image'] %}
-                                    <img src="{{ url_for('static', filename=p['product_image']) }}" alt="" class="w-11 h-11 shrink-0 rounded-lg object-cover border border-glass">
+                                    <img src="{{ url_for('static', filename=p['product_image']) }}" alt="" class="w-11 h-11 shrink-0 rounded-lg object-contain bg-slate-700/30 border border-glass">
                                     {% else %}
                                     <div class="w-11 h-11 shrink-0 rounded-lg bg-overlay flex items-center justify-center text-muted/50 border border-glass"><i class="fa-solid fa-box-open"></i></div>
                                     {% endif %}
@@ -346,7 +346,7 @@
                     {% if session['role'] == 'customer' %}
                     <div class="flex gap-3 mb-3">
                         {% if p['product_image'] %}
-                        <img src="{{ url_for('static', filename=p['product_image']) }}" alt="" class="w-16 h-16 shrink-0 rounded-lg object-cover border border-glass">
+                        <img src="{{ url_for('static', filename=p['product_image']) }}" alt="" class="w-16 h-16 shrink-0 rounded-lg object-contain bg-slate-700/30 border border-glass">
                         {% else %}
                         <div class="w-16 h-16 shrink-0 rounded-lg bg-overlay flex items-center justify-center text-muted/50 border border-glass"><i class="fa-solid fa-box-open text-xl"></i></div>
                         {% endif %}
